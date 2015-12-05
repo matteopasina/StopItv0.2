@@ -3,7 +3,7 @@
     <string name="facebook_app_id">1079841705401748</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title">StopIt</string>
-    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_profile">StopIt!</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

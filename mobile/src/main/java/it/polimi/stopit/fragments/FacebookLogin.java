@@ -21,7 +21,6 @@ import com.facebook.login.widget.LoginButton;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
-import it.polimi.stopit.activities.ProfileActivity;
 
 public class FacebookLogin extends Fragment {
 
@@ -50,7 +49,7 @@ public class FacebookLogin extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(),ProfileActivity.class);
+                Intent intent = new Intent(getActivity(),NavigationActivity.class);
                 intent.putExtra("userID", Profile.getCurrentProfile().getId());
                 intent.putExtra("name", Profile.getCurrentProfile().getFirstName());
                 intent.putExtra("surname", Profile.getCurrentProfile().getLastName());

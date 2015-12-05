@@ -1,6 +1,9 @@
 package it.polimi.stopit.activities;
 
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,8 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.Profile;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -22,6 +28,8 @@ import it.polimi.stopit.model.User;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    User user=new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +55,6 @@ public class NavigationActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        User user=new User();
 
         user.setID(getIntent().getExtras().getString("userID"));
         user.setName(getIntent().getExtras().getString("name"));
@@ -76,6 +82,12 @@ public class NavigationActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.profile, menu);
+        TextView sidename = (TextView) findViewById(R.id.sideName);
+        TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
+        sidename.setText("" + user.getName() + " " + user.getSurname());
+        sidelevel.setText("Beginner: level 1");
+        ImageView sidebarpic = (ImageView) findViewById(R.id.sidebarPic);
+        Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
         return true;
     }
 
@@ -112,6 +124,11 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        }else if (id == R.id.logout) {
+            Intent intent = new Intent(this,Login.class);
+            AccessToken.setCurrentAccessToken(null);
+            Profile.setCurrentProfile(null);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

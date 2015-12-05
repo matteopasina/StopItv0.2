@@ -16,13 +16,13 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:border_color="#EEEEEE"
-        app:border_width="4dp"
+        app:border_width="0dp"
         app:shadow="true"
-        app:shadow_radius="10"
-        app:shadow_color="#8BC34A"
+        app:shadow_radius="5"
+        app:shadow_color="@color/shadows"
         android:id="@+id/profilepic"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="30dp"/>/>
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="5dp"/>/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="username"
         android:id="@+id/username"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="50dp"
         android:layout_marginLeft="140dp"/>
 
 </RelativeLayout>
