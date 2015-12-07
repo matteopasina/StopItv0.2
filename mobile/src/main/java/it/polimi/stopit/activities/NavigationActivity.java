@@ -39,6 +39,41 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        user.setID(getIntent().getExtras().getString("userID"));
+        user.setName(getIntent().getExtras().getString("name"));
+        user.setSurname(getIntent().getExtras().getString("surname"));
+        user.setProfilePic(getIntent().getExtras().getString("imageURL"));
+
+        Firebase.setAndroidContext(this);
+        final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+        myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if(!snapshot.child(user.getID()).exists()) {
+                    myFirebaseRef.child(user.getID()).setValue(user);
+                }
+                TextView username = (TextView) findViewById(R.id.username);
+                username.setText("" + snapshot.child(user.getID()).child("name").getValue().toString() + " " + snapshot.child(user.getID()).child("surname").getValue().toString());
+                if(snapshot.child(user.getID()).child("points").getValue()==null){
+                    points=0;
+                }else {
+                    points = (long) snapshot.child(user.getID()).child("points").getValue();
+                }
+                TextView showPoints = (TextView) findViewById(R.id.points);
+                showPoints.setText("Points:" + String.valueOf(points));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+        Button smoke=(Button)findViewById(R.id.smoke);
+        smoke.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                points -= 50;
+                myFirebaseRef.child(user.getID()).child("points").setValue(points);
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -60,45 +95,8 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        user.setID(getIntent().getExtras().getString("userID"));
-        user.setName(getIntent().getExtras().getString("name"));
-        user.setSurname(getIntent().getExtras().getString("surname"));
-        user.setProfilePic(getIntent().getExtras().getString("imageURL"));
-
-        Firebase.setAndroidContext(this);
-        final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/");
-        myFirebaseRef.child("User").child("ID").setValue(user.getID());
-        myFirebaseRef.child("User").child("Name").setValue(user.getName());
-        myFirebaseRef.child("User").child("Surname").setValue(user.getSurname());
-        myFirebaseRef.child("User").child("Points").setValue(0);
-        myFirebaseRef.child("User").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                TextView username = (TextView) findViewById(R.id.username);
-                username.setText("" + snapshot.child("Name").getValue().toString() + " " + snapshot.child("Surname").getValue().toString());
-                points=(long)snapshot.child("Points").getValue();
-                TextView showPoints=(TextView) findViewById(R.id.points);
-                showPoints.setText("Points:"+String.valueOf(points));
-            }
-
-            @Override
-            public void onCancelled(FirebaseError error) {
-            }
-        });
-
-        /*TextView username = (TextView) findViewById(R.id.username);
-
-        username.setText("" + user.getName() + " " + user.getSurname());*/
         CircularImageView profilepic=(CircularImageView) findViewById(R.id.profilepic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(profilepic);
-
-        Button smoke=(Button)findViewById(R.id.smoke);
-        smoke.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                points+=50;
-                myFirebaseRef.child("User").child("Points").setValue(points);
-            }
-        });
     }
 
     @Override

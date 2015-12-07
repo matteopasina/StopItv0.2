@@ -8,6 +8,7 @@ public class User {
     private String ID;
     private String name,surname;
     private String profilePic;
+    private Long points;
 
     public String getID() {
         return ID;
@@ -37,6 +38,14 @@ public class User {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public Long getPoints() {
+        return points;
+    }
+
+    public void setPoints(Long points) {
+        this.points = points;
     }
 }
 
