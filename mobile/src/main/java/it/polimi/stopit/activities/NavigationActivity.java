@@ -1,9 +1,7 @@
 package it.polimi.stopit.activities;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -15,11 +13,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -30,6 +33,7 @@ public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     User user=new User();
+    private long points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +65,40 @@ public class NavigationActivity extends AppCompatActivity
         user.setSurname(getIntent().getExtras().getString("surname"));
         user.setProfilePic(getIntent().getExtras().getString("imageURL"));
 
-        TextView username = (TextView) findViewById(R.id.username);
+        Firebase.setAndroidContext(this);
+        final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/");
+        myFirebaseRef.child("User").child("ID").setValue(user.getID());
+        myFirebaseRef.child("User").child("Name").setValue(user.getName());
+        myFirebaseRef.child("User").child("Surname").setValue(user.getSurname());
+        myFirebaseRef.child("User").child("Points").setValue(0);
+        myFirebaseRef.child("User").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                TextView username = (TextView) findViewById(R.id.username);
+                username.setText("" + snapshot.child("Name").getValue().toString() + " " + snapshot.child("Surname").getValue().toString());
+                points=(long)snapshot.child("Points").getValue();
+                TextView showPoints=(TextView) findViewById(R.id.points);
+                showPoints.setText("Points:"+String.valueOf(points));
+            }
 
-        username.setText("" + user.getName() + " " + user.getSurname());
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+
+        /*TextView username = (TextView) findViewById(R.id.username);
+
+        username.setText("" + user.getName() + " " + user.getSurname());*/
         CircularImageView profilepic=(CircularImageView) findViewById(R.id.profilepic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(profilepic);
+
+        Button smoke=(Button)findViewById(R.id.smoke);
+        smoke.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                points+=50;
+                myFirebaseRef.child("User").child("Points").setValue(points);
+            }
+        });
     }
 
     @Override
@@ -112,17 +145,19 @@ public class NavigationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.profile) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.leaderboard) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.achievements) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.challenge) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.stats) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.money) {
+
+        } else if (id == R.id.settings) {
 
         }else if (id == R.id.logout) {
             Intent intent = new Intent(this,Login.class);

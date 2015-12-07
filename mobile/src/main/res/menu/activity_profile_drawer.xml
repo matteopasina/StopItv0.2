@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_clock"
+        android:title="Profile" />
+    <item
+        android:id="@+id/leaderboard"
+        android:icon="@drawable/ic_leaderboard"
+        android:title="Leaderboard" />
+    <item
+        android:id="@+id/achievements"
+        android:icon="@drawable/ic_achievements"
+        android:title="Achievements" />
+    <item
+        android:id="@+id/challenge"
+        android:icon="@drawable/ic_challenges"
+        android:title="Challenge" />
+    <item
+        android:id="@+id/stats"
+        android:icon="@drawable/ic_stats"
+        android:title="Stats" />
+    <item
+        android:id="@+id/money"
+        android:icon="@drawable/ic_money"
+        android:title="Money" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_setting_light"
+        android:title="Settings" />
     <item
         android:id="@+id/logout"
         android:title="Log Out" />

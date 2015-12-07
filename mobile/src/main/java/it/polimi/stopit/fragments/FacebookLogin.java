@@ -39,6 +39,7 @@ public class FacebookLogin extends Fragment {
             intent.putExtra("imageURL", "https://graph.facebook.com/"+Profile.getCurrentProfile().getId()+"/picture?type=large");
 
             getActivity().startActivity(intent);
+            getActivity().finish();
         }
 
         callbackManager = CallbackManager.Factory.create();
@@ -54,8 +55,9 @@ public class FacebookLogin extends Fragment {
                 intent.putExtra("name", Profile.getCurrentProfile().getFirstName());
                 intent.putExtra("surname", Profile.getCurrentProfile().getLastName());
                 intent.putExtra("imageURL", "https://graph.facebook.com/"+Profile.getCurrentProfile().getId()+"/picture?type=large");
-                System.out.println("token"+ AccessToken.getCurrentAccessToken().getExpires());
+                System.out.println("token" + AccessToken.getCurrentAccessToken().getExpires());
                 getActivity().startActivity(intent);
+                getActivity().finish();
             }
 
             @Override
