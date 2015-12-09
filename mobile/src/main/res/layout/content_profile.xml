@@ -12,45 +12,12 @@
     tools:context=".activities.NavigationActivity"
     tools:showIn="@layout/app_bar_profile">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:border_color="#EEEEEE"
-        app:border_width="0dp"
-        app:shadow="true"
-        app:shadow_radius="5"
-        app:shadow_color="@color/shadows"
-        android:id="@+id/profilepic"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="5dp"/>/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
-        android:id="@+id/username"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="140dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
-        android:id="@+id/points"
-        android:layout_below="@+id/username"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="140dp"/>
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Smoke"
-        android:id="@+id/smoke"
-        android:layout_below="@+id/points"
-        android:layout_marginTop="50dp"
-        android:layout_centerHorizontal="true" />
+    </FrameLayout>
 
 </RelativeLayout>

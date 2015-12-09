@@ -1,10 +1,11 @@
 package it.polimi.stopit.activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,8 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -27,10 +26,11 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.fragments.ProfileFragment;
 import it.polimi.stopit.model.User;
 
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,ProfileFragment.OnFragmentInteractionListener {
 
     User user=new User();
     private long points;
@@ -49,42 +49,36 @@ public class NavigationActivity extends AppCompatActivity
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if(!snapshot.child(user.getID()).exists()) {
+                if (!snapshot.child(user.getID()).exists()) {
                     myFirebaseRef.child(user.getID()).setValue(user);
                 }
-                TextView username = (TextView) findViewById(R.id.username);
-                username.setText("" + snapshot.child(user.getID()).child("name").getValue().toString() + " " + snapshot.child(user.getID()).child("surname").getValue().toString());
-                if(snapshot.child(user.getID()).child("points").getValue()==null){
-                    points=0;
-                }else {
+                if (snapshot.child(user.getID()).child("points").getValue() == null) {
+                    points = 0;
+                } else {
                     points = (long) snapshot.child(user.getID()).child("points").getValue();
+
                 }
-                TextView showPoints = (TextView) findViewById(R.id.points);
-                showPoints.setText("Points:" + String.valueOf(points));
+
+                user.setPoints(points);
+
+                Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+
+                FragmentManager fragmentManager = getFragmentManager();
+
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+
+                ft.replace(R.id.content_frame, fragment);
+
+                ft.commit();
             }
 
             @Override
             public void onCancelled(FirebaseError error) {
             }
         });
-        Button smoke=(Button)findViewById(R.id.smoke);
-        smoke.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                points -= 50;
-                myFirebaseRef.child(user.getID()).child("points").setValue(points);
-            }
-        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,8 +89,6 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        CircularImageView profilepic=(CircularImageView) findViewById(R.id.profilepic);
-        Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(profilepic);
     }
 
     @Override
@@ -117,8 +109,9 @@ public class NavigationActivity extends AppCompatActivity
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
         sidename.setText("" + user.getName() + " " + user.getSurname());
         sidelevel.setText("Beginner: level 1");
-        ImageView sidebarpic = (ImageView) findViewById(R.id.sidebarPic);
+        CircularImageView sidebarpic=(CircularImageView) findViewById(R.id.sidebarPic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
+
         return true;
     }
 
@@ -144,7 +137,19 @@ public class NavigationActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.profile) {
-            // Handle the camera action
+
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            //setTitle("PROFILATTICO");
+
         } else if (id == R.id.leaderboard) {
 
         } else if (id == R.id.achievements) {
@@ -167,5 +172,16 @@ public class NavigationActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void setTitle(CharSequence title){
+
+        getActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
