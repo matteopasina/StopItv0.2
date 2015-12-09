@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/profile"
-        android:icon="@drawable/ic_clock"
+        android:icon="@drawable/ic_profile"
         android:title="Profile" />
     <item
         android:id="@+id/leaderboard"

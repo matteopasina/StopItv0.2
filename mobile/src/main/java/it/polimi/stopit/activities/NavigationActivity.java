@@ -39,6 +39,7 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         user.setID(getIntent().getExtras().getString("userID"));
         user.setName(getIntent().getExtras().getString("name"));
         user.setSurname(getIntent().getExtras().getString("surname"));
@@ -148,7 +149,8 @@ public class NavigationActivity extends AppCompatActivity
 
             ft.commit();
 
-            //setTitle("PROFILATTICO");
+            getSupportActionBar().setTitle("PROFILATTICO");
+            
 
         } else if (id == R.id.leaderboard) {
 
@@ -172,12 +174,6 @@ public class NavigationActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void setTitle(CharSequence title){
-
-        getActionBar().setTitle(title);
     }
 
     @Override
