@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.ProfileFragment;
+import it.polimi.stopit.fragments.SettingsFragment;
 import it.polimi.stopit.model.User;
 
 public class NavigationActivity extends AppCompatActivity
@@ -149,20 +150,92 @@ public class NavigationActivity extends AppCompatActivity
 
             ft.commit();
 
-            getSupportActionBar().setTitle("PROFILATTICO");
+            getSupportActionBar().setTitle("Profile");
             
 
         } else if (id == R.id.leaderboard) {
 
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Leaderboard");
+
         } else if (id == R.id.achievements) {
+
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Achievements");
 
         } else if (id == R.id.challenge) {
 
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Challenges");
+
         } else if (id == R.id.stats) {
+
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Statistics");
 
         } else if (id == R.id.money) {
 
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Money Target");
+
         } else if (id == R.id.settings) {
+
+            Fragment fragment = SettingsFragment.newInstance();
+
+            FragmentManager fragmentManager=getFragmentManager();
+
+            FragmentTransaction ft=fragmentManager.beginTransaction();
+
+            ft.replace(R.id.content_frame, fragment);
+
+            ft.commit();
+
+            getSupportActionBar().setTitle("Settings");
 
         }else if (id == R.id.logout) {
             Intent intent = new Intent(this,Login.class);

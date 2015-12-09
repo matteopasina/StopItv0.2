@@ -16,21 +16,22 @@
     <item
         android:id="@+id/challenge"
         android:icon="@drawable/ic_people_black_24dp"
-        android:title="Challenge" />
+        android:title="Challenges" />
     <item
         android:id="@+id/stats"
         android:icon="@drawable/ic_timeline_black_24dp"
-        android:title="Stats" />
+        android:title="Statistics" />
     <item
         android:id="@+id/money"
         android:icon="@drawable/ic_attach_money_black_24dp"
-        android:title="Money" />
+        android:title="Money Target" />
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_setting_light"
         android:title="Settings" />
     <item
         android:id="@+id/logout"
+        android:icon="@drawable/ic_settings_power"
         android:title="Log Out" />
 
 </menu>
