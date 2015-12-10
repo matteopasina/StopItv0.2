@@ -59,7 +59,6 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             name = getArguments().getString(ARG_NAME);
-            System.out.println(""+name);
             surname = getArguments().getString(ARG_SURNAME);
             points = getArguments().getString(ARG_POINTS);
             imageURL = getArguments().getString(ARG_IMAGE);
