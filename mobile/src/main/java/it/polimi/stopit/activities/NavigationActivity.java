@@ -27,7 +27,6 @@ import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.ProfileFragment;
-import it.polimi.stopit.fragments.SettingsFragment;
 import it.polimi.stopit.model.User;
 
 public class NavigationActivity extends AppCompatActivity
@@ -225,7 +224,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.settings) {
 
-            Fragment fragment = SettingsFragment.newInstance();
+            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
 
             FragmentManager fragmentManager=getFragmentManager();
 
