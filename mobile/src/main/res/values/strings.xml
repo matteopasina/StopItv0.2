@@ -24,7 +24,7 @@
     <string name="pref_title_numcig">Number of cigarettes per day</string>
     <string name="pref_default_numcig">0</string>
 
-    <string name="pref_title_costcig">Cigarette cost</string>
+    <string name="pref_title_costcig">Cigarette cost (in € cents)</string>
     <string name="pref_default_costcig">0</string>
 
     <!-- Example settings for Data & Sync -->
@@ -50,13 +50,14 @@
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <!-- settings for alternative activities -->
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_header_altactivities">Alternative Activities</string>
 
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_food">Food</string>
+    <string name="pref_title_sport">Sport</string>
+    <string name="pref_title_social">Social</string>
+    <string name="pref_title_art">Art</string>
+    <string name="pref_title_various">Various</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>

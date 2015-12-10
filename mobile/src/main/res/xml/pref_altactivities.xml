@@ -1,0 +1,33 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <CheckBoxPreference
+       android:title="@string/pref_title_food"
+       android:key="food"
+       android:defaultValue="false"
+       />
+
+    <CheckBoxPreference
+        android:title="@string/pref_title_social"
+        android:key="social"
+        android:defaultValue="false"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_title_sport"
+        android:key="sport"
+        android:defaultValue="false"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_title_art"
+        android:key="art"
+        android:defaultValue="false"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/pref_title_various"
+        android:key="various"
+        android:defaultValue="false"
+        />
+
+</PreferenceScreen>
