@@ -224,17 +224,11 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.settings) {
 
-            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            Intent intent = new Intent(getApplicationContext(),SettingsActivity.class);
 
-            FragmentManager fragmentManager=getFragmentManager();
+            startActivity(intent);
 
-            FragmentTransaction ft=fragmentManager.beginTransaction();
 
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
-
-            getSupportActionBar().setTitle("Settings");
 
         }else if (id == R.id.logout) {
             Intent intent = new Intent(this,Login.class);
