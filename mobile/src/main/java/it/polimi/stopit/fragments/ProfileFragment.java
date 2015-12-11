@@ -2,6 +2,7 @@ package it.polimi.stopit.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -79,6 +83,32 @@ public class ProfileFragment extends Fragment {
 
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
+
+        DecoView arcView = (DecoView) view.findViewById(R.id.dynamicArcView);
+
+        // Create background track
+        arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                .setRange(0, 100, 100)
+                .setInitialVisibility(false)
+                .setLineWidth(32f)
+                .build());
+
+        //Create data series track
+        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
+                .setRange(0, 100, 0)
+                .setLineWidth(32f)
+                .build();
+
+        int series1Index = arcView.addSeries(seriesItem1);
+
+        arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                .setDelay(1000)
+                .setDuration(2000)
+                .build());
+
+        arcView.addEvent(new DecoEvent.Builder(25).setIndex(series1Index).setDelay(4000).build());
+        arcView.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(8000).build());
+        arcView.addEvent(new DecoEvent.Builder(10).setIndex(series1Index).setDelay(12000).build());
 
         /*Button smoke=(Button)findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {

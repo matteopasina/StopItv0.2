@@ -49,8 +49,15 @@
             android:text="Smoke"
             android:id="@+id/smoke"
             android:layout_below="@+id/points"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="190dp"
             android:layout_centerHorizontal="true" />
+
+        <com.hookedonplay.decoviewlib.DecoView
+            android:layout_marginTop="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:id="@+id/dynamicArcView"/>
 
     </RelativeLayout>
 </FrameLayout>
