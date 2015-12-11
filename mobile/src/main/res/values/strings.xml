@@ -35,5 +35,6 @@
     <string name="pref_title_social">Social</string>
     <string name="pref_title_art">Art</string>
     <string name="pref_title_various">Various</string>
+    <string name="title_activity_add_money_target">AddMoneyTargetActivity</string>
 
 </resources>

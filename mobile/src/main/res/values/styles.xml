@@ -14,10 +14,11 @@
     </style>
 
     <style name="Button">
-        <item name="android:shadowColor" >@color/shadows</item>
-        <item name="android:shadowDx" >1</item>
-        <item name="android:shadowDy" >1</item>
-        <item name="android:shadowRadius" >2</item>
+        <item name="android:shadowColor">@color/shadows</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+        <item name="android:background">#00897B</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

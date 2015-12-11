@@ -75,7 +75,7 @@ public class ProfileFragment extends Fragment {
         usernameText.setText(""+name+" "+surname);
 
         TextView showPoints = (TextView) view.findViewById(R.id.points);
-        showPoints.setText("Points:" + points);
+        showPoints.setText("Points:  " + points);
 
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);

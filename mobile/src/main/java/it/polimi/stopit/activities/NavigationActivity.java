@@ -230,7 +230,6 @@ public class NavigationActivity extends AppCompatActivity
             startActivity(intent);
 
 
-
         }else if (id == R.id.logout) {
             Intent intent = new Intent(this,Login.class);
             AccessToken.setCurrentAccessToken(null);

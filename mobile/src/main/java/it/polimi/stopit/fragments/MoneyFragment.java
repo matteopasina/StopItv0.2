@@ -1,14 +1,17 @@
 package it.polimi.stopit.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.activities.AddMoneyTargetActivity;
 
 public class MoneyFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -38,6 +41,15 @@ public class MoneyFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_money, container, false);
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),AddMoneyTargetActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
 
         return view;
     }
