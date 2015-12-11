@@ -49,8 +49,17 @@
             android:text="Smoke"
             android:id="@+id/smoke"
             android:layout_below="@+id/points"
-            android:layout_marginTop="190dp"
+            android:layout_marginTop="210dp"
             android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="00:00:00"
+            android:id="@+id/timer"
+            android:layout_marginTop="300dp"
+            android:layout_centerHorizontal="true"/>
 
         <com.hookedonplay.decoviewlib.DecoView
             android:layout_marginTop="200dp"

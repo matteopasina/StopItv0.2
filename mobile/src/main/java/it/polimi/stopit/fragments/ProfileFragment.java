@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         TextView usernameText = (TextView) view.findViewById(R.id.username);
-        usernameText.setText(""+name+" "+surname);
+        usernameText.setText("" + name + " " + surname);
 
         TextView showPoints = (TextView) view.findViewById(R.id.points);
         showPoints.setText("Points:  " + points);
@@ -84,24 +85,26 @@ public class ProfileFragment extends Fragment {
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
 
-        DecoView arcHours = (DecoView) view.findViewById(R.id.circle_hours);
-        DecoView arcMinutes = (DecoView) view.findViewById(R.id.circle_minutes);
-        DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
+        final TextView timerText= (TextView) view.findViewById(R.id.timer);
+
+        final DecoView arcHours = (DecoView) view.findViewById(R.id.circle_hours);
+        final DecoView arcMinutes = (DecoView) view.findViewById(R.id.circle_minutes);
+        final DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
 
         // Create background track
-        arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+        arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(false)
                 .setLineWidth(28f)
                 .build());
 
-        arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+        arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(false)
                 .setLineWidth(28f)
                 .build());
 
-        arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+        arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(false)
                 .setLineWidth(28f)
@@ -113,24 +116,40 @@ public class ProfileFragment extends Fragment {
                 .setLineWidth(28f)
                 .build();
 
-        SeriesItem minuteSeries = new SeriesItem.Builder(Color.argb(255, 64, 106, 0))
+        SeriesItem minuteSeries = new SeriesItem.Builder(Color.argb(255, 41, 121, 255))
                 .setRange(0, 100, 0)
                 .setLineWidth(28f)
                 .build();
 
-        SeriesItem secondSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 28))
+        SeriesItem secondSeries = new SeriesItem.Builder(Color.argb(255, 232, 239, 42))
                 .setRange(0, 100, 0)
                 .setLineWidth(28f)
                 .build();
 
-        int series1Index = arcHours.addSeries(hourSeries);
-        int series2Index = arcMinutes.addSeries(minuteSeries);
-        int series3Index = arcSeconds.addSeries(secondSeries);
+        final int series1Index = arcHours.addSeries(hourSeries);
+        final int series2Index = arcMinutes.addSeries(minuteSeries);
+        final int series3Index = arcSeconds.addSeries(secondSeries);
 
+        new CountDownTimer(361000,1000){
 
-        arcHours.addEvent(new DecoEvent.Builder(90).setIndex(series1Index).setDelay(2000).build());
-        arcMinutes.addEvent(new DecoEvent.Builder(70).setIndex(series2Index).setDelay(4000).build());
-        arcSeconds.addEvent(new DecoEvent.Builder(35).setIndex(series3Index).setDelay(6000).build());
+            public void onTick(long millisUntilFinished) {
+
+                setTimer(timerText,millisUntilFinished);
+
+                long hours= millisUntilFinished/360000;
+                long minutes = (millisUntilFinished - (hours*360000))/60000;
+                long seconds = (millisUntilFinished - (hours*360000)-(minutes*60000))/1000;
+
+                arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
+                arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
+                arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
+            }
+
+            public void onFinish() {
+                timerText.setText("00:00:00");
+            }
+
+        }.start();
 
         /*Button smoke=(Button)findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {
@@ -170,5 +189,63 @@ public class ProfileFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void setTimer(TextView timerText,long millis){
+
+        long hours= millis/360000;
+        long minutes = (millis - (hours*360000))/60000;
+        long seconds = (millis - (hours*360000)-(minutes*60000))/1000;
+
+        if(hours>=10){
+            if(minutes>=10){
+                if(seconds>=10){
+
+                    timerText.setText(hours+":"+minutes+":"+seconds);
+                }
+                else{
+
+                    timerText.setText(hours+":"+minutes+":0"+seconds);
+                }
+            }
+            else{
+
+                if(seconds>=10){
+
+                    timerText.setText(hours+":0"+minutes+":"+seconds);
+                }
+                else{
+
+                    timerText.setText(hours+":0"+minutes+":0"+seconds);
+                }
+
+            }
+        }
+        else{
+
+            if(minutes>=10){
+                if(seconds>=10){
+
+                    timerText.setText("0"+hours+":"+minutes+":"+seconds);
+                }
+                else{
+
+                    timerText.setText("0"+hours+":"+minutes+":0"+seconds);
+                }
+            }
+            else{
+
+                if(seconds>=10){
+
+                    timerText.setText("0"+hours+":0"+minutes+":"+seconds);
+                }
+                else{
+
+                    timerText.setText("0"+hours+":0"+minutes+":0"+seconds);
+                }
+
+            }
+        }
+
     }
 }
