@@ -3,7 +3,11 @@ package it.polimi.stopit.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -15,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
@@ -35,6 +40,7 @@ public class NavigationActivity extends AppCompatActivity
 
     User user=new User();
     private long points;
+    public static final String PREFS_NAME = "StopItPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,37 +54,69 @@ public class NavigationActivity extends AppCompatActivity
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-        myFirebaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (!snapshot.child(user.getID()).exists()) {
-                    myFirebaseRef.child(user.getID()).setValue(user);
+        if(isOnline()) {
+            myFirebaseRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (!snapshot.child(user.getID()).exists()) {
+                        myFirebaseRef.child(user.getID()).setValue(user);
+                    }
+                    if (snapshot.child(user.getID()).child("points").getValue() == null) {
+                        points = 0;
+                    } else {
+                        points = (long) snapshot.child(user.getID()).child("points").getValue();
+
+                    }
+
+                    user.setPoints(points);
+
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("ID", user.getID());
+                    editor.putString("name", user.getName());
+                    editor.putString("surname", user.getSurname());
+                    editor.putLong("points", user.getPoints());
+                    editor.putString("image", user.getProfilePic());
+                    // Commit the edits!
+                    editor.commit();
+
+                    Toast.makeText(NavigationActivity.this, settings.getString("name", null), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NavigationActivity.this, settings.getString("surname", null), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NavigationActivity.this, String.valueOf(settings.getLong("points", 0)), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NavigationActivity.this, settings.getString("image", null), Toast.LENGTH_SHORT).show();
+                    Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+
+                    FragmentManager fragmentManager = getFragmentManager();
+
+                    FragmentTransaction ft = fragmentManager.beginTransaction();
+
+                    ft.replace(R.id.content_frame, fragment);
+
+                    ft.commit();
                 }
-                if (snapshot.child(user.getID()).child("points").getValue() == null) {
-                    points = 0;
-                } else {
-                    points = (long) snapshot.child(user.getID()).child("points").getValue();
 
+                @Override
+                public void onCancelled(FirebaseError error) {
                 }
+            });
+        }
+        else{
+            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            user.setName(settings.getString("name", null));
+            user.setSurname(settings.getString("surname", null));
+            user.setPoints(settings.getLong("points", 0));
+            user.setProfilePic(settings.getString("image", null));
+            Toast.makeText(NavigationActivity.this, "Offline", Toast.LENGTH_SHORT).show();
+            Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
-                user.setPoints(points);
+            FragmentManager fragmentManager = getFragmentManager();
 
-                Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+            FragmentTransaction ft = fragmentManager.beginTransaction();
 
-                FragmentManager fragmentManager = getFragmentManager();
+            ft.replace(R.id.content_frame, fragment);
 
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-
-                ft.replace(R.id.content_frame, fragment);
-
-                ft.commit();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError error) {
-            }
-        });
-
+            ft.commit();
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -245,5 +283,12 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
