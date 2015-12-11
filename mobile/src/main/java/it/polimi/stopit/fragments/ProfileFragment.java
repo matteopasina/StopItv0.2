@@ -84,31 +84,53 @@ public class ProfileFragment extends Fragment {
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
 
-        DecoView arcView = (DecoView) view.findViewById(R.id.dynamicArcView);
+        DecoView arcHours = (DecoView) view.findViewById(R.id.circle_hours);
+        DecoView arcMinutes = (DecoView) view.findViewById(R.id.circle_minutes);
+        DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
 
         // Create background track
-        arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+        arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(false)
-                .setLineWidth(32f)
+                .setLineWidth(28f)
+                .build());
+
+        arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                .setRange(0, 100, 100)
+                .setInitialVisibility(false)
+                .setLineWidth(28f)
+                .build());
+
+        arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                .setRange(0, 100, 100)
+                .setInitialVisibility(false)
+                .setLineWidth(28f)
                 .build());
 
         //Create data series track
-        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
+        SeriesItem hourSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
                 .setRange(0, 100, 0)
-                .setLineWidth(32f)
+                .setLineWidth(28f)
                 .build();
 
-        int series1Index = arcView.addSeries(seriesItem1);
+        SeriesItem minuteSeries = new SeriesItem.Builder(Color.argb(255, 64, 106, 0))
+                .setRange(0, 100, 0)
+                .setLineWidth(28f)
+                .build();
 
-        arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
-                .setDelay(1000)
-                .setDuration(2000)
-                .build());
+        SeriesItem secondSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 28))
+                .setRange(0, 100, 0)
+                .setLineWidth(28f)
+                .build();
 
-        arcView.addEvent(new DecoEvent.Builder(25).setIndex(series1Index).setDelay(4000).build());
-        arcView.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(8000).build());
-        arcView.addEvent(new DecoEvent.Builder(10).setIndex(series1Index).setDelay(12000).build());
+        int series1Index = arcHours.addSeries(hourSeries);
+        int series2Index = arcMinutes.addSeries(minuteSeries);
+        int series3Index = arcSeconds.addSeries(secondSeries);
+
+
+        arcHours.addEvent(new DecoEvent.Builder(90).setIndex(series1Index).setDelay(2000).build());
+        arcMinutes.addEvent(new DecoEvent.Builder(70).setIndex(series2Index).setDelay(4000).build());
+        arcSeconds.addEvent(new DecoEvent.Builder(35).setIndex(series3Index).setDelay(6000).build());
 
         /*Button smoke=(Button)findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {

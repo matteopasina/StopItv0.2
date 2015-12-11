@@ -55,9 +55,23 @@
         <com.hookedonplay.decoviewlib.DecoView
             android:layout_marginTop="200dp"
             android:layout_centerHorizontal="true"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:id="@+id/dynamicArcView"/>
+            android:layout_width="260dp"
+            android:layout_height="260dp"
+            android:id="@+id/circle_hours"/>
+
+        <com.hookedonplay.decoviewlib.DecoView
+            android:layout_marginTop="215dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:id="@+id/circle_minutes"/>
+
+        <com.hookedonplay.decoviewlib.DecoView
+            android:layout_marginTop="230dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:id="@+id/circle_seconds"/>
 
     </RelativeLayout>
 </FrameLayout>
