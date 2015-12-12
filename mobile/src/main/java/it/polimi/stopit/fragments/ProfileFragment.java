@@ -2,6 +2,7 @@ package it.polimi.stopit.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_SURNAME = "surname";
     private static final String ARG_POINTS = "points";
     private static final String ARG_IMAGE = "imageURL";
+    private static final String PREFS_NAME = "StopItPrefs";
 
 
     // TODO: Rename and change types of parameters
@@ -40,6 +42,7 @@ public class ProfileFragment extends Fragment {
     private String surname;
     private String points;
     private String imageURL;
+    private int hFirst,hLast,mFirst,mLast,CPD;
 
 
     private OnFragmentInteractionListener mListener;
@@ -134,15 +137,15 @@ public class ProfileFragment extends Fragment {
         arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
         arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
 
-        new CountDownTimer(361000,1000){
+        new CountDownTimer(scheduleProgram(),1000){
 
             public void onTick(long millisUntilFinished) {
 
                 setTimer(timerText,millisUntilFinished);
 
-                long hours= millisUntilFinished/360000;
-                long minutes = (millisUntilFinished - (hours*360000))/60000;
-                long seconds = (millisUntilFinished - (hours*360000)-(minutes*60000))/1000;
+                long hours= millisUntilFinished/3600000;
+                long minutes = (millisUntilFinished - (hours*3600000))/60000;
+                long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
 
                 arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
                 arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
@@ -197,9 +200,9 @@ public class ProfileFragment extends Fragment {
 
     public void setTimer(TextView timerText,long millis){
 
-        long hours= millis/360000;
-        long minutes = (millis - (hours*360000))/60000;
-        long seconds = (millis - (hours*360000)-(minutes*60000))/1000;
+        long hours= millis/3600000;
+        long minutes = (millis - (hours*3600000))/60000;
+        long seconds = (millis - (hours*3600000)-(minutes*60000))/1000;
 
         if(hours>=10){
             if(minutes>=10){
@@ -248,5 +251,25 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
+    }
+
+    public long scheduleProgram(){
+
+        long wakefulness,interval;
+
+        SharedPreferences userdata = getActivity().getSharedPreferences(PREFS_NAME, 0);
+
+        hLast=userdata.getInt("hoursLast",0);
+        mLast=userdata.getInt("minuteLast",0);
+        hFirst=userdata.getInt("hoursFirst",0);
+        mFirst=userdata.getInt("minuteFirst",0);
+        CPD=userdata.getInt("CPD",0);
+
+        wakefulness=(long)((hLast*60)+mLast)-((hFirst*60)+mFirst);
+        interval=wakefulness/CPD;
+        interval=interval*60*1000;
+        System.out.println(interval);
+
+        return interval;
     }
 }
