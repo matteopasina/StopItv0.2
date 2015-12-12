@@ -120,6 +120,9 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                     Toast.makeText(getActivity(), "Last cigarette must be after the first!", Toast.LENGTH_SHORT).show();
 
                 }
+                else if((hourOfDayLast-hourOfDayFirst) < 6){
+                    Toast.makeText(getActivity(), "Really?", Toast.LENGTH_SHORT).show();
+                }
                 else {
                     hourOfDayFirst = hourOfDay;
                     minuteFirst = minute;
@@ -139,6 +142,9 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                 }
                 else if(hourOfDay == hourOfDayFirst && minute <= minuteFirst) {
                     Toast.makeText(getActivity(), "Last cigarette must be after the first!", Toast.LENGTH_SHORT).show();
+                }
+                else if((hourOfDayLast-hourOfDayFirst) < 6){
+                    Toast.makeText(getActivity(), "Really?", Toast.LENGTH_SHORT).show();
                 }
                 else {
 
