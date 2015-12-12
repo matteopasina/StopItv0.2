@@ -2,19 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/achievement_pic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:border_color="#EEEEEE"
+        app:border_width="0dp"
+        app:shadow="true"
+        app:shadow_radius="5"
+        app:shadow_color="@color/shadows"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="25dp"/>
+
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/achiev_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
-        android:id="@+id/content"
+        android:id="@+id/achiev_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/achiev_points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
 </LinearLayout>
