@@ -47,10 +47,12 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user.setID(getIntent().getExtras().getString("userID"));
-        user.setName(getIntent().getExtras().getString("name"));
-        user.setSurname(getIntent().getExtras().getString("surname"));
-        user.setProfilePic(getIntent().getExtras().getString("imageURL"));
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        user.setID(settings.getString("ID", null));
+        user.setName(settings.getString("name", null));
+        user.setSurname(settings.getString("surname", null));
+        user.setPoints(settings.getLong("points", 0));
+        user.setProfilePic(settings.getString("image", null));
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -80,10 +82,6 @@ public class NavigationActivity extends AppCompatActivity
                     // Commit the edits!
                     editor.commit();
 
-                    Toast.makeText(NavigationActivity.this, settings.getString("name", null), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(NavigationActivity.this, settings.getString("surname", null), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(NavigationActivity.this, String.valueOf(settings.getLong("points", 0)), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(NavigationActivity.this, settings.getString("image", null), Toast.LENGTH_SHORT).show();
                     Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
                     FragmentManager fragmentManager = getFragmentManager();
@@ -101,11 +99,6 @@ public class NavigationActivity extends AppCompatActivity
             });
         }
         else{
-            SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-            user.setName(settings.getString("name", null));
-            user.setSurname(settings.getString("surname", null));
-            user.setPoints(settings.getLong("points", 0));
-            user.setProfilePic(settings.getString("image", null));
             Toast.makeText(NavigationActivity.this, "Offline", Toast.LENGTH_SHORT).show();
             Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 

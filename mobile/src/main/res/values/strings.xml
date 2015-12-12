@@ -36,5 +36,10 @@
     <string name="pref_title_art">Art</string>
     <string name="pref_title_various">Various</string>
     <string name="title_activity_add_money_target">AddMoneyTargetActivity</string>
+    <string name="title_activity_first_login_settings">FirstLoginSettingsActivity</string>
+    <string name="pick_time">Set first cigarette</string>
+    <string name="picklast">Set last cigarette</string>
+    <string name="lastC">Last cigarette</string>
+    <string name="firstC">First cigarette</string>
 
 </resources>

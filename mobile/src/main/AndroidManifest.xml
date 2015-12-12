@@ -44,6 +44,10 @@
         <activity
             android:name=".activities.AddMoneyTargetActivity"
             android:label="@string/title_activity_add_money_target"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FirstLoginSettingsActivity"
+            android:label="@string/title_activity_first_login_settings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
