@@ -130,6 +130,10 @@ public class ProfileFragment extends Fragment {
         final int series2Index = arcMinutes.addSeries(minuteSeries);
         final int series3Index = arcSeconds.addSeries(secondSeries);
 
+        arcHours.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(0).build());
+        arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
+        arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
+
         new CountDownTimer(361000,1000){
 
             public void onTick(long millisUntilFinished) {
@@ -218,7 +222,6 @@ public class ProfileFragment extends Fragment {
 
                     timerText.setText(hours+":0"+minutes+":0"+seconds);
                 }
-
             }
         }
         else{
@@ -243,9 +246,7 @@ public class ProfileFragment extends Fragment {
 
                     timerText.setText("0"+hours+":0"+minutes+":0"+seconds);
                 }
-
             }
         }
-
     }
 }

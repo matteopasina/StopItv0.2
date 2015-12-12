@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="achievements_ids">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </array>
+    <array name="achievements_title">
+        <item>One Day Stop</item>
+        <item>Three Days Stop</item>
+        <item>One Week Stop</item>
+        <item>Two Weeks Stop</item>
+        <item>One Month Stop</item>
+    </array>
+    <array name="achievements_desc">
+        <item>Not smoke for one day</item>
+        <item>Not smoke for three days</item>
+        <item>Not smoke for one week</item>
+        <item>Not smoke for two weeks</item>
+        <item>Not smoke for one month</item>
+    </array>
+    <array name="achievements_points">
+        <item>200</item>
+        <item>400</item>
+        <item>600</item>
+        <item>800</item>
+        <item>1000</item>
+    </array>
+    <array name="achievements_obtained">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </array>
+</resources>
