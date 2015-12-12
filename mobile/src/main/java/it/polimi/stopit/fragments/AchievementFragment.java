@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.adapters.AchievementRecyclerViewAdapter;
 import it.polimi.stopit.fragments.dummy.DummyContent;
 import it.polimi.stopit.fragments.dummy.DummyContent.DummyItem;
 
@@ -22,21 +23,16 @@ import it.polimi.stopit.fragments.dummy.DummyContent.DummyItem;
  */
 public class AchievementFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
+
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
+
+
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public AchievementFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static AchievementFragment newInstance(int columnCount) {
         AchievementFragment fragment = new AchievementFragment();
         Bundle args = new Bundle();
