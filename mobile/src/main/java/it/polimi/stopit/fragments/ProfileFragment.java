@@ -1,12 +1,14 @@
 package it.polimi.stopit.fragments;
 
 import android.app.Fragment;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
 
 import it.polimi.stopit.R;
 
@@ -153,7 +157,8 @@ public class ProfileFragment extends Fragment {
             }
 
             public void onFinish() {
-                timerText.setText("00:00:00");
+                sendNotification();
+                this.start();
             }
 
         }.start();
@@ -265,11 +270,39 @@ public class ProfileFragment extends Fragment {
         mFirst=userdata.getInt("minuteFirst",0);
         CPD=userdata.getInt("CPD",0);
 
+        Calendar c = Calendar.getInstance();
+        int hourNow = c.get(Calendar.HOUR_OF_DAY);
+        int minuteNow = c.get(Calendar.MINUTE);
+        int secondNow = c.get(Calendar.SECOND);
+        int milliNow=hourNow*60*60*1000+minuteNow*60*1000+secondNow*1000;
+
+
         wakefulness=(long)((hLast*60)+mLast)-((hFirst*60)+mFirst);
         interval=wakefulness/CPD;
         interval=interval*60*1000;
-        System.out.println(interval);
 
-        return interval;
+        int timer=milliNow;
+
+        while(timer > interval) {
+            timer -= interval;
+        }
+
+        long nextCiga=milliNow+(interval-timer);
+
+        return interval-timer;
+    }
+    public void sendNotification() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(getActivity())
+                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setContentTitle("You can smoke")
+                        .setContentText("You earned it");
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }
