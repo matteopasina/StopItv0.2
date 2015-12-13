@@ -7,8 +7,8 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/achievement_pic"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:border_color="#EEEEEE"
         app:border_width="0dp"
         app:shadow="true"
