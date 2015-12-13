@@ -42,4 +42,16 @@
     <string name="lastC">Last cigarette</string>
     <string name="firstC">First cigarette</string>
 
+    <string name="title1">One Day Stop</string>
+    <string name="title2">Three Days Stop</string>
+    <string name="title3">One Week Stop</string>
+    <string name="title4">Two Weeks Stop</string>
+    <string name="title5">One Month Stop</string>
+
+    <string name="desc1">Not smoke for one day</string>
+    <string name="desc2">Not smoke for three days</string>
+    <string name="desc3">Not smoke for one week</string>
+    <string name="desc4">Not smoke for two weeks</string>
+    <string name="desc5">Not smoke for one month</string>
+
 </resources>

@@ -7,12 +7,13 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/achievement_pic"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:border_color="#EEEEEE"
         app:border_width="0dp"
         app:shadow="true"
         app:shadow_radius="5"
+        android:layout_alignParentLeft="true"
         app:shadow_color="@color/shadows"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="25dp"/>
@@ -22,6 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
+        android:layout_toEndOf="@+id/achievement_pic"
+        android:layout_toRightOf="@+id/achievement_pic"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView

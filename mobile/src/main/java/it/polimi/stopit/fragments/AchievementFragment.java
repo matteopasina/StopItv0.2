@@ -1,8 +1,10 @@
 package it.polimi.stopit.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,26 +12,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.AchievementRecyclerViewAdapter;
+import it.polimi.stopit.model.Achievement;
 
 public class AchievementFragment extends Fragment {
 
-
-    private static final String ARG_COLUMN_COUNT = "column-count";
-
-
+    private List<Achievement> mAchievements;
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
     public AchievementFragment() {
     }
 
-    public static AchievementFragment newInstance(int columnCount) {
-        AchievementFragment fragment = new AchievementFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+    public static Fragment newInstance() {
+        Fragment fragment = new AchievementFragment();
+
         return fragment;
     }
 
@@ -37,15 +41,34 @@ public class AchievementFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_achievement_list, container, false);
+
+        mAchievements=new ArrayList<>();
+
+        String[] achievementsID=getResources().getStringArray(R.array.achievements_ids);
+        String[] achievementsTit=getResources().getStringArray(R.array.achievements_title);
+        String[] achievementsDesc=getResources().getStringArray(R.array.achievements_desc);
+        String[] achievementsPoint=getResources().getStringArray(R.array.achievements_points);
+        String[] achievementsObt=getResources().getStringArray(R.array.achievements_obtained);
+        //String[] achievementsImg=getContext().getResources().getStringArray(R.array.achievements_images);
+
+        for(int i=0;i<5;i++){
+
+            Achievement tempAch=new Achievement();
+            tempAch.setId(achievementsID[i]);
+            tempAch.setTitle(achievementsTit[i]);
+            tempAch.setDescription(achievementsDesc[i]);
+            //tempAch.setPoints(Long.parseLong(achievementsPoint[i]));
+            tempAch.setPoints(100);
+            tempAch.setObtained(Boolean.parseBoolean(achievementsObt[i]));
+            //tempAch.setImage(achievementsImg[i]);
+            mAchievements.add(tempAch);
+        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -56,7 +79,7 @@ public class AchievementFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            //recyclerView.setAdapter(new AchievementRecyclerViewAdapter(, mListener));
+            recyclerView.setAdapter(new AchievementRecyclerViewAdapter(mAchievements, mListener));
         }
         return view;
     }
@@ -67,9 +90,6 @@ public class AchievementFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
