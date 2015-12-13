@@ -2,7 +2,7 @@ package it.polimi.stopit.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,20 +16,15 @@ import it.polimi.stopit.adapters.AchievementRecyclerViewAdapter;
 public class AchievementFragment extends Fragment {
 
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-
-
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
     public AchievementFragment() {
     }
 
-    public static AchievementFragment newInstance(int columnCount) {
-        AchievementFragment fragment = new AchievementFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+    public static Fragment newInstance() {
+        Fragment fragment = new AchievementFragment();
+
         return fragment;
     }
 
@@ -37,9 +32,6 @@ public class AchievementFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -67,9 +59,6 @@ public class AchievementFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
         }
     }
 
