@@ -1,9 +1,11 @@
 package it.polimi.stopit.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -15,8 +17,10 @@ import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
@@ -50,7 +54,6 @@ public class ProfileFragment extends Fragment {
     private String surname;
     private String points;
     private String imageURL;
-    private int hFirst,hLast,mFirst,mLast,CPD;
     private BroadcastReceiver uiUpdated;
 
 
@@ -186,37 +189,35 @@ public class ProfileFragment extends Fragment {
 
         getActivity().startService(new Intent(getActivity(), ScheduleService.class));
         getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
-        //Log.d("SERVICE", "STARTED!");
 
-        /*new CountDownTimer(scheduleProgram(),1000){
-
-            public void onTick(long millisUntilFinished) {
-
-                setTimer(timerText,millisUntilFinished);
-
-                long hours= millisUntilFinished/3600000;
-                long minutes = (millisUntilFinished - (hours*3600000))/60000;
-                long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
-
-                arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
-                arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
-                arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
-            }
-
-            public void onFinish() {
-                sendNotification();
-                this.start();
-            }
-
-        }.start();
-
-        /*Button smoke=(Button)findViewById(R.id.smoke);
+        Button smoke=(Button) view.findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                points -= 50;
-                myFirebaseRef.child(user.getID()).child("points").setValue(points);
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME,0);
+                                Firebase.setAndroidContext(getActivity());
+                                final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                                fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points)- 50);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
             }
-        });*/
+        });
 
         return view;
     }

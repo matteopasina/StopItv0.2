@@ -1,25 +1,17 @@
 package it.polimi.stopit.services;
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.widget.TextView;
-
-import com.hookedonplay.decoviewlib.DecoView;
-import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import java.util.Calendar;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.activities.NavigationActivity;
 
 /**
  * Created by matteo on 13/12/15.
