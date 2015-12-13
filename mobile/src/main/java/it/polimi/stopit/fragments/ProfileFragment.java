@@ -2,7 +2,10 @@ package it.polimi.stopit.fragments;
 
 import android.app.Fragment;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
@@ -23,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Calendar;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.services.ScheduleService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +51,7 @@ public class ProfileFragment extends Fragment {
     private String points;
     private String imageURL;
     private int hFirst,hLast,mFirst,mLast,CPD;
+    private BroadcastReceiver uiUpdated;
 
 
     private OnFragmentInteractionListener mListener;
@@ -144,16 +149,16 @@ public class ProfileFragment extends Fragment {
         arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
         arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
 
-        new CountDownTimer(scheduleProgram(),1000){
-
-            public void onTick(long millisUntilFinished) {
-
-                setTimer(timerText,millisUntilFinished);
+        uiUpdated= new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //This is the part where I get the timer value from the service and I update it every second, because I send the data from the service every second. The coundtdownTimer is a MenuItem
+                long millisUntilFinished=intent.getExtras().getLong("countdown");
+                setTimer(timerText, millisUntilFinished);
 
                 long hours= millisUntilFinished/3600000;
                 long minutes = (millisUntilFinished - (hours*3600000))/60000;
                 long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
-
 
                 if(minutes==0 && hours>0){
                     arcMinutes.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
@@ -176,7 +181,26 @@ public class ProfileFragment extends Fragment {
                     arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
                     arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
                 }
+            }
+        };
 
+        getActivity().startService(new Intent(getActivity(), ScheduleService.class));
+        getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
+        //Log.d("SERVICE", "STARTED!");
+
+        /*new CountDownTimer(scheduleProgram(),1000){
+
+            public void onTick(long millisUntilFinished) {
+
+                setTimer(timerText,millisUntilFinished);
+
+                long hours= millisUntilFinished/3600000;
+                long minutes = (millisUntilFinished - (hours*3600000))/60000;
+                long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
+
+                arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
+                arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
+                arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
             }
 
             public void onFinish() {
@@ -279,53 +303,5 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
-    }
-
-    public long scheduleProgram(){
-
-        long wakefulness,interval;
-
-        SharedPreferences userdata = getActivity().getSharedPreferences(PREFS_NAME, 0);
-
-        hLast=userdata.getInt("hoursLast",0);
-        mLast=userdata.getInt("minuteLast",0);
-        hFirst=userdata.getInt("hoursFirst",0);
-        mFirst=userdata.getInt("minuteFirst",0);
-        CPD=userdata.getInt("CPD",0);
-
-        Calendar c = Calendar.getInstance();
-        int hourNow = c.get(Calendar.HOUR_OF_DAY);
-        int minuteNow = c.get(Calendar.MINUTE);
-        int secondNow = c.get(Calendar.SECOND);
-        int milliNow=hourNow*60*60*1000+minuteNow*60*1000+secondNow*1000;
-
-
-        wakefulness=(long)((hLast*60)+mLast)-((hFirst*60)+mFirst);
-        interval=wakefulness/CPD;
-        interval=interval*60*1000;
-
-        int timer=milliNow;
-
-        while(timer > interval) {
-            timer -= interval;
-        }
-
-        long nextCiga=milliNow+(interval-timer);
-
-        return interval-timer;
-    }
-    public void sendNotification() {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(getActivity())
-                        .setSmallIcon(R.drawable.stopitsymbol)
-                        .setContentTitle("You can smoke")
-                        .setContentText("You earned it");
-        // Sets an ID for the notification
-        int mNotificationId = 001;
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }
