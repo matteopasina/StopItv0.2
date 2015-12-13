@@ -1,5 +1,9 @@
 package it.polimi.stopit.adapters;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +42,7 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
 
         Achievement achievement=mAchievements.get(position);
 
-        //holder.achievPic.setImageURI(achievement.getImage());
+        //holder.achievPic.setImageURI(imguri);
         holder.achievTitle.setText(achievement.getTitle());
         holder.achievDesc.setText(achievement.getDescription());
         holder.achievPoints.setText(""+achievement.getPoints());
@@ -71,4 +75,6 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
             achievPoints= (TextView) view.findViewById(R.id.achiev_points);
         }
     }
+
+
 }
