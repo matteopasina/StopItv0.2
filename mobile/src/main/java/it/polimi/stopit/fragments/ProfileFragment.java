@@ -99,27 +99,30 @@ public class ProfileFragment extends Fragment {
         final DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
 
         // Create background track
-        arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
+        arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
-                .setInitialVisibility(false)
+                .setInitialVisibility(true)
+                .setSpinDuration(500)
                 .setLineWidth(28f)
                 .build());
 
-        arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
+        arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
-                .setInitialVisibility(false)
+                .setInitialVisibility(true)
+                .setSpinDuration(500)
                 .setLineWidth(28f)
                 .build());
 
-        arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 0))
+        arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
-                .setInitialVisibility(false)
+                .setInitialVisibility(true)
+                .setSpinDuration(500)
                 .setLineWidth(28f)
                 .build());
 
         //Create data series track
-        SeriesItem hourSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
-                .setRange(0, 100, 0)
+        SeriesItem hourSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 218))
+                .setRange(0, 200, 0)
                 .setLineWidth(28f)
                 .build();
 
@@ -151,9 +154,29 @@ public class ProfileFragment extends Fragment {
                 long minutes = (millisUntilFinished - (hours*3600000))/60000;
                 long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
 
-                arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
-                arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
-                arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
+
+                if(minutes==0 && hours>0){
+                    arcMinutes.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                            .setIndex(100)
+                            .setDelay(0)
+                            .setDuration(500)
+                            .build());
+
+                }
+                else if(seconds==0 && minutes>0){
+                    arcSeconds.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                            .setIndex(100)
+                            .setDelay(0)
+                            .setDuration(500)
+                            .build());
+                }
+                else {
+
+                    arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
+                    arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
+                    arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
+                }
+
             }
 
             public void onFinish() {
