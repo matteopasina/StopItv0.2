@@ -23,6 +23,8 @@ import com.facebook.login.widget.LoginButton;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.FirstLoginSettingsActivity;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Achievement;
 
 public class FacebookLogin extends Fragment {
 
@@ -56,8 +58,15 @@ public class FacebookLogin extends Fragment {
                 editor.putString("surname", Profile.getCurrentProfile().getLastName());
                 editor.putLong("points", 0);
                 editor.putString("image", "https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?type=large");
-                // Commit the edits!
                 editor.commit();
+
+                DatabaseHandler db=new DatabaseHandler(getActivity());
+                db.addAchievement(new Achievement(1,"One Day Stop","Not smoke for one day",200,"void",false));
+                db.addAchievement(new Achievement(2,"Three Days Stop","Not smoke for three days",400,"void",false));
+                db.addAchievement(new Achievement(3,"One Week Stop","Not smoke for one week",600,"void",false));
+                db.addAchievement(new Achievement(4,"Two Weeks Stop","Not smoke for two weeks",800,"void",false));
+                db.addAchievement(new Achievement(5,"One Month Stop","Not smoke for one month",1000,"void",false));
+
                 Intent intent = new Intent(getContext(),FirstLoginSettingsActivity.class);
                 getActivity().startActivity(intent);
                 getActivity().finish();

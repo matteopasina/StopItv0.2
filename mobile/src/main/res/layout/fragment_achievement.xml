@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
@@ -15,30 +15,27 @@
         app:shadow_radius="5"
         android:layout_alignParentLeft="true"
         app:shadow_color="@color/shadows"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="25dp"/>
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
 
     <TextView
         android:id="@+id/achiev_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
         android:layout_toEndOf="@+id/achievement_pic"
-        android:layout_toRightOf="@+id/achievement_pic"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_toRightOf="@+id/achievement_pic" />
 
     <TextView
         android:id="@+id/achiev_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/achiev_points"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_toEndOf="@+id/achiev_title"
+        android:layout_toRightOf="@+id/achiev_title" />
 
 </LinearLayout>

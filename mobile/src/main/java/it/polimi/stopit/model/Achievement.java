@@ -5,12 +5,26 @@ package it.polimi.stopit.model;
  */
 public class Achievement {
 
-    private String id;
+    private int id;
     private String title;
     private String description;
     private long points;
+    private String image;
     private boolean obtained;
 
+    public Achievement(){
+
+    }
+
+    public Achievement(int id,String title,String description,long points,String image,boolean obtained){
+
+        this.id=id;
+        this.title=title;
+        this.description=description;
+        this.points=points;
+        this.image=image;
+        this.obtained=obtained;
+    }
     public boolean isObtained() {
         return obtained;
     }
@@ -27,9 +41,7 @@ public class Achievement {
         this.image = image;
     }
 
-    private String image;
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -49,7 +61,7 @@ public class Achievement {
         this.title = title;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

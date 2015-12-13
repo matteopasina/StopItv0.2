@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import java.util.ListIterator;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.AchievementRecyclerViewAdapter;
+import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Achievement;
 
 public class AchievementFragment extends Fragment {
@@ -27,6 +29,7 @@ public class AchievementFragment extends Fragment {
     private List<Achievement> mAchievements;
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private DatabaseHandler db;
 
     public AchievementFragment() {
     }
@@ -49,26 +52,10 @@ public class AchievementFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_achievement_list, container, false);
 
         mAchievements=new ArrayList<>();
+        db=new DatabaseHandler(getActivity().getApplicationContext());
 
-        String[] achievementsID=getResources().getStringArray(R.array.achievements_ids);
-        String[] achievementsTit=getResources().getStringArray(R.array.achievements_title);
-        String[] achievementsDesc=getResources().getStringArray(R.array.achievements_desc);
-        String[] achievementsPoint=getResources().getStringArray(R.array.achievements_points);
-        String[] achievementsObt=getResources().getStringArray(R.array.achievements_obtained);
-        //String[] achievementsImg=getContext().getResources().getStringArray(R.array.achievements_images);
 
-        for(int i=0;i<5;i++){
-
-            Achievement tempAch=new Achievement();
-            tempAch.setId(achievementsID[i]);
-            tempAch.setTitle(achievementsTit[i]);
-            tempAch.setDescription(achievementsDesc[i]);
-            //tempAch.setPoints(Long.parseLong(achievementsPoint[i]));
-            tempAch.setPoints(100);
-            tempAch.setObtained(Boolean.parseBoolean(achievementsObt[i]));
-            //tempAch.setImage(achievementsImg[i]);
-            mAchievements.add(tempAch);
-        }
+        mAchievements=db.getAllAchievements();
 
         // Set the adapter
         if (view instanceof RecyclerView) {
