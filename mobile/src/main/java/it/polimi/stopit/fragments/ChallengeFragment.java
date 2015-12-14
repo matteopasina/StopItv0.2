@@ -3,6 +3,7 @@ package it.polimi.stopit.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ public class ChallengeFragment extends Fragment {
     private List<Challenge> mChallenges;
     private OnListFragmentInteractionListener mListener;
     private DatabaseHandler db;
+    private FloatingActionButton fab;
 
     public ChallengeFragment() {
     }
@@ -43,6 +45,15 @@ public class ChallengeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_challenge_list, container, false);
 
         mChallenges=new ArrayList<>();
+        fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Write here anything that you wish to do on click of FAB
+
+            }
+        });
 
         // Set the adapter
         if (view instanceof RecyclerView) {
