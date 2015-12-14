@@ -1,8 +1,9 @@
 package it.polimi.stopit.fragments;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.activities.NewChallengeActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
 
@@ -50,7 +52,9 @@ public class ChallengeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Write here anything that you wish to do on click of FAB
+
+                Intent intent = new Intent(getActivity(), NewChallengeActivity.class);
+                getActivity().startActivity(intent);
 
             }
         });

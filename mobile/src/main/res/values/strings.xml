@@ -53,5 +53,6 @@
     <string name="desc3">Not smoke for one week</string>
     <string name="desc4">Not smoke for two weeks</string>
     <string name="desc5">Not smoke for one month</string>
+    <string name="title_activity_new_challenge">NewChallengeActivity</string>
 
 </resources>
