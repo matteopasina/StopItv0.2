@@ -39,7 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Create Achievements table
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
                 + ACHIEVEMENT_ID + " INTEGER PRIMARY KEY," + ACHIEVEMENT_TITLE + " TEXT," + ACHIEVEMENT_DESCRIPTION + " TEXT,"
-                + ACHIEVEMENT_POINTS + " TEXT," + ACHIEVEMENT_IMAGE + " TEXT," + ACHIEVEMENT_OBTAINED + " TEXT" + ")";
+                + ACHIEVEMENT_POINTS + " TEXT," + ACHIEVEMENT_IMAGE + " TEXT," + ACHIEVEMENT_OBTAINED + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -63,7 +63,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_DESCRIPTION, achievement.getDescription());
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
-        values.put(ACHIEVEMENT_OBTAINED, achievement.isObtained());
+        int boolValue= (achievement.isObtained()) ? 1 : 0;
+        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
 
         // Inserting Row
         db.insert(TABLE_ACHIEVEMENTS, null, values);
@@ -80,7 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),cursor.getString(4),Boolean.parseBoolean(cursor.getString(5)));
+        Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
 
         return achievement;
     }
@@ -96,8 +97,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-
-                Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),cursor.getString(4),Boolean.parseBoolean(cursor.getString(5)));
+                System.out.println("OBTAINED == "+cursor.getInt(5));
+                Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
                 achievementList.add(achievement);
 
             } while (cursor.moveToNext());
@@ -128,7 +129,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_DESCRIPTION, achievement.getDescription());
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
-        values.put(ACHIEVEMENT_OBTAINED, achievement.isObtained());
+        int boolValue= (achievement.isObtained()) ? 1 : 0;
+        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
 
         // updating row
         return db.update(TABLE_ACHIEVEMENTS, values, ACHIEVEMENT_ID + " = ?",

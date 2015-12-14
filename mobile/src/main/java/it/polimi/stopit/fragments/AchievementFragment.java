@@ -1,12 +1,8 @@
 package it.polimi.stopit.fragments;
 
-import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,10 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.AchievementRecyclerViewAdapter;
@@ -27,7 +20,6 @@ import it.polimi.stopit.model.Achievement;
 public class AchievementFragment extends Fragment {
 
     private List<Achievement> mAchievements;
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private DatabaseHandler db;
 
@@ -61,11 +53,8 @@ public class AchievementFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new AchievementRecyclerViewAdapter(mAchievements, mListener));
         }
         return view;

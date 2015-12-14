@@ -1,22 +1,17 @@
 package it.polimi.stopit.adapters;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
+import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.Achievement;
-
-import java.util.List;
 
 
 public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<AchievementRecyclerViewAdapter.ViewHolder> {
@@ -42,15 +37,16 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
 
         Achievement achievement=mAchievements.get(position);
 
-        //holder.achievPic.setImageURI(imguri);
+        holder.achievPic.setImageResource(achievement.getImage());
+
+        if(!achievement.isObtained()) {
+
+            holder.achievPic.setImageAlpha(50);
+        }
+
         holder.achievTitle.setText(achievement.getTitle());
         holder.achievDesc.setText(achievement.getDescription());
         holder.achievPoints.setText(""+achievement.getPoints());
-
-        if(achievement.isObtained()){
-
-
-        }
     }
 
     @Override
@@ -61,7 +57,7 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View mView;
-        public final CircularImageView achievPic;
+        public final ImageView achievPic;
         public final TextView achievTitle;
         public final TextView achievDesc;
         public final TextView achievPoints;
@@ -69,7 +65,7 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            achievPic=(CircularImageView) view.findViewById(R.id.achievement_pic);
+            achievPic=(ImageView) view.findViewById(R.id.achievement_pic);
             achievTitle= (TextView) view.findViewById(R.id.achiev_title);
             achievDesc= (TextView) view.findViewById(R.id.achiev_description);
             achievPoints= (TextView) view.findViewById(R.id.achiev_points);

@@ -9,20 +9,20 @@ public class Achievement {
     private String title;
     private String description;
     private long points;
-    private String image;
+    private int imageResource;
     private boolean obtained;
 
     public Achievement(){
 
     }
 
-    public Achievement(int id,String title,String description,long points,String image,boolean obtained){
+    public Achievement(int id,String title,String description,long points,int imageResource,boolean obtained){
 
         this.id=id;
         this.title=title;
         this.description=description;
         this.points=points;
-        this.image=image;
+        this.imageResource=imageResource;
         this.obtained=obtained;
     }
     public boolean isObtained() {
@@ -33,12 +33,12 @@ public class Achievement {
         this.obtained = obtained;
     }
 
-    public String getImage() {
-        return image;
+    public int getImage() {
+        return imageResource;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImage(int imageResource) {
+        this.imageResource = imageResource;
     }
 
     public int getId() {
