@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment;
+import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.ProfileFragment;
 import it.polimi.stopit.model.User;
@@ -215,7 +216,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.challenge) {
 
-            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            Fragment fragment = ChallengeFragment.newInstance();
 
             FragmentManager fragmentManager=getFragmentManager();
 
