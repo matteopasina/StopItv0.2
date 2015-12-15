@@ -30,6 +30,11 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
+
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
@@ -48,6 +53,8 @@ public class NavigationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        scheduleProgram();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         user.setID(settings.getString("ID", null));
@@ -285,5 +292,30 @@ public class NavigationActivity extends AppCompatActivity
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    public void scheduleProgram(){
+
+        long wakefulness,interval;
+        int hFirst,hLast,mFirst,mLast,CPD;
+
+        SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
+
+        hLast=userdata.getInt("hoursLast",0);
+        mLast=userdata.getInt("minuteLast",0);
+        hFirst=userdata.getInt("hoursFirst",0);
+        mFirst=userdata.getInt("minuteFirst",0);
+        CPD=userdata.getInt("CPD",0);
+
+        long timeLast=((hLast*60)+mLast)*60*1000;
+        long timeFirst=((hFirst*60)+mFirst)*60*1000;
+
+        wakefulness=timeLast-timeFirst;
+        interval=wakefulness/CPD;
+
+        SharedPreferences.Editor editorUserdata = userdata.edit();
+        editorUserdata.putLong("interval",interval);
+
+        editorUserdata.commit();
     }
 }

@@ -9,9 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.facebook.Profile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.Cigarette;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
@@ -28,6 +30,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String ACHIEVEMENT_IMAGE = "image";
     private static final String ACHIEVEMENT_OBTAINED = "obtained";
 
+    // TABLE CIGARETTES SMOKED
+    private static final String TABLE_CIGARETTES = "cigarettes";
+
+    private static final String CIGARETTE_ID = "id";
+    private static final String SMOKED = "smoked";
+    private static final String HOUR = "hour";
+    private static final String MINUTE = "minute";
+    private static final String DAY="day";
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,6 +52,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + ACHIEVEMENT_ID + " INTEGER PRIMARY KEY," + ACHIEVEMENT_TITLE + " TEXT," + ACHIEVEMENT_DESCRIPTION + " TEXT,"
                 + ACHIEVEMENT_POINTS + " TEXT," + ACHIEVEMENT_IMAGE + " TEXT," + ACHIEVEMENT_OBTAINED + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
+
+        // Create Achievements table
+        String CREATE_CIGARETTES_TABLE = "CREATE TABLE " + TABLE_CIGARETTES + "("
+                + CIGARETTE_ID + " INTEGER PRIMARY KEY," + SMOKED + " TEXT," + HOUR + " TEXT,"
+                + MINUTE + " TEXT," + DAY + " TEXT" + ")";
+        db.execSQL(CREATE_CIGARETTES_TABLE);
     }
 
     @Override
@@ -48,6 +65,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
+        // Drop older table if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
 
         // Create tables again
         onCreate(db);
@@ -64,7 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
         int boolValue= (achievement.isObtained()) ? 1 : 0;
-        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
+        values.put(ACHIEVEMENT_OBTAINED, boolValue);
 
         // Inserting Row
         db.insert(TABLE_ACHIEVEMENTS, null, values);
@@ -130,18 +149,35 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
         int boolValue= (achievement.isObtained()) ? 1 : 0;
-        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
+        values.put(ACHIEVEMENT_OBTAINED, boolValue);
 
         // updating row
         return db.update(TABLE_ACHIEVEMENTS, values, ACHIEVEMENT_ID + " = ?",
-                new String[] { String.valueOf(achievement.getId()) });
+                new String[]{String.valueOf(achievement.getId())});
     }
 
     public void deleteAchievement(Achievement achievement) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ACHIEVEMENTS, ACHIEVEMENT_ID + " = ?",
-                new String[] { String.valueOf(achievement.getId()) });
+                new String[]{String.valueOf(achievement.getId())});
+        db.close();
+    }
+
+    public void addCigarette(Cigarette cigarette) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CIGARETTE_ID, cigarette.getId());
+        int boolValue= (cigarette.isSmoked()) ? 1 : 0;
+        values.put( SMOKED , boolValue);
+        values.put(HOUR, cigarette.getHour());
+        values.put(MINUTE, cigarette.getMinute());
+        values.put(DAY, cigarette.getDate());
+
+        // Inserting Row
+        db.insert(TABLE_CIGARETTES, null, values);
         db.close();
     }
 

@@ -2,7 +2,6 @@ package it.polimi.stopit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,8 +11,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +24,6 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.services.ScheduleService;
@@ -86,7 +82,7 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -200,10 +196,15 @@ public class ProfileFragment extends Fragment {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME,0);
+                                SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME, 0);
                                 Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                                fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points)- 50);
+                                fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
+
+                                Intent i = new Intent("SMOKE_OUTOFTIME");
+                                //i.putExtra("countdown", millisUntilFinished);
+
+                                getActivity().sendBroadcast(i);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
