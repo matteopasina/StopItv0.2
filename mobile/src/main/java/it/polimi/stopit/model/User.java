@@ -10,6 +10,16 @@ public class User {
     private String profilePic;
     private Long points;
 
+    public User(){}
+
+    public User(String id,String name,String surname,String profilePic,Long points){
+
+        this.ID=id;
+        this.name=name;
+        this.surname=surname;
+        this.profilePic=profilePic;
+        this.points=points;
+    }
     public String getID() {
         return ID;
     }

@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +29,19 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_challenge, parent, false);
+                .inflate(R.layout.fragment_contact, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         holder.mUser = mContacts.get(position);
-        holder.mIdView.setText(mContacts.get(position).getID());
-        holder.mContentView.setText(mContacts.get(position).getName());
+
+        Picasso.with(holder.mProfilePic.getContext()).load(mContacts.get(position).getProfilePic()).into(holder.mProfilePic);
+
+        holder.mName.setText(mContacts.get(position).getName()+" "+mContacts.get(position).getSurname());
 
         /*
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -56,20 +63,20 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final CircularImageView mProfilePic;
+        public final TextView mName;
         public User mUser;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mProfilePic = (CircularImageView) view.findViewById(R.id.contact_profilepic);
+            mName = (TextView) view.findViewById(R.id.contact_name);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mName.getText() + "'";
         }
     }
 }
