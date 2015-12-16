@@ -27,4 +27,9 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(9,"50 Activities","Do 50 alternative activities",600,R.drawable.achievement_star,false));
 
     }
+
+    public void loadContacts(){
+
+
+    }
 }

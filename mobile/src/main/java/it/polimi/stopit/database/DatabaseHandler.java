@@ -9,11 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.facebook.Profile;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
-import it.polimi.stopit.model.Cigarette;
+import it.polimi.stopit.model.User;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
@@ -30,15 +29,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String ACHIEVEMENT_IMAGE = "image";
     private static final String ACHIEVEMENT_OBTAINED = "obtained";
 
-    // TABLE CIGARETTES SMOKED
-    private static final String TABLE_CIGARETTES = "cigarettes";
+    // TABLE CONTACTS
+    private static final String TABLE_CONTACTS = "contacts";
 
-    private static final String CIGARETTE_ID = "id";
-    private static final String SMOKED = "smoked";
-    private static final String HOUR = "hour";
-    private static final String MINUTE = "minute";
-    private static final String DAY="day";
-
+    private static final String CONTACT_ID = "id";
+    private static final String CONTACT_NAME = "name";
+    private static final String CONTACT_SURNAME = "surname";
+    private static final String CONTACT_IMAGE = "image";
+    private static final String CONTACT_POINTS = "points";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,16 +46,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         // Create Achievements table
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
+        String CREATE_ACHIEVEMENTS_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
                 + ACHIEVEMENT_ID + " INTEGER PRIMARY KEY," + ACHIEVEMENT_TITLE + " TEXT," + ACHIEVEMENT_DESCRIPTION + " TEXT,"
                 + ACHIEVEMENT_POINTS + " TEXT," + ACHIEVEMENT_IMAGE + " TEXT," + ACHIEVEMENT_OBTAINED + " INTEGER" + ")";
-        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.execSQL(CREATE_ACHIEVEMENTS_TABLE);
 
         // Create Achievements table
-        String CREATE_CIGARETTES_TABLE = "CREATE TABLE " + TABLE_CIGARETTES + "("
-                + CIGARETTE_ID + " INTEGER PRIMARY KEY," + SMOKED + " TEXT," + HOUR + " TEXT,"
-                + MINUTE + " TEXT," + DAY + " TEXT" + ")";
-        db.execSQL(CREATE_CIGARETTES_TABLE);
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
+                + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
+                + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER" + ")";
+        db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
     @Override
@@ -65,8 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
 
         // Create tables again
         onCreate(db);
@@ -90,6 +87,22 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void addContact(User contact) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACT_ID, contact.getID());
+        values.put(CONTACT_NAME, contact.getName());
+        values.put(CONTACT_SURNAME, contact.getSurname());
+        values.put(CONTACT_IMAGE, contact.getProfilePic());
+        values.put(CONTACT_POINTS, contact.getPoints());
+
+        // Inserting Row
+        db.insert(TABLE_CONTACTS, null, values);
+        db.close();
+    }
+
     public Achievement getAchievement(int id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -105,6 +118,21 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return achievement;
     }
 
+    public User getContact(int id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CONTACTS, new String[] { CONTACT_ID,
+                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE,CONTACT_POINTS }, CONTACT_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        User contact = new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
+
+        return contact;
+    }
+
     public List<Achievement> getAllAchievements() {
 
         List<Achievement> achievementList = new ArrayList<Achievement>();
@@ -116,7 +144,26 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                System.out.println("OBTAINED == "+cursor.getInt(5));
+                Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
+                achievementList.add(achievement);
+
+            } while (cursor.moveToNext());
+        }
+
+        return achievementList;
+    }
+
+    public List<User> getAllContacts() {
+
+        List<User> contactList = new ArrayList<User>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
                 Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
                 achievementList.add(achievement);
 
@@ -149,35 +196,18 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
         int boolValue= (achievement.isObtained()) ? 1 : 0;
-        values.put(ACHIEVEMENT_OBTAINED, boolValue);
+        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
 
         // updating row
         return db.update(TABLE_ACHIEVEMENTS, values, ACHIEVEMENT_ID + " = ?",
-                new String[]{String.valueOf(achievement.getId())});
+                new String[] { String.valueOf(achievement.getId()) });
     }
 
     public void deleteAchievement(Achievement achievement) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ACHIEVEMENTS, ACHIEVEMENT_ID + " = ?",
-                new String[]{String.valueOf(achievement.getId())});
-        db.close();
-    }
-
-    public void addCigarette(Cigarette cigarette) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(CIGARETTE_ID, cigarette.getId());
-        int boolValue= (cigarette.isSmoked()) ? 1 : 0;
-        values.put( SMOKED , boolValue);
-        values.put(HOUR, cigarette.getHour());
-        values.put(MINUTE, cigarette.getMinute());
-        values.put(DAY, cigarette.getDate());
-
-        // Inserting Row
-        db.insert(TABLE_CIGARETTES, null, values);
+                new String[] { String.valueOf(achievement.getId()) });
         db.close();
     }
 
