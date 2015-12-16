@@ -8,7 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.facebook.Profile;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
@@ -115,9 +119,39 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public Cigarette getCigarette(int id){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CIGARETTES, new String[] { CIGARETTE_ID,
+                        CIGARETTE_DATE, CIGARETTE_TYPE }, CIGARETTE_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(cursor.getString(1));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Cigarette cigarette = new Cigarette(Integer.parseInt(cursor.getString(0)),date,cursor.getString(2));
+
+        return cigarette;
+
+    }
     public void addContact(User contact) {
 
-        if (!this.getAllContacts().contains(contact)) {
+        ArrayList<User> contacts=this.getAllContacts();
+        boolean alreadyAdded=false;
+
+        for(User user:contacts){
+
+            if(user.getID().equals(contact.getID())){
+                alreadyAdded=true;
+            }
+        }
+        if (!alreadyAdded) {
 
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();

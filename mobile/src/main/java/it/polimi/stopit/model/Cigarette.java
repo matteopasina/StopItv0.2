@@ -11,6 +11,15 @@ public class Cigarette {
     private Date date;
     private String type;
 
+    public Cigarette(){}
+
+    public Cigarette(int id,Date date,String type){
+
+        this.id=id;
+        this.date=date;
+        this.type=type;
+    }
+
     public String getType() {
         return type;
     }
