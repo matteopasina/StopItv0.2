@@ -122,9 +122,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_CONTACTS, new String[] { CONTACT_ID,
-                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE,CONTACT_POINTS }, CONTACT_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_CONTACTS, new String[]{CONTACT_ID,
+                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS}, CONTACT_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -153,9 +153,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return achievementList;
     }
 
-    public List<User> getAllContacts() {
+    public ArrayList<User> getAllContacts() {
 
-        List<User> contactList = new ArrayList<User>();
+        ArrayList<User> contactList = new ArrayList<User>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
 
@@ -164,13 +164,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
-                achievementList.add(achievement);
+                User contact = new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
+                contactList.add(contact);
 
             } while (cursor.moveToNext());
         }
 
-        return achievementList;
+        return contactList;
     }
 
     public int getAchievementsCount() {
@@ -196,7 +196,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(ACHIEVEMENT_POINTS, achievement.getPoints());
         values.put(ACHIEVEMENT_IMAGE, achievement.getImage());
         int boolValue= (achievement.isObtained()) ? 1 : 0;
-        values.put(ACHIEVEMENT_OBTAINED,  boolValue);
+        values.put(ACHIEVEMENT_OBTAINED, boolValue);
 
         // updating row
         return db.update(TABLE_ACHIEVEMENTS, values, ACHIEVEMENT_ID + " = ?",
@@ -207,7 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ACHIEVEMENTS, ACHIEVEMENT_ID + " = ?",
-                new String[] { String.valueOf(achievement.getId()) });
+                new String[]{String.valueOf(achievement.getId())});
         db.close();
     }
 

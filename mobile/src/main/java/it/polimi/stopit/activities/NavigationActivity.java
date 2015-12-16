@@ -30,12 +30,8 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseSeeder;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
@@ -55,6 +51,9 @@ public class NavigationActivity extends AppCompatActivity
         setContentView(R.layout.activity_profile);
 
         scheduleProgram();
+
+        DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
+        dbSeed.loadContacts();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         user.setID(settings.getString("ID", null));
