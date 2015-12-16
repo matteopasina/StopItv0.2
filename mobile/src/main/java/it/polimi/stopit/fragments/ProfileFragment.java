@@ -24,7 +24,6 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-
 import it.polimi.stopit.R;
 import it.polimi.stopit.services.ScheduleService;
 
@@ -125,17 +124,17 @@ public class ProfileFragment extends Fragment {
                 .build());
 
         //Create data series track
-        SeriesItem hourSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 218))
-                .setRange(0, 200, 0)
-                .setLineWidth(28)
-                .build();
-
-        SeriesItem minuteSeries = new SeriesItem.Builder(Color.argb(255, 41, 121, 255))
+        SeriesItem hourSeries = new SeriesItem.Builder(Color.parseColor("#039BE5"))
                 .setRange(0, 100, 0)
                 .setLineWidth(28)
                 .build();
 
-        SeriesItem secondSeries = new SeriesItem.Builder(Color.argb(255, 232, 239, 42))
+        SeriesItem minuteSeries = new SeriesItem.Builder(Color.parseColor("#00E676"))
+                .setRange(0, 100, 0)
+                .setLineWidth(28)
+                .build();
+
+        SeriesItem secondSeries = new SeriesItem.Builder(Color.parseColor("#FFC107"))
                 .setRange(0, 100, 0)
                 .setLineWidth(28)
                 .build();
@@ -143,10 +142,6 @@ public class ProfileFragment extends Fragment {
         final int series1Index = arcHours.addSeries(hourSeries);
         final int series2Index = arcMinutes.addSeries(minuteSeries);
         final int series3Index = arcSeconds.addSeries(secondSeries);
-
-        arcHours.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(0).build());
-        arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
-        arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
 
         uiUpdated= new BroadcastReceiver() {
             @Override
@@ -159,27 +154,10 @@ public class ProfileFragment extends Fragment {
                 long minutes = (millisUntilFinished - (hours*3600000))/60000;
                 long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
 
-                if(minutes==0 && hours>0){
-                    arcMinutes.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
-                            .setIndex(100)
-                            .setDelay(0)
-                            .setDuration(500)
-                            .build());
+                arcHours.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
+                arcMinutes.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
+                arcSeconds.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
 
-                }
-                else if(seconds==0 && minutes>0){
-                    arcSeconds.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
-                            .setIndex(100)
-                            .setDelay(0)
-                            .setDuration(500)
-                            .build());
-                }
-                else {
-
-                    arcHours.addEvent(new DecoEvent.Builder((((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
-                    arcMinutes.addEvent(new DecoEvent.Builder((((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
-                    arcSeconds.addEvent(new DecoEvent.Builder((((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
-                }
             }
         };
 
