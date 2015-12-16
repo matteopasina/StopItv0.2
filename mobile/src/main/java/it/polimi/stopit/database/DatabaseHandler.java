@@ -114,6 +114,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CIGARETTE_DATE, cigarette.getDate().toString());
         values.put(CIGARETTE_TYPE, cigarette.getType());
 
+        System.out.println("NEW CIGARETTE INSERTED: date = "+cigarette.getDate().toString()+" type = "+cigarette.getType());
         // Inserting Row
         db.insert(TABLE_CIGARETTES, null, values);
         db.close();
