@@ -107,37 +107,37 @@ public class ProfileFragment extends Fragment {
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build());
 
         arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build());
 
         arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build());
 
         //Create data series track
         SeriesItem hourSeries = new SeriesItem.Builder(Color.argb(255, 64, 196, 218))
                 .setRange(0, 200, 0)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build();
 
         SeriesItem minuteSeries = new SeriesItem.Builder(Color.argb(255, 41, 121, 255))
                 .setRange(0, 100, 0)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build();
 
         SeriesItem secondSeries = new SeriesItem.Builder(Color.argb(255, 232, 239, 42))
                 .setRange(0, 100, 0)
-                .setLineWidth(28f)
+                .setLineWidth(28)
                 .build();
 
         final int series1Index = arcHours.addSeries(hourSeries);

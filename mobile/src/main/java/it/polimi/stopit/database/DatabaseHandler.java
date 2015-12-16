@@ -136,6 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         Cigarette cigarette = new Cigarette(Integer.parseInt(cursor.getString(0)),date,cursor.getString(2));
 
         return cigarette;

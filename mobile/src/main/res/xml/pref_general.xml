@@ -3,7 +3,7 @@
     <EditTextPreference
         android:defaultValue="@string/pref_default_numcig"
         android:inputType="number"
-        android:key="cignum"
+        android:key="CPD"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
