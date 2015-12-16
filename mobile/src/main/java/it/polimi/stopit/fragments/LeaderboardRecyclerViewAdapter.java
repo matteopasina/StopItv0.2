@@ -1,11 +1,13 @@
 package it.polimi.stopit.fragments;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.Profile;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -35,13 +37,19 @@ public class LeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<Leaderb
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.mPosition.setText(""+(position+1));
+        holder.mPosition.setText("" + (position + 1));
 
         Picasso.with(holder.mProfilePic.getContext()).load(mLeaderboard.get(position).getProfilePic()).into(holder.mProfilePic);
 
         holder.mName.setText(mLeaderboard.get(position).getName() + " " + mLeaderboard.get(position).getSurname());
 
         holder.mPoints.setText(""+mLeaderboard.get(position).getPoints());
+
+        if(mLeaderboard.get(position).getID().equals(Profile.getCurrentProfile().getId())){
+
+            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#64B5F6"));
+
+        }
 
     }
 
