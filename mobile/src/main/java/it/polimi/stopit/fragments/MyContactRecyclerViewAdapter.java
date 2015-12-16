@@ -37,8 +37,6 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.mUser = mContacts.get(position);
-
         Picasso.with(holder.mProfilePic.getContext()).load(mContacts.get(position).getProfilePic()).into(holder.mProfilePic);
 
         holder.mName.setText(mContacts.get(position).getName()+" "+mContacts.get(position).getSurname());
@@ -65,7 +63,6 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
         public final View mView;
         public final CircularImageView mProfilePic;
         public final TextView mName;
-        public User mUser;
 
         public ViewHolder(View view) {
             super(view);
