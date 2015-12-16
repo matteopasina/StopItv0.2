@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.User;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
@@ -38,6 +39,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CONTACT_IMAGE = "image";
     private static final String CONTACT_POINTS = "points";
 
+    // TABLE CIGARETTE
+    private static final String TABLE_CIGARETTES = "cigarettes";
+
+    private static final String CIGARETTE_ID = "id";
+    private static final String CIGARETTE_DATE = "date";
+    private static final String CIGARETTE_TYPE = "type";
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -56,6 +64,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
                 + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
+
+        // Create Cigarettes table
+        String CREATE_CIGARETTES_TABLE = "CREATE TABLE " + TABLE_CIGARETTES + "("
+                + CIGARETTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CIGARETTE_DATE + " TEXT," + CIGARETTE_TYPE + " TEXT"
+                + ")";
+        db.execSQL(CREATE_CIGARETTES_TABLE);
     }
 
     @Override
@@ -64,6 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
 
         // Create tables again
         onCreate(db);
@@ -87,20 +102,35 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
-    public void addContact(User contact) {
+    public void addCigarette(Cigarette cigarette) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(CONTACT_ID, contact.getID());
-        values.put(CONTACT_NAME, contact.getName());
-        values.put(CONTACT_SURNAME, contact.getSurname());
-        values.put(CONTACT_IMAGE, contact.getProfilePic());
-        values.put(CONTACT_POINTS, contact.getPoints());
+        values.put(CIGARETTE_DATE, cigarette.getDate().toString());
+        values.put(CIGARETTE_TYPE, cigarette.getType());
 
         // Inserting Row
-        db.insert(TABLE_CONTACTS, null, values);
+        db.insert(TABLE_CIGARETTES, null, values);
         db.close();
+    }
+
+    public void addContact(User contact) {
+
+        if (!this.getAllContacts().contains(contact)) {
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(CONTACT_ID, contact.getID());
+            values.put(CONTACT_NAME, contact.getName());
+            values.put(CONTACT_SURNAME, contact.getSurname());
+            values.put(CONTACT_IMAGE, contact.getProfilePic());
+            values.put(CONTACT_POINTS, contact.getPoints());
+
+            // Inserting Row
+            db.insert(TABLE_CONTACTS, null, values);
+            db.close();
+        }
     }
 
     public Achievement getAchievement(int id) {

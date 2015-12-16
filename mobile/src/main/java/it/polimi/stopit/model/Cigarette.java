@@ -8,10 +8,24 @@ import java.util.Date;
 public class Cigarette {
 
     private int id;
-    private boolean smoked;
-    private String hour;
-    private String minute;
-    private String date;
+    private Date date;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public int getId() {
         return id;
@@ -21,35 +35,5 @@ public class Cigarette {
         this.id = id;
     }
 
-    public String getDate() {
-        return date;
-    }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getMinute() {
-        return minute;
-    }
-
-    public void setMinute(String minute) {
-        this.minute = minute;
-    }
-
-    public String getHour() {
-        return hour;
-    }
-
-    public void setHour(String hour) {
-        this.hour = hour;
-    }
-
-    public boolean isSmoked() {
-        return smoked;
-    }
-
-    public void setSmoked(boolean smoked) {
-        this.smoked = smoked;
-    }
 }

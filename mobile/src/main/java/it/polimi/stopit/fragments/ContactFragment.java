@@ -61,7 +61,7 @@ public class ContactFragment extends Fragment {
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            recyclerView.setAdapter(new MyContactRecyclerViewAdapter(mContacts, mListener));
+            recyclerView.setAdapter(new ContactRecyclerViewAdapter(mContacts, mListener));
         }
         return view;
     }

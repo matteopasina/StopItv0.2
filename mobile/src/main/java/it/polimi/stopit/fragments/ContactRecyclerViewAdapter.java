@@ -16,12 +16,12 @@ import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.ContactFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.User;
 
-public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContactRecyclerViewAdapter.ViewHolder> {
+public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ViewHolder> {
 
     private final OnListFragmentInteractionListener mListener;
     private final List<User> mContacts;
 
-    public MyContactRecyclerViewAdapter(ArrayList<User> contacts, OnListFragmentInteractionListener listener) {
+    public ContactRecyclerViewAdapter(ArrayList<User> contacts, OnListFragmentInteractionListener listener) {
         mContacts = contacts;
         mListener = listener;
     }
@@ -39,7 +39,7 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
 
         Picasso.with(holder.mProfilePic.getContext()).load(mContacts.get(position).getProfilePic()).into(holder.mProfilePic);
 
-        holder.mName.setText(mContacts.get(position).getName()+" "+mContacts.get(position).getSurname());
+        holder.mName.setText(mContacts.get(position).getName() + " " + mContacts.get(position).getSurname());
 
         /*
         holder.mView.setOnClickListener(new View.OnClickListener() {
