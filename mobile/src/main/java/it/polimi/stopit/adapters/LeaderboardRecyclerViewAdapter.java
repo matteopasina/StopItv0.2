@@ -1,4 +1,4 @@
-package it.polimi.stopit.fragments;
+package it.polimi.stopit.adapters;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;

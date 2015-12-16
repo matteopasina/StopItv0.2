@@ -16,6 +16,7 @@ import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NewChallengeActivity;
+import it.polimi.stopit.adapters.ChallengeRecyclerViewAdapter;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
 

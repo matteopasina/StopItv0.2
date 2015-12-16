@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.adapters.ContactRecyclerViewAdapter;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.User;
 

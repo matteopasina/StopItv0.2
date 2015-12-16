@@ -30,6 +30,8 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseSeeder;
 import it.polimi.stopit.fragments.AchievementFragment;
@@ -297,18 +299,22 @@ public class NavigationActivity extends AppCompatActivity
     public void scheduleProgram(){
 
         long wakefulness,interval;
-        int hFirst,hLast,mFirst,mLast,CPD;
+        int CPD;
 
         SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
-        hLast=userdata.getInt("hoursLast",0);
-        mLast=userdata.getInt("minuteLast",0);
-        hFirst=userdata.getInt("hoursFirst",0);
-        mFirst=userdata.getInt("minuteFirst",0);
         CPD=userdata.getInt("CPD",0);
 
-        long timeLast=((hLast*60)+mLast)*60*1000;
-        long timeFirst=((hFirst*60)+mFirst)*60*1000;
+        Calendar last = Calendar.getInstance();
+        last.set(Calendar.HOUR_OF_DAY, 23);
+        last.set(Calendar.MINUTE, 00);
+
+        long timeLast=last.getTimeInMillis();
+
+        Calendar first = Calendar.getInstance();
+        first.set(Calendar.HOUR_OF_DAY,8);
+        first.set(Calendar.MINUTE,00);
+        long timeFirst=first.getTimeInMillis();
 
         wakefulness=timeLast-timeFirst;
         interval=wakefulness/CPD;

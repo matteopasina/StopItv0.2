@@ -1,4 +1,4 @@
-package it.polimi.stopit.fragments;
+package it.polimi.stopit.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

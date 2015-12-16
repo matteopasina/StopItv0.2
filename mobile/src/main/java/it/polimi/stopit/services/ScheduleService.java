@@ -16,6 +16,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 
 import java.util.Calendar;
+import java.util.Date;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
@@ -91,24 +92,26 @@ public class ScheduleService extends Service {
 
             SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
             Calendar c = Calendar.getInstance();
-            int hourNow = c.get(Calendar.HOUR_OF_DAY);
-            int minuteNow = c.get(Calendar.MINUTE);
-            int secondNow = c.get(Calendar.SECOND);
 
-            long hLast=userdata.getInt("hoursLast", 0);
-            long mLast=userdata.getInt("minuteLast", 0);
-            long hFirst=userdata.getInt("hoursFirst", 0);
-            long mFirst = userdata.getInt("minuteFirst", 0);
-
-            int milliNow = hourNow * 60 * 60 * 1000 + minuteNow * 60 * 1000 + secondNow * 1000;
             long nextCiga = userdata.getLong("interval", 0);
 
-            long timeLast=((hLast*60)+mLast)*60*1000;
-            long timeFirst=((hFirst*60)+mFirst)*60*1000;
 
-            if ( (milliNow+nextCiga) > timeLast){
+            Calendar last = Calendar.getInstance();
+            last.set(Calendar.HOUR_OF_DAY, 23);
+            last.set(Calendar.MINUTE, 00);
+
+            long timeLast=last.getTimeInMillis();
+
+            Calendar first = Calendar.getInstance();
+            first.set(Calendar.HOUR_OF_DAY,8);
+            first.set(Calendar.MINUTE,00);
+            long timeFirst=first.getTimeInMillis();
+            System.out.println(timeFirst);
+
+            if ( c.getTimeInMillis() + nextCiga > timeLast){
                 nextCiga=timeFirst;
             }
+
             System.out.println(nextCiga);
             return nextCiga;
     }
@@ -119,7 +122,8 @@ public class ScheduleService extends Service {
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.stopitsymbol)
                         .setContentTitle("You can smoke")
-                        .setContentText("You earned it");
+                        .setContentText("You earned it")
+                        .setAutoCancel(true);
         // Sets an ID for the notification
         int mNotificationId = n;
 

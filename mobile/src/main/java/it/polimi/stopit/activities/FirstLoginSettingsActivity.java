@@ -41,8 +41,8 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         TextView setCiga=(TextView) findViewById(R.id.SetCiga);
         setCiga.setText("How many cigarettes per day do you usually smoke?");
 
-        TextView when=(TextView) findViewById(R.id.SetHFirstCiga);
-        when.setText("When do you usually smoke?");
+       /* TextView when=(TextView) findViewById(R.id.SetHFirstCiga);
+        when.setText("When do you usually smoke?");*/
 
         final TextView progressText=(TextView) findViewById(R.id.progress);
         progressText.setText("25/50");
@@ -68,20 +68,20 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
             }
         });
 
-        Button lastC=(Button)findViewById(R.id.button);
-        lastC.setEnabled(false);
+       /* Button lastC=(Button)findViewById(R.id.button);
+        lastC.setEnabled(false);*/
         Button done=(Button) findViewById(R.id.done);
-        done.setEnabled(false);
+        //done.setEnabled(false);
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(FirstLoginSettingsActivity.this,NavigationActivity.class);
 
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putInt("CPD", cigaPerDay.getProgress()/2);
-                editor.putInt("hoursFirst",hourOfDayFirst);
+               /* editor.putInt("hoursFirst",hourOfDayFirst);
                 editor.putInt("minuteFirst",minuteFirst);
                 editor.putInt("hoursLast",hourOfDayLast);
-                editor.putInt("minuteLast",minuteLast);
+                editor.putInt("minuteLast",minuteLast);*/
                 // Commit the edits!
                 editor.commit();
 
@@ -91,7 +91,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         });
 
     }
-
+/*
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
@@ -173,6 +173,6 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getFragmentManager(), "timePicker");
     }
-
+*/
 
 }

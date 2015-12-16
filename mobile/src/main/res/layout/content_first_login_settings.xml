@@ -41,24 +41,6 @@
         android:layout_below="@+id/seekBar"
         android:layout_alignStart="@+id/SetCiga" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/SetHFirstCiga"
-        android:layout_above="@+id/setF"
-        android:layout_alignStart="@+id/progress" />
-
-    <Button
-        android:id="@+id/setF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pick_time"
-        android:onClick="showTimePickerDialogFirst"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
-
     <Button
         android:id="@+id/done"
         android:layout_width="wrap_content"
@@ -71,32 +53,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/firstC"
-        android:id="@+id/firstSizza"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/lastSizza" />
-
-    <Button
-        style="?android:attr/borderlessButtonStyle"
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/picklast"
-        android:onClick="showTimePickerDialogLast"
-        android:layout_below="@+id/setF"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="32dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lastC"
-        android:id="@+id/lastSizza"
-        android:layout_alignBottom="@+id/button"
-        android:layout_alignStart="@+id/done" />
 
 
 </RelativeLayout>
