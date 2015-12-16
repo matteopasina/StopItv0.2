@@ -53,8 +53,6 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        scheduleProgram();
-
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();
 

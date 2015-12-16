@@ -1,5 +1,6 @@
 package it.polimi.stopit.services;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,8 +16,14 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
+import org.joda.time.MutableInterval;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
@@ -36,7 +43,6 @@ public class ScheduleService extends Service {
             Count.start();
         }
     };;
-    private long nextCigarette;
     int n=0;
 
 
@@ -57,7 +63,6 @@ public class ScheduleService extends Service {
                 this.start();
             }
         }.start();
-
     }
 
     @Override
@@ -90,30 +95,48 @@ public class ScheduleService extends Service {
 
     public long nextCiga(){
 
-            SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
-            Calendar c = Calendar.getInstance();
+        SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
-            long nextCiga = userdata.getLong("interval", 0);
+        long nextCiga=3000000;
 
+        MutableDateTime start=new MutableDateTime();
+        start.setHourOfDay(8);
+        start.setMinuteOfHour(0);
+        MutableDateTime end=new MutableDateTime();
+        end.setHourOfDay(23);
+        end.setMinuteOfHour(0);
 
-            Calendar last = Calendar.getInstance();
-            last.set(Calendar.HOUR_OF_DAY, 23);
-            last.set(Calendar.MINUTE, 00);
+        DateTime now = new DateTime();
 
-            long timeLast=last.getTimeInMillis();
+        List<MutableInterval> list = splitDuration(start, end, (long) userdata.getInt("CPD",0));
 
-            Calendar first = Calendar.getInstance();
-            first.set(Calendar.HOUR_OF_DAY,8);
-            first.set(Calendar.MINUTE,00);
-            long timeFirst=first.getTimeInMillis();
-            System.out.println(timeFirst);
+        if(end.isBeforeNow()){
+            nextCiga=start.getMillis()+86400000;
+        }
 
-            if ( c.getTimeInMillis() + nextCiga > timeLast){
-                nextCiga=timeFirst;
+        for(MutableInterval i : list){
+            if(i.contains(now)){
+                nextCiga=i.getEndMillis()-now.getMillis();
             }
+        }
 
-            System.out.println(nextCiga);
-            return nextCiga;
+        return nextCiga;
+    }
+
+    static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
+
+        long millis = start.getMillis();
+        long endMillis=end.getMillis();
+        long chunkSize=(endMillis-millis)/chunkAmount;
+
+        List<MutableInterval> list = new ArrayList<MutableInterval>();
+
+        for(int i = 0; i < chunkAmount; ++i) {
+            list.add(new MutableInterval(millis, millis += chunkSize));
+        }
+
+        list.add(new MutableInterval(millis, endMillis));
+        return list;
     }
 
     public void sendNotification() {

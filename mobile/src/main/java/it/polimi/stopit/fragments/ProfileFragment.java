@@ -25,7 +25,15 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
 
 /**
@@ -205,6 +213,10 @@ public class ProfileFragment extends Fragment {
                                 //i.putExtra("countdown", millisUntilFinished);
 
                                 getActivity().sendBroadcast(i);
+
+                                DatabaseHandler dbh=new DatabaseHandler(getActivity());
+                                DateTime dt = new DateTime(DateTimeZone.UTC);
+                                dbh.addCigarette(new Cigarette(1,dt.toDate(),"PORCONE"));
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
