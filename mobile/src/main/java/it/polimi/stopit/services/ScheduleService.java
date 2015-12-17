@@ -1,6 +1,5 @@
 package it.polimi.stopit.services;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -11,22 +10,21 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.firebase.client.Firebase;
 
-import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.activities.ChooseActivity;
 
 /**
  * Created by matteo on 13/12/15.
@@ -35,21 +33,56 @@ import it.polimi.stopit.activities.NavigationActivity;
 public class ScheduleService extends Service {
     private NotificationManager mNM;
     public static final String PREFS_NAME = "StopItPrefs";
+    private List<MutableInterval> list;
+    MutableDateTime start=new MutableDateTime();
+    MutableDateTime end=new MutableDateTime();
     CountDownTimer Count;
+    int n=0;
     private BroadcastReceiver uiUpdated=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Count.cancel();
-            Count.start();
+            if(intent.getSerializableExtra("time")!=null){
+                list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
+                System.out.println(intent.getSerializableExtra("time"));
+                System.out.println(list);
+            }
+            Count=new CountDownTimer(nextCiga(list,start,end), 1000) {
+                public void onTick(long millisUntilFinished) {
+
+                    Intent i = new Intent("COUNTDOWN_UPDATED");
+                    i.putExtra("countdown", millisUntilFinished);
+
+                    sendBroadcast(i);
+                }
+
+                public void onFinish() {
+                    sendNotification();
+                    Handler h = new Handler();
+                    long delayInMilliseconds = 300000;
+                    h.postDelayed(new Runnable() {
+                        public void run() {
+                            mNM.cancel(n);
+                            SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
+                            Firebase.setAndroidContext(ScheduleService.this);
+                            final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                            long points=p.getLong("points",0);
+                            fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
+                        }
+                    }, delayInMilliseconds);
+                    this.start();
+                }
+            }.start();
         }
     };;
-    int n=0;
+
 
 
     @Override
     public void onCreate(){
         super.onCreate();
-        Count=new CountDownTimer(nextCiga(), 1000) {
+        firstStart();
+        Count=new CountDownTimer(nextCiga(list,start,end), 1000) {
             public void onTick(long millisUntilFinished) {
 
                 Intent i = new Intent("COUNTDOWN_UPDATED");
@@ -60,6 +93,18 @@ public class ScheduleService extends Service {
 
             public void onFinish() {
                 sendNotification();
+                Handler h = new Handler();
+                long delayInMilliseconds = 300000;
+                h.postDelayed(new Runnable() {
+                    public void run() {
+                        mNM.cancel(n);
+                        SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
+                        Firebase.setAndroidContext(ScheduleService.this);
+                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                        long points=p.getLong("points",0);
+                        fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
+                    }
+                }, delayInMilliseconds);
                 this.start();
             }
         }.start();
@@ -76,6 +121,7 @@ public class ScheduleService extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(uiUpdated);
     }
 
     IBinder mBinder = new LocalBinder();
@@ -92,34 +138,40 @@ public class ScheduleService extends Service {
         }
     }
 
-
-    public long nextCiga(){
+    public void firstStart(){
 
         SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
-        long nextCiga=3000000;
-
-        MutableDateTime start=new MutableDateTime();
-        start.setHourOfDay(8);
+        start.setHourOfDay(11);
         start.setMinuteOfHour(0);
-        MutableDateTime end=new MutableDateTime();
-        end.setHourOfDay(23);
+        end.setHourOfDay(20);
         end.setMinuteOfHour(0);
 
-        DateTime now = new DateTime();
+        list = splitDuration(start, end, (long) userdata.getInt("CPD",0));
+    }
 
-        List<MutableInterval> list = splitDuration(start, end, (long) userdata.getInt("CPD",0));
+
+    public long nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end){
+
+        long nextCiga=3000000;
+        MutableDateTime now=new MutableDateTime();
 
         if(end.isBeforeNow()){
-            nextCiga=start.getMillis()+86400000;
+            nextCiga=(start.getMillis()+86400000)-now.getMillis();
+        }
+
+        if(start.isAfterNow()){
+            nextCiga=start.getMillis()-now.getMillis();
         }
 
         for(MutableInterval i : list){
             if(i.contains(now)){
                 nextCiga=i.getEndMillis()-now.getMillis();
+                break;
             }
         }
-
+        System.out.println(list);
+        System.out.println(nextCiga);
         return nextCiga;
     }
 
@@ -135,7 +187,20 @@ public class ScheduleService extends Service {
             list.add(new MutableInterval(millis, millis += chunkSize));
         }
 
-        list.add(new MutableInterval(millis, endMillis));
+        return list;
+    }
+
+    static List<MutableInterval> shiftIntervals(MutableDateTime time, List<MutableInterval> list) {
+        long shift=0;
+        for(MutableInterval i : list){
+            if(i.contains(time)){
+                shift=time.getMillis()-i.getStartMillis();
+                i.setInterval(time.getMillis(),i.getEndMillis()+shift);
+                continue;
+            }
+            i.setInterval(i.getStartMillis()+shift,i.getEndMillis()+shift);
+        }
+
         return list;
     }
 
@@ -151,7 +216,7 @@ public class ScheduleService extends Service {
         int mNotificationId = n;
 
 
-        Intent resultIntent = new Intent(this, NavigationActivity.class);
+        Intent resultIntent = new Intent(this, ChooseActivity.class);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -159,7 +224,7 @@ public class ScheduleService extends Service {
         // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
+        stackBuilder.addParentStack(ChooseActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
