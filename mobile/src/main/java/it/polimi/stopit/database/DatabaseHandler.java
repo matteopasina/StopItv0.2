@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.facebook.Profile;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,12 +15,13 @@ import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.Cigarette;
+import it.polimi.stopit.model.MoneyTarget;
 import it.polimi.stopit.model.User;
 
 public class DatabaseHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = ""+ Profile.getCurrentProfile().getId()+"_DB";
+    private static final String DATABASE_NAME = "StopIt_DB";
 
     // TABLE ACHIEVEMENTS
     private static final String TABLE_ACHIEVEMENTS = "achievements";
@@ -50,6 +49,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CIGARETTE_DATE = "date";
     private static final String CIGARETTE_TYPE = "type";
 
+    // TABLE MONEY TARGETS
+    private static final String TABLE_MONEY_TARGETS = "moneytargets";
+
+    private static final String MONEYTARGET_ID = "id";
+    private static final String MONEYTARGET_NAME = "name";
+    private static final String MONEYTARGET_AMOUNT = "amount";
+    private static final String MONEYTARGET_SAVED = "saved";
+    private static final String MONEYTARGET_IMAGE = "image";
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -60,10 +68,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Create Achievements table
         String CREATE_ACHIEVEMENTS_TABLE = "CREATE TABLE " + TABLE_ACHIEVEMENTS + "("
                 + ACHIEVEMENT_ID + " INTEGER PRIMARY KEY," + ACHIEVEMENT_TITLE + " TEXT," + ACHIEVEMENT_DESCRIPTION + " TEXT,"
-                + ACHIEVEMENT_POINTS + " TEXT," + ACHIEVEMENT_IMAGE + " TEXT," + ACHIEVEMENT_OBTAINED + " INTEGER" + ")";
+                + ACHIEVEMENT_POINTS + " INTEGER," + ACHIEVEMENT_IMAGE + " INTEGER," + ACHIEVEMENT_OBTAINED + " INTEGER" + ")";
         db.execSQL(CREATE_ACHIEVEMENTS_TABLE);
 
-        // Create Achievements table
+        // Create Contacts table
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
                 + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
                 + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER" + ")";
@@ -74,6 +82,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + CIGARETTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CIGARETTE_DATE + " TEXT," + CIGARETTE_TYPE + " TEXT"
                 + ")";
         db.execSQL(CREATE_CIGARETTES_TABLE);
+
+        // Create Money Targets table
+        String CREATE_MONEY_TABLE = "CREATE TABLE " + TABLE_MONEY_TARGETS + "("
+                + MONEYTARGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYTARGET_NAME + " TEXT," + MONEYTARGET_AMOUNT + " INTEGER,"
+                + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_IMAGE + " INTEGER" + ")";
+        db.execSQL(CREATE_MONEY_TABLE);
     }
 
     @Override
@@ -83,10 +97,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACHIEVEMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MONEY_TARGETS);
 
         // Create tables again
         onCreate(db);
     }
+
+
+    // ADD ROW
 
     public void addAchievement(Achievement achievement) {
 
@@ -106,6 +124,22 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void addMoneyTarget(MoneyTarget target) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(MONEYTARGET_ID, target.getId());
+        values.put(MONEYTARGET_NAME, target.getName());
+        values.put(MONEYTARGET_AMOUNT, target.getMoneyAmount());
+        values.put(MONEYTARGET_SAVED, target.getMoneySaved());
+        values.put(MONEYTARGET_IMAGE, target.getImageResource());
+
+        // Inserting Row
+        db.insert(TABLE_MONEY_TARGETS, null, values);
+        db.close();
+    }
+
     public void addCigarette(Cigarette cigarette) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -114,36 +148,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CIGARETTE_DATE, cigarette.getDate().toString());
         values.put(CIGARETTE_TYPE, cigarette.getType());
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        System.out.println("NEW CIGARETTE INSERTED: date = " + df.format(cigarette.getDate()) + " type = " + cigarette.getType());
         // Inserting Row
         db.insert(TABLE_CIGARETTES, null, values);
         db.close();
     }
 
-    public Cigarette getCigarette(int id){
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_CIGARETTES, new String[] { CIGARETTE_ID,
-                        CIGARETTE_DATE, CIGARETTE_TYPE }, CIGARETTE_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = format.parse(cursor.getString(1));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Cigarette cigarette = new Cigarette(Integer.parseInt(cursor.getString(0)),date,cursor.getString(2));
-
-        return cigarette;
-
-    }
     public void addContact(User contact) {
 
         ArrayList<User> contacts=this.getAllContacts();
@@ -171,6 +180,31 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
+    // GET SINGLE ROW
+
+    public Cigarette getCigarette(int id){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CIGARETTES, new String[] { CIGARETTE_ID,
+                        CIGARETTE_DATE, CIGARETTE_TYPE }, CIGARETTE_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = format.parse(cursor.getString(1));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Cigarette cigarette = new Cigarette(Integer.parseInt(cursor.getString(0)),date,cursor.getString(2));
+
+        return cigarette;
+
+    }
+
     public Achievement getAchievement(int id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -181,7 +215,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
+        Achievement achievement = new Achievement(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)!=0);
 
         return achievement;
     }
@@ -201,9 +235,26 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return contact;
     }
 
+    public MoneyTarget getMoneyTarget(int id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_MONEY_TARGETS, new String[]{MONEYTARGET_ID,
+                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_IMAGE}, MONEYTARGET_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        MoneyTarget moneyTarget = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4));
+
+        return moneyTarget;
+    }
+
+    // GET ALL ROWS
+
     public List<Achievement> getAllAchievements() {
 
-        List<Achievement> achievementList = new ArrayList<Achievement>();
+        List<Achievement> achievementList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
 
@@ -212,7 +263,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                Achievement achievement = new Achievement(Integer.parseInt(cursor.getString(0)),cursor.getString(1),cursor.getString(2),Long.parseLong(cursor.getString(3)),Integer.parseInt(cursor.getString(4)),cursor.getInt(5)!=0);
+                Achievement achievement = new Achievement(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)!=0);
                 achievementList.add(achievement);
 
             } while (cursor.moveToNext());
@@ -223,7 +274,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     public ArrayList<User> getAllContacts() {
 
-        ArrayList<User> contactList = new ArrayList<User>();
+        ArrayList<User> contactList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
 
@@ -241,6 +292,29 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return contactList;
     }
 
+    // GET ALL TARGETS EXCEPT DEFAULT
+    public ArrayList<MoneyTarget> getAllTargets() {
+
+        ArrayList<MoneyTarget> targetList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_MONEY_TARGETS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4));
+                targetList.add(target);
+
+            } while (cursor.moveToNext());
+        }
+
+        return targetList;
+    }
+
+    // GET ROW COUNT
+
     public int getAchievementsCount() {
 
         String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
@@ -252,6 +326,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return cursor.getCount();
 
     }
+
+    // UPDATE ROW
 
     public int updateAchievement(Achievement achievement) {
 
@@ -270,6 +346,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return db.update(TABLE_ACHIEVEMENTS, values, ACHIEVEMENT_ID + " = ?",
                 new String[] { String.valueOf(achievement.getId()) });
     }
+
+    //DELETE ROW
 
     public void deleteAchievement(Achievement achievement) {
 

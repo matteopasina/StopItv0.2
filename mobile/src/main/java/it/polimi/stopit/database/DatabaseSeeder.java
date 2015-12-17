@@ -20,6 +20,7 @@ import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.MoneyTarget;
 import it.polimi.stopit.model.User;
 
 public class DatabaseSeeder {
@@ -120,5 +121,13 @@ public class DatabaseSeeder {
 
         request.executeAsync();
 
+    }
+
+    public void seedMoneyTargets(){
+
+        db.addMoneyTarget(new MoneyTarget(1,"Phone",900,0,R.drawable.iphone));
+        db.addMoneyTarget(new MoneyTarget(2,"Laptop",900,0,R.drawable.macbook));
+        db.addMoneyTarget(new MoneyTarget(3,"Travel",900,0,R.drawable.travel));
+        db.addMoneyTarget(new MoneyTarget(4,"Other",900,0,R.drawable.other));
     }
 }

@@ -55,6 +55,7 @@ public class NavigationActivity extends AppCompatActivity
 
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();
+        dbSeed.seedMoneyTargets();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         user.setID(settings.getString("ID", null));
