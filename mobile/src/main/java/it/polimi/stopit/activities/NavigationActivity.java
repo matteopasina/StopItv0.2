@@ -91,16 +91,20 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("image", user.getProfilePic());
                     // Commit the edits!
                     editor.commit();
+                    try {
+                        Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
-                    Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+                        FragmentManager fragmentManager = getFragmentManager();
 
-                    FragmentManager fragmentManager = getFragmentManager();
+                        FragmentTransaction ft = fragmentManager.beginTransaction();
 
-                    FragmentTransaction ft = fragmentManager.beginTransaction();
+                        ft.replace(R.id.content_frame, fragment);
 
-                    ft.replace(R.id.content_frame, fragment);
+                        ft.commit();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
 
-                    ft.commit();
                 }
 
                 @Override
@@ -293,34 +297,5 @@ public class NavigationActivity extends AppCompatActivity
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    public void scheduleProgram(){
-
-        long wakefulness,interval;
-        int CPD;
-
-        SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
-
-        CPD=userdata.getInt("CPD",0);
-
-        Calendar last = Calendar.getInstance();
-        last.set(Calendar.HOUR_OF_DAY, 23);
-        last.set(Calendar.MINUTE, 00);
-
-        long timeLast=last.getTimeInMillis();
-
-        Calendar first = Calendar.getInstance();
-        first.set(Calendar.HOUR_OF_DAY,8);
-        first.set(Calendar.MINUTE,00);
-        long timeFirst=first.getTimeInMillis();
-
-        wakefulness=timeLast-timeFirst;
-        interval=wakefulness/CPD;
-
-        SharedPreferences.Editor editorUserdata = userdata.edit();
-        editorUserdata.putLong("interval",interval);
-
-        editorUserdata.commit();
     }
 }

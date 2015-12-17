@@ -26,6 +26,11 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.MutableDateTime;
+
+import java.lang.reflect.Field;
+import java.util.Calendar;
+import java.util.Date;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandler;
@@ -191,14 +196,12 @@ public class ProfileFragment extends Fragment {
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
 
-                                Intent i = new Intent("SMOKE_OUTOFTIME");
-                                //i.putExtra("countdown", millisUntilFinished);
-
-                                getActivity().sendBroadcast(i);
-
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
-                                DateTime dt = new DateTime(DateTimeZone.UTC);
+                                MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
                                 dbh.addCigarette(new Cigarette(1, dt.toDate(), "PORCONE"));
+                                Intent i = new Intent("SMOKE_OUTOFTIME");
+                                i.putExtra("time", dt);
+                                getActivity().sendBroadcast(i);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -238,6 +241,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        getActivity().unregisterReceiver(uiUpdated);
         mListener = null;
     }
 
