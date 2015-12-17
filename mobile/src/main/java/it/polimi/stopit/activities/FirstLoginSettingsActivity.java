@@ -3,6 +3,7 @@ package it.polimi.stopit.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -69,8 +70,12 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                     Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
 
                     SharedPreferences.Editor editor = settings.edit();
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(FirstLoginSettingsActivity.this);
+                    SharedPreferences.Editor defaultEditor=sharedPref.edit();
+                    defaultEditor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
                     editor.putInt("CPD", cigaPerDay.getProgress() / 2);
                     editor.commit();
+                    defaultEditor.commit();
 
                     startActivity(intent);
                     finish();

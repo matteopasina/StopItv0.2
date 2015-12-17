@@ -20,8 +20,14 @@ import com.firebase.client.Firebase;
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.ChooseActivity;
@@ -44,6 +50,7 @@ public class ScheduleService extends Service {
             Count.cancel();
             if(intent.getSerializableExtra("time")!=null){
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
+                saveSchedule(list);
                 System.out.println(intent.getSerializableExtra("time"));
                 System.out.println(list);
             }
@@ -139,15 +146,20 @@ public class ScheduleService extends Service {
     }
 
     public void firstStart(){
+        list=loadSchedule();
+        if(list==null) {
 
-        SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
-        start.setHourOfDay(11);
-        start.setMinuteOfHour(0);
-        end.setHourOfDay(20);
-        end.setMinuteOfHour(0);
+            start.setHourOfDay(11);
+            start.setMinuteOfHour(0);
+            end.setHourOfDay(20);
+            end.setMinuteOfHour(0);
 
-        list = splitDuration(start, end, (long) userdata.getInt("CPD",0));
+            list = splitDuration(start, end, (long) userdata.getInt("CPD", 0));
+            System.out.println("first start");
+            saveSchedule(list);
+        }
     }
 
 
@@ -170,9 +182,38 @@ public class ScheduleService extends Service {
                 break;
             }
         }
-        System.out.println(list);
+        System.out.println("nextciga list:"+list);
         System.out.println(nextCiga);
         return nextCiga;
+    }
+
+    public void saveSchedule(List<MutableInterval> list){
+        String filename = "schedule";
+
+        try {
+            FileOutputStream fos = this.openFileOutput (filename, Context.MODE_PRIVATE );
+            ObjectOutputStream oos = new ObjectOutputStream( fos );
+            oos.writeObject ( list );
+            oos.close ();
+        } catch ( Exception ex ) {
+            ex.printStackTrace ();
+        }
+    }
+
+    public List<MutableInterval> loadSchedule(){
+        String filename = "schedule";
+        List<MutableInterval> lista;
+
+        try {
+            FileInputStream fis = this.openFileInput(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            lista=(List<MutableInterval>) ois.readObject();
+            ois.close ();
+            return lista;
+        } catch ( Exception ex ) {
+            ex.printStackTrace ();
+        }
+        return null;
     }
 
     static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
