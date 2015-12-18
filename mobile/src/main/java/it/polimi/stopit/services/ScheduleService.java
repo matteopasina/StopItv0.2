@@ -25,9 +25,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.ChooseActivity;
@@ -44,6 +42,10 @@ public class ScheduleService extends Service {
     MutableDateTime end=new MutableDateTime();
     CountDownTimer Count;
     int n=0;
+    /*
+    * Receives the boroadcast from the button smoke on the main screen, the restarts the
+    * timer with time shifted
+    * */
     private BroadcastReceiver uiUpdated=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -64,7 +66,9 @@ public class ScheduleService extends Service {
                 }
 
                 public void onFinish() {
-                    sendNotification();
+
+                    sendNotification(calcPoints());
+
                     Handler h = new Handler();
                     long delayInMilliseconds = 300000;
                     h.postDelayed(new Runnable() {
@@ -74,7 +78,7 @@ public class ScheduleService extends Service {
                             Firebase.setAndroidContext(ScheduleService.this);
                             final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                             long points=p.getLong("points",0);
-                            fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
+                            fire.child(p.getString("ID", null)).child("points").setValue(points + (calcPoints()*2));
                         }
                     }, delayInMilliseconds);
                     this.start();
@@ -99,7 +103,7 @@ public class ScheduleService extends Service {
             }
 
             public void onFinish() {
-                sendNotification();
+                sendNotification(calcPoints());
                 Handler h = new Handler();
                 long delayInMilliseconds = 300000;
                 h.postDelayed(new Runnable() {
@@ -151,9 +155,9 @@ public class ScheduleService extends Service {
 
             SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
-            start.setHourOfDay(11);
+            start.setHourOfDay(9);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(20);
+            end.setHourOfDay(23);
             end.setMinuteOfHour(0);
 
             list = splitDuration(start, end, (long) userdata.getInt("CPD", 0));
@@ -216,6 +220,20 @@ public class ScheduleService extends Service {
         return null;
     }
 
+    public int calcPoints(){
+        long points=0;
+        MutableDateTime now=new MutableDateTime();
+        now.setSecondOfDay(now.getSecondOfDay()-5);
+        for(MutableInterval i : list){
+            if(i.contains(now)){
+                points=(i.getEndMillis()-i.getStartMillis())/60000;
+                points+=0.5;
+                break;
+            }
+        }
+        return (int)points;
+    }
+
     static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
 
         long millis = start.getMillis();
@@ -245,7 +263,7 @@ public class ScheduleService extends Service {
         return list;
     }
 
-    public void sendNotification() {
+    public void sendNotification(int points) {
         n+=1;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -258,6 +276,8 @@ public class ScheduleService extends Service {
 
 
         Intent resultIntent = new Intent(this, ChooseActivity.class);
+
+        resultIntent.putExtra("points",points);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
