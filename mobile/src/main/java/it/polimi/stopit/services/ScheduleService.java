@@ -41,7 +41,7 @@ public class ScheduleService extends Service {
     private static long nextCiga;
     private static MutableDateTime start=new MutableDateTime();
     private static MutableDateTime end=new MutableDateTime();
-    CountDownTimer Count;
+    CountDownTimer Count,Count2;
     int n=0;
     /*
     * Receives the boroadcast from the button smoke on the main screen, the restarts the
@@ -58,34 +58,8 @@ public class ScheduleService extends Service {
                 System.out.println(intent.getSerializableExtra("time"));
                 System.out.println(list);
             }
-            Count=new CountDownTimer(nextCiga, 1000) {
-                public void onTick(long millisUntilFinished) {
-
-                    Intent i = new Intent("COUNTDOWN_UPDATED");
-                    i.putExtra("countdown", millisUntilFinished);
-
-                    sendBroadcast(i);
-                }
-
-                public void onFinish() {
-
-                    sendNotification(calcPoints());
-                    nextCiga(list, start, end);
-                    Handler h = new Handler();
-                    long delayInMilliseconds = 300000;
-                    h.postDelayed(new Runnable() {
-                        public void run() {
-                            mNM.cancel(n);
-                            SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
-                            Firebase.setAndroidContext(ScheduleService.this);
-                            final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                            long points=p.getLong("points",0);
-                            fire.child(p.getString("ID", null)).child("points").setValue(points + (calcPoints()*2));
-                        }
-                    }, delayInMilliseconds);
-                    this.start();
-                }
-            }.start();
+            Count=null;
+            setCount(nextCiga);
         }
     };;
 
@@ -95,36 +69,8 @@ public class ScheduleService extends Service {
     public void onCreate(){
         super.onCreate();
         firstStart();
-        nextCiga(list,start,end);
-        Count=new CountDownTimer(nextCiga, 1000) {
-            public void onTick(long millisUntilFinished) {
-
-                Intent i = new Intent("COUNTDOWN_UPDATED");
-                i.putExtra("countdown", millisUntilFinished);
-
-                sendBroadcast(i);
-            }
-
-            public void onFinish() {
-
-                sendNotification(calcPoints());
-                nextCiga(list,start,end);
-
-                Handler h = new Handler();
-                long delayInMilliseconds = 300000;
-                h.postDelayed(new Runnable() {
-                    public void run() {
-                        mNM.cancel(n);
-                        SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
-                        Firebase.setAndroidContext(ScheduleService.this);
-                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                        long points=p.getLong("points",0);
-                        fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
-                    }
-                }, delayInMilliseconds);
-                this.start();
-            }
-        }.start();
+        nextCiga(list, start, end);
+        setCount(nextCiga);
     }
 
     @Override
@@ -153,6 +99,45 @@ public class ScheduleService extends Service {
         public ScheduleService getServerInstance() {
             return ScheduleService.this;
         }
+    }
+
+    public void setCount(long next){
+        Count=new CountDownTimer(next, 1000) {
+            public void onTick(long millisUntilFinished) {
+
+                Intent i = new Intent("COUNTDOWN_UPDATED");
+                i.putExtra("countdown", millisUntilFinished);
+
+                sendBroadcast(i);
+
+            }
+
+            public void onFinish() {
+
+                sendNotification(calcPoints());
+                nextCiga(list, start, end);
+
+                Handler h = new Handler();
+                long delayInMilliseconds = 300000;
+                h.postDelayed(new Runnable() {
+
+                    public void run() {
+
+                        mNM.cancel(n);
+                        SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
+                        Firebase.setAndroidContext(ScheduleService.this);
+                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                        long points=p.getLong("points",0);
+                        fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
+
+                    }
+
+                }, delayInMilliseconds);
+                this.cancel();
+                Count=null;
+                setCount(nextCiga);
+            }
+        }.start();
     }
 
     public void firstStart(){
