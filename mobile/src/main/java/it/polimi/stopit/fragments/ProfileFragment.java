@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -195,6 +197,10 @@ public class ProfileFragment extends Fragment {
                                 Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
+
+                               /* Animation animFadeout = AnimationUtils.loadAnimation(getActivity(),
+                                        R.anim.fadeout);
+                                animFadeout.setAnimationListener(getActivity());*/
 
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);

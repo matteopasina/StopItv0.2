@@ -37,9 +37,10 @@ import it.polimi.stopit.activities.ChooseActivity;
 public class ScheduleService extends Service {
     private NotificationManager mNM;
     public static final String PREFS_NAME = "StopItPrefs";
-    private List<MutableInterval> list;
-    MutableDateTime start=new MutableDateTime();
-    MutableDateTime end=new MutableDateTime();
+    private static List<MutableInterval> list;
+    private static long nextCiga;
+    private static MutableDateTime start=new MutableDateTime();
+    private static MutableDateTime end=new MutableDateTime();
     CountDownTimer Count;
     int n=0;
     /*
@@ -52,11 +53,12 @@ public class ScheduleService extends Service {
             Count.cancel();
             if(intent.getSerializableExtra("time")!=null){
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
+                nextCiga(list,start,end);
                 saveSchedule(list);
                 System.out.println(intent.getSerializableExtra("time"));
                 System.out.println(list);
             }
-            Count=new CountDownTimer(nextCiga(list,start,end), 1000) {
+            Count=new CountDownTimer(nextCiga, 1000) {
                 public void onTick(long millisUntilFinished) {
 
                     Intent i = new Intent("COUNTDOWN_UPDATED");
@@ -68,7 +70,7 @@ public class ScheduleService extends Service {
                 public void onFinish() {
 
                     sendNotification(calcPoints());
-
+                    nextCiga(list, start, end);
                     Handler h = new Handler();
                     long delayInMilliseconds = 300000;
                     h.postDelayed(new Runnable() {
@@ -93,7 +95,8 @@ public class ScheduleService extends Service {
     public void onCreate(){
         super.onCreate();
         firstStart();
-        Count=new CountDownTimer(nextCiga(list,start,end), 1000) {
+        nextCiga(list,start,end);
+        Count=new CountDownTimer(nextCiga, 1000) {
             public void onTick(long millisUntilFinished) {
 
                 Intent i = new Intent("COUNTDOWN_UPDATED");
@@ -103,7 +106,10 @@ public class ScheduleService extends Service {
             }
 
             public void onFinish() {
+
                 sendNotification(calcPoints());
+                nextCiga(list,start,end);
+
                 Handler h = new Handler();
                 long delayInMilliseconds = 300000;
                 h.postDelayed(new Runnable() {
@@ -167,9 +173,8 @@ public class ScheduleService extends Service {
     }
 
 
-    public long nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end){
+    public void nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end){
 
-        long nextCiga=3000000;
         MutableDateTime now=new MutableDateTime();
 
         if(end.isBeforeNow()){
@@ -188,7 +193,6 @@ public class ScheduleService extends Service {
         }
         System.out.println("nextciga list:"+list);
         System.out.println(nextCiga);
-        return nextCiga;
     }
 
     public void saveSchedule(List<MutableInterval> list){
