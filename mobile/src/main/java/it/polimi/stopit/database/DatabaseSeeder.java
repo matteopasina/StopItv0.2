@@ -124,7 +124,7 @@ public class DatabaseSeeder {
 
     public void seedMoneyCategories(){
 
-        db.addMoneyCategory("Phone",R.drawable.iphone);
+        db.addMoneyCategory("Phone",R.drawable.phone);
         db.addMoneyCategory("Laptop",R.drawable.macbook);
         db.addMoneyCategory("Travel",R.drawable.travel);
         db.addMoneyCategory("Other",R.drawable.other);

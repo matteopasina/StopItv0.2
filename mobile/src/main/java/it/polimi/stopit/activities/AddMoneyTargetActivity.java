@@ -11,8 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import it.polimi.stopit.R;
@@ -40,7 +40,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         String[] priceValues = new String[100];
 
         TextView timeLabel=(TextView) findViewById(R.id.time_label);
-        TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
+        final NumberPicker timePicker = (NumberPicker) findViewById(R.id.time_picker);
         String[] timeValues = new String[52];
 
         for (int i = 0; i < timeValues.length; i++) {
@@ -50,10 +50,10 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         }
         timeValues[0]="1 Week";
 
-        //timePicker.setMinValue(1);
-        //timePicker.setMaxValue(52);
-        //timePicker.setWrapSelectorWheel(false);
-        //timePicker.setDisplayedValues(timeValues);
+        timePicker.setMinValue(1);
+        timePicker.setMaxValue(52);
+        timePicker.setWrapSelectorWheel(false);
+        timePicker.setDisplayedValues(timeValues);
 
         Button addButton= (Button) findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +70,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
                     if(price>0 && price<=1000){
 
                         Toast.makeText(AddMoneyTargetActivity.this, "The price is " + price, Toast.LENGTH_SHORT).show();
+                        System.out.println("VALUE = "+timePicker.getValue());
                         showDialog();
                     }else{
 

@@ -13,48 +13,57 @@
         android:id="@+id/cat_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category:"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="40dp"
+        android:text="Category"
+        android:layout_marginLeft="150dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
-        android:textSize="20sp"/>
+        android:textSize="18sp"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="140dp"
         android:id="@+id/rel_layout_content">
 
         <fragment android:name="it.polimi.stopit.fragments.MoneyGalleryFragment"
             android:id="@+id/gallery_fragment"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
             tools:layout="@layout/fragment_moneygallery_list" />
 
     </FrameLayout>
 
+    </android.support.v7.widget.CardView>
+
     <LinearLayout
         android:id="@+id/lin_lay1"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="70dp"
         android:layout_above="@+id/rel_layout_content">
 
             <TextView
                 android:id="@+id/price_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Price in €:"
-                android:textSize="20sp"/>
+                android:layout_marginLeft="115dp"
+                android:text="Value in €:"
+                android:textSize="18sp"/>
 
             <EditText
                 android:id="@+id/price_text"
-                android:layout_width="50dp"
+                android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp" />
+                android:layout_toEndOf="@id/price_label"
+                android:layout_marginTop="-5dp"
+                android:layout_marginLeft="25dp"
+                android:textColorHint="@color/buttonBackground"/>
 
     </LinearLayout>
 
@@ -64,7 +73,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="20dp">
 
             <TextView
@@ -72,23 +81,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Time to complete:"
-                android:layout_marginTop="30dp"
-                android:textSize="20sp"/>
+                android:layout_marginTop="35dp"
+                android:textSize="18sp"/>
 
-            <TimePicker
+            <NumberPicker
                 android:id="@+id/time_picker"
-                android:layout_width="100dp"
-                android:layout_height="200dp"
+                android:layout_width="60dp"
+                android:layout_height="165dp"
                 android:layout_toEndOf="@id/time_label"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
                 android:layout_marginLeft="35dp"
-                android:layout_marginTop="-50dp" />
+                android:layout_marginTop="-33dp" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="25dp">
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp">
 
     <Button
         android:layout_width="90dp"
@@ -98,9 +109,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/add_button"
         android:elevation="5dp"
-        android:background="@drawable/roundcorners"
-        android:layout_centerHorizontal="true"
-        />
+        android:background="@drawable/buttonsquare"
+        android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 
