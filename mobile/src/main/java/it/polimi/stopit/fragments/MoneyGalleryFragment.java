@@ -45,7 +45,7 @@ public class MoneyGalleryFragment extends Fragment {
 
         mTargets=new ArrayList<>();
         db=new DatabaseHandler(getActivity());
-        mTargets=db.getAllTargets();
+        mTargets=db.getAllCategories();
 
         // Set the adapter
         if (view instanceof RecyclerView) {

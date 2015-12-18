@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
 
@@ -36,8 +37,9 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         TextView setCiga=(TextView) findViewById(R.id.SetCiga);
         setCiga.setText("How many cigarettes per day do you usually smoke?");
 
-       /* TextView when=(TextView) findViewById(R.id.SetHFirstCiga);
-        when.setText("When do you usually smoke?");*/
+        DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
+        dbSeed.loadContacts();
+        dbSeed.seedMoneyCategories();
 
         final TextView progressText=(TextView) findViewById(R.id.progress);
         progressText.setText("25/50");

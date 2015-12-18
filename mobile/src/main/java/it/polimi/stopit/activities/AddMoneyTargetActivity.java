@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
@@ -25,6 +27,13 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         Fragment moneyGalleryFragment = new MoneyGalleryFragment();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.rel_layout_content, moneyGalleryFragment).commit();
+
+        TextView catLabel= (TextView) findViewById(R.id.cat_label);
+        TextView priceLabel= (TextView) findViewById(R.id.price_label);
+        EditText priceText = (EditText) findViewById(R.id.price_text);
+        TextView timeLabel=(TextView) findViewById(R.id.time_label);
+        EditText timeText = (EditText) findViewById(R.id.time_text);
+
 
     }
 

@@ -2,7 +2,6 @@ package it.polimi.stopit.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -59,6 +58,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String MONEYTARGET_SAVED = "saved";
     private static final String MONEYTARGET_IMAGE = "image";
 
+    // TABLE MONEY CATEGORIES
+    private static final String TABLE_MONEY_CATEGORIES = "moneycategories";
+
+    private static final String MONEYCAT_ID = "id";
+    private static final String MONEYCAT_NAME = "name";
+    private static final String MONEYCAT_IMAGE = "image";
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -89,6 +95,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + MONEYTARGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYTARGET_NAME + " TEXT," + MONEYTARGET_AMOUNT + " INTEGER,"
                 + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_IMAGE + " INTEGER" + ")";
         db.execSQL(CREATE_MONEY_TABLE);
+
+        // Create Money Targets categories table
+        String CREATE_MONEYCAT_TABLE = "CREATE TABLE " + TABLE_MONEY_CATEGORIES + "("
+                + MONEYCAT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYCAT_NAME + " TEXT," + MONEYCAT_IMAGE + " INTEGER" + ")";
+        db.execSQL(CREATE_MONEYCAT_TABLE);
     }
 
     @Override
@@ -138,6 +149,19 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Inserting Row
         db.insert(TABLE_MONEY_TARGETS, null, values);
+        db.close();
+    }
+
+    public void addMoneyCategory(String name, int imageResource) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(MONEYCAT_NAME, name);
+        values.put(MONEYCAT_IMAGE, imageResource);
+
+        // Inserting Row
+        db.insert(TABLE_MONEY_CATEGORIES, null, values);
         db.close();
     }
 
@@ -306,6 +330,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
                 MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4));
+                targetList.add(target);
+
+            } while (cursor.moveToNext());
+        }
+
+        return targetList;
+    }
+
+    // GET ALL TARGETS EXCEPT DEFAULT
+    public ArrayList<MoneyTarget> getAllCategories() {
+
+        ArrayList<MoneyTarget> targetList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_MONEY_CATEGORIES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),100,100,cursor.getInt(2));
                 targetList.add(target);
 
             } while (cursor.moveToNext());
