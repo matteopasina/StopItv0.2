@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.activities.ChooseActivity;
+import it.polimi.stopit.activities.NavigationActivity;
 
 /**
  * Created by matteo on 13/12/15.
@@ -39,10 +39,10 @@ public class ScheduleService extends Service {
     public static final String PREFS_NAME = "StopItPrefs";
     private static List<MutableInterval> list;
     private static long nextCiga;
-    private static MutableDateTime start=new MutableDateTime();
-    private static MutableDateTime end=new MutableDateTime();
-    CountDownTimer Count,Count2;
-    int n=0;
+    private static MutableDateTime start;
+    private static MutableDateTime end;
+    CountDownTimer Count;
+    private static int n=0;
     /*
     * Receives the boroadcast from the button smoke on the main screen, the restarts the
     * timer with time shifted
@@ -53,15 +53,13 @@ public class ScheduleService extends Service {
             Count.cancel();
             if(intent.getSerializableExtra("time")!=null){
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
-                nextCiga(list,start,end);
+                nextCiga(list, start, end);
                 saveSchedule(list);
-                System.out.println(intent.getSerializableExtra("time"));
-                System.out.println(list);
             }
             Count=null;
             setCount(nextCiga);
         }
-    };;
+    };
 
 
 
@@ -115,6 +113,7 @@ public class ScheduleService extends Service {
             public void onFinish() {
 
                 sendNotification(calcPoints());
+
                 nextCiga(list, start, end);
 
                 Handler h = new Handler();
@@ -128,11 +127,12 @@ public class ScheduleService extends Service {
                         Firebase.setAndroidContext(ScheduleService.this);
                         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                         long points=p.getLong("points",0);
-                        fire.child(p.getString("ID", null)).child("points").setValue(points + 100);
+                        fire.child(p.getString("ID", null)).child("points").setValue(points + calcPoints()*2);
 
                     }
 
                 }, delayInMilliseconds);
+
                 this.cancel();
                 Count=null;
                 setCount(nextCiga);
@@ -146,38 +146,41 @@ public class ScheduleService extends Service {
 
             SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
 
+            start=new MutableDateTime();
+            end=new MutableDateTime();
+
             start.setHourOfDay(9);
             start.setMinuteOfHour(0);
             end.setHourOfDay(23);
             end.setMinuteOfHour(0);
 
             list = splitDuration(start, end, (long) userdata.getInt("CPD", 0));
-            System.out.println("first start");
             saveSchedule(list);
         }
     }
 
 
-    public void nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end){
+    public void nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end) {
 
-        MutableDateTime now=new MutableDateTime();
+        MutableDateTime now = new MutableDateTime();
 
-        if(end.isBeforeNow()){
-            nextCiga=(start.getMillis()+86400000)-now.getMillis();
-        }
-
-        if(start.isAfterNow()){
-            nextCiga=start.getMillis()-now.getMillis();
-        }
-
-        for(MutableInterval i : list){
-            if(i.contains(now)){
-                nextCiga=i.getEndMillis()-now.getMillis();
-                break;
+        if (end.isBeforeNow()) {
+            nextCiga = (start.getMillis() + 86400000) - now.getMillis();
+            System.out.println("endbefore"+end);
+        } else if (start.isAfterNow()) {
+            nextCiga = start.getMillis() - now.getMillis();
+            System.out.println("startafter");
+        } else {
+            for (MutableInterval i : list) {
+                if (i.contains(now)) {
+                    nextCiga = i.getEndMillis() - now.getMillis();
+                    System.out.println("normal");
+                    break;
+                }
             }
         }
-        System.out.println("nextciga list:"+list);
-        System.out.println(nextCiga);
+        /*System.out.println("nextciga list:"+list);
+        System.out.println(nextCiga);*/
     }
 
     public void saveSchedule(List<MutableInterval> list){
@@ -264,7 +267,7 @@ public class ScheduleService extends Service {
         int mNotificationId = n;
 
 
-        Intent resultIntent = new Intent(this, ChooseActivity.class);
+        Intent resultIntent = new Intent(this, NavigationActivity.class);
 
         resultIntent.putExtra("points",points);
 
@@ -274,7 +277,7 @@ public class ScheduleService extends Service {
         // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(ChooseActivity.class);
+        stackBuilder.addParentStack(NavigationActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =

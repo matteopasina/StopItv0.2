@@ -17,7 +17,7 @@ import java.net.URL;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.Receivers.AlarmReceiver;
-import it.polimi.stopit.activities.ChooseActivity;
+import it.polimi.stopit.activities.NavigationActivity;
 
 /**
  * This {@code IntentService} does the app's actual work.
@@ -51,7 +51,7 @@ public class SchedulingService extends IntentService {
                this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-            new Intent(this, ChooseActivity.class), 0);
+            new Intent(this, NavigationActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

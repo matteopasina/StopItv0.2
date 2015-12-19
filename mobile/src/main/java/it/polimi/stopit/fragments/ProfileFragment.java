@@ -2,6 +2,8 @@ package it.polimi.stopit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +22,21 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 
-import java.lang.reflect.Field;
-import java.util.Calendar;
-import java.util.Date;
-
 import it.polimi.stopit.R;
+import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
@@ -62,6 +64,8 @@ public class ProfileFragment extends Fragment {
     private String points;
     private String imageURL;
     private BroadcastReceiver uiUpdated;
+    private static boolean lose=false;
+    private static int gain=0;
 
 
     private OnFragmentInteractionListener mListener;
@@ -103,6 +107,10 @@ public class ProfileFragment extends Fragment {
 
         TextView showPoints = (TextView) view.findViewById(R.id.points);
         showPoints.setText("Points:  " + points);
+
+        TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
+
+        smokeOrDont(losePoints);
 
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
@@ -148,7 +156,7 @@ public class ProfileFragment extends Fragment {
                 .setSpinDuration(1000)
                 .build();
 
-        SeriesItem secondSeries = new SeriesItem.Builder(Color.parseColor("#FFC107"))
+        final SeriesItem secondSeries = new SeriesItem.Builder(Color.parseColor("#FFC107"))
                 .setRange(0, 100, 0)
                 .setLineWidth(28)
                 .setSpinDuration(1000)
@@ -198,13 +206,16 @@ public class ProfileFragment extends Fragment {
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
 
-
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
                                 dbh.addCigarette(new Cigarette(1, dt.toDate(), "PORCONE"));
+
                                 Intent i = new Intent("SMOKE_OUTOFTIME");
                                 i.putExtra("time", dt);
                                 getActivity().sendBroadcast(i);
+
+                                lose=true;
+
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -305,6 +316,64 @@ public class ProfileFragment extends Fragment {
                     timerText.setText("0"+hours+":0"+minutes+":0"+seconds);
                 }
             }
+        }
+    }
+
+    private void smokeOrDont(TextView losePoints){
+        if(lose) {
+            losePoints.setText("-50");
+            losePoints.setVisibility(TextView.VISIBLE);
+            losePoints.setTextColor(Color.RED);
+            Animation anim=AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+            losePoints.startAnimation(anim);
+            lose=false;
+        }
+        if(gain!=0) {
+            gain=0;
+        }
+        if(getActivity().getIntent().getExtras()!=null) {
+            gain = getActivity().getIntent().getExtras().getInt("points", 0);
+            getActivity().getIntent().removeExtra("points");
+        }
+
+        if(gain!=0) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME, 0);
+                    Firebase.setAndroidContext(getActivity());
+                    final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                    long points=p.getLong("points",0);
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            gain=gain*2;
+                            fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Choose")
+                    .setMessage("You take the blue pill—the story ends, you wake up in your " +
+                    "bed and believe whatever you want to believe. You take the red pill—you stay in " +
+                    "Wonderland, and I show you how deep the rabbit hole goes")
+                    .setPositiveButton("Don't smoke", dialogClickListener)
+                    .setNegativeButton("smoke", dialogClickListener)
+                    .setIcon(R.drawable.stopitsymbol)
+                    .show();
+
+            losePoints.setText("+" + gain);
+            losePoints.setVisibility(TextView.VISIBLE);
+            losePoints.setTextColor(Color.GREEN);
+            Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+            losePoints.startAnimation(anim);
         }
     }
 }

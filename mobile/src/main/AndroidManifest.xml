@@ -59,10 +59,6 @@
             android:label="@string/title_activity_new_challenge"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.ChooseActivity"
-            android:label="@string/title_choose"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
