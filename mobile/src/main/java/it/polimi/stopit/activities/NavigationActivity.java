@@ -145,6 +145,7 @@ public class NavigationActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.profile, menu);
+
         TextView sidename = (TextView) findViewById(R.id.sideName);
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
         sidename.setText("" + user.getName() + " " + user.getSurname());

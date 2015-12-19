@@ -38,11 +38,11 @@ public class DatabaseSeeder {
 
     public void seedAchievements(){
 
-        db.addAchievement(new Achievement(1,"One Day Stop","Not smoke for one day",200, R.drawable.achievement_stop,true));
-        db.addAchievement(new Achievement(2,"Three Days Stop","Not smoke for three days",400,R.drawable.achievement_stop,true));
-        db.addAchievement(new Achievement(3,"One Week Stop","Not smoke for one week",600,R.drawable.achievement_stop,false));
-        db.addAchievement(new Achievement(4,"Two Weeks Stop","Not smoke for two weeks",800,R.drawable.achievement_stop,false));
-        db.addAchievement(new Achievement(5,"One Month Stop","Not smoke for one month",1000,R.drawable.achievement_stop,false));
+        db.addAchievement(new Achievement(1,"One Day Stop","Don't smoke for one day",200, R.drawable.achievement_stop,true));
+        db.addAchievement(new Achievement(2,"Three Days Stop","Don't smoke for three days",400,R.drawable.achievement_stop,true));
+        db.addAchievement(new Achievement(3,"One Week Stop","Don't smoke for one week",600,R.drawable.achievement_stop,false));
+        db.addAchievement(new Achievement(4,"Two Weeks Stop","Don't smoke for two weeks",800,R.drawable.achievement_stop,false));
+        db.addAchievement(new Achievement(5,"One Month Stop","Don't smoke for one month",1000,R.drawable.achievement_stop,false));
         db.addAchievement(new Achievement(6,"Beginner","Do an alternative activity",100,R.drawable.achievement_star,true));
         db.addAchievement(new Achievement(7,"10 Activities","Do 10 alternative activities",200,R.drawable.achievement_star,false));
         db.addAchievement(new Achievement(8,"20 Activities","Do 20 alternative activities",400,R.drawable.achievement_star,false));
@@ -124,9 +124,13 @@ public class DatabaseSeeder {
 
     public void seedMoneyCategories(){
 
-        db.addMoneyCategory("Phone",R.drawable.phone);
-        db.addMoneyCategory("Laptop",R.drawable.macbook);
         db.addMoneyCategory("Travel",R.drawable.travel);
+        db.addMoneyCategory("Phone",R.drawable.phone);
+        db.addMoneyCategory("Tickets",R.drawable.ticket);
+        db.addMoneyCategory("Laptop",R.drawable.macbook);
+        db.addMoneyCategory("Clothes",R.drawable.clothes);
+        db.addMoneyCategory("Bicycle",R.drawable.bicycle);
+        db.addMoneyCategory("Cash",R.drawable.money);
         db.addMoneyCategory("Other",R.drawable.other);
     }
 }
