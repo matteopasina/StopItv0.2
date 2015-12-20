@@ -8,16 +8,18 @@ public class MoneyTarget {
     private int id;
     private long moneyAmount;
     private long moneySaved;
+    private int duration;
     private String name;
     private int imageResource;
 
     public MoneyTarget(){}
 
-    public MoneyTarget(int id,String name,long moneyAmount,long moneySaved,int imageResource){
+    public MoneyTarget(int id,String name,long moneyAmount,long moneySaved,int duration,int imageResource){
 
         this.id=id;
         this.moneyAmount=moneyAmount;
         this.moneySaved=moneySaved;
+        this.duration=duration;
         this.name=name;
         this.imageResource=imageResource;
     }
@@ -61,5 +63,14 @@ public class MoneyTarget {
     public void setImageResource(int image) {
         this.imageResource = image;
     }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
 
 }

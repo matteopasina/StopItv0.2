@@ -5,16 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.AddMoneyTargetActivity;
+import it.polimi.stopit.adapters.MoneyTargetsAdapter;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.MoneyTarget;
 
 public class MoneyFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private ArrayList<MoneyTarget> mTargets;
+    private DatabaseHandler db;
+    private FloatingActionButton fab;
 
     public MoneyFragment() {
         // Required empty public constructor
@@ -35,9 +44,9 @@ public class MoneyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_money, container, false);
+        View view = inflater.inflate(R.layout.fragment_moneytarget_list, container, false);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_fab);
+        fab = (FloatingActionButton) view.findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -46,21 +55,20 @@ public class MoneyFragment extends Fragment {
             }
         });
 
+        mTargets=new ArrayList<>();
+        db=new DatabaseHandler(getActivity().getApplicationContext());
+        mTargets=db.getAllTargets();
+
+        // Set the adapter
+
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(new MoneyTargetsAdapter(mTargets));
+
+
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     public interface OnFragmentInteractionListener {

@@ -2,6 +2,7 @@ package it.polimi.stopit.activities;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
+import it.polimi.stopit.model.MoneyTarget;
 
 public class AddMoneyTargetActivity extends AppCompatActivity {
 
@@ -60,25 +64,26 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                int price;
+                int duration=timePicker.getValue();
 
-                System.out.println(""+priceText.getText().toString());
+                try{
 
-                if(!priceText.getText().toString().equals("")){
-
-                    int price=Integer.parseInt(priceText.getText().toString());
+                    price=Integer.parseInt(priceText.getText().toString());
 
                     if(price>0 && price<=1000){
 
-                        Toast.makeText(AddMoneyTargetActivity.this, "The price is " + price, Toast.LENGTH_SHORT).show();
-                        System.out.println("VALUE = "+timePicker.getValue());
-                        showDialog();
+
+                        showDialog("TEST",price,duration,R.drawable.travel);
+
                     }else{
 
                         Toast.makeText(AddMoneyTargetActivity.this, "Insert a price between 1 and 1000 €", Toast.LENGTH_SHORT).show();
                     }
-                }else{
 
-                    Toast.makeText(AddMoneyTargetActivity.this, "Price not valid", Toast.LENGTH_SHORT).show();
+                }catch(Exception e){
+
+                    Toast.makeText(AddMoneyTargetActivity.this, "Insert a vald price ", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -97,19 +102,23 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(){
+    public void showDialog(String nam,int pric, int duratio,int imageResourc){
+
+        final String name=nam;
+        final int price=pric;
+        final int duration=duratio;
+        final int imageResource=imageResourc;
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        //Yes button clicked
 
+                        insertTarget(name,price,duration*7,imageResource);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        //No button clicked
 
                         break;
                 }
@@ -117,9 +126,28 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMoneyTargetActivity.this);
-        builder.setMessage("You are adding a new money target, confirm?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Adding "+ name +", price = "+price+" duration="+duration+" weeks confirm?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
 
+    public void insertTarget(String name,int price, int duration,int imageResource){
+
+        DatabaseHandler db=new DatabaseHandler(getApplication());
+
+        db.addMoneyTarget(new MoneyTarget(1,name,price,0,duration,imageResource));
+        Toast.makeText(AddMoneyTargetActivity.this, ""+name+" inserted correctly!", Toast.LENGTH_SHORT).show();
+
+        Fragment fragment = MoneyFragment.newInstance();
+
+        FragmentManager fragmentManager=getFragmentManager();
+
+        FragmentTransaction ft=fragmentManager.beginTransaction();
+
+        ft.replace(R.id.content_addmoneytar, fragment);
+
+        ft.commit();
+
+        getSupportActionBar().setTitle("Money Target");
+    }
 }

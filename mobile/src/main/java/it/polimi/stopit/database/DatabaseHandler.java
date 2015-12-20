@@ -56,6 +56,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String MONEYTARGET_NAME = "name";
     private static final String MONEYTARGET_AMOUNT = "amount";
     private static final String MONEYTARGET_SAVED = "saved";
+    private static final String MONEYTARGET_DURATION = "duration";
     private static final String MONEYTARGET_IMAGE = "image";
 
     // TABLE MONEY CATEGORIES
@@ -93,7 +94,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Create Money Targets table
         String CREATE_MONEY_TABLE = "CREATE TABLE " + TABLE_MONEY_TARGETS + "("
                 + MONEYTARGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYTARGET_NAME + " TEXT," + MONEYTARGET_AMOUNT + " INTEGER,"
-                + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_IMAGE + " INTEGER" + ")";
+                + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_DURATION + " INTEGER,"+ MONEYTARGET_IMAGE + " INTEGER" + ")";
         db.execSQL(CREATE_MONEY_TABLE);
 
         // Create Money Targets categories table
@@ -141,10 +142,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(MONEYTARGET_ID, target.getId());
         values.put(MONEYTARGET_NAME, target.getName());
         values.put(MONEYTARGET_AMOUNT, target.getMoneyAmount());
         values.put(MONEYTARGET_SAVED, target.getMoneySaved());
+        values.put(MONEYTARGET_DURATION, target.getDuration());
         values.put(MONEYTARGET_IMAGE, target.getImageResource());
 
         // Inserting Row
@@ -265,12 +266,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_MONEY_TARGETS, new String[]{MONEYTARGET_ID,
-                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_IMAGE}, MONEYTARGET_ID + "=?",
+                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_DURATION, MONEYTARGET_IMAGE}, MONEYTARGET_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        MoneyTarget moneyTarget = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4));
+        MoneyTarget moneyTarget = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
 
         return moneyTarget;
     }
@@ -329,7 +330,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4));
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
                 targetList.add(target);
 
             } while (cursor.moveToNext());
@@ -350,7 +351,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),100,100,cursor.getInt(2));
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),100,100,100,cursor.getInt(2));
                 targetList.add(target);
 
             } while (cursor.moveToNext());
