@@ -53,6 +53,13 @@ public class ScheduleService extends Service {
             Count.cancel();
             if(intent.getSerializableExtra("time")!=null){
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
+                start=new MutableDateTime();
+                end=new MutableDateTime();
+
+                start.setHourOfDay(9);
+                start.setMinuteOfHour(0);
+                end.setHourOfDay(23);
+                end.setMinuteOfHour(0);
                 nextCiga(list, start, end);
                 saveSchedule(list);
             }
@@ -67,6 +74,13 @@ public class ScheduleService extends Service {
     public void onCreate(){
         super.onCreate();
         firstStart();
+        start=new MutableDateTime();
+        end=new MutableDateTime();
+
+        start.setHourOfDay(9);
+        start.setMinuteOfHour(0);
+        end.setHourOfDay(23);
+        end.setMinuteOfHour(0);
         nextCiga(list, start, end);
         setCount(nextCiga);
     }
@@ -113,6 +127,14 @@ public class ScheduleService extends Service {
             public void onFinish() {
 
                 sendNotification(calcPoints());
+
+                start=new MutableDateTime();
+                end=new MutableDateTime();
+
+                start.setHourOfDay(9);
+                start.setMinuteOfHour(0);
+                end.setHourOfDay(23);
+                end.setMinuteOfHour(0);
 
                 nextCiga(list, start, end);
 
