@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -37,7 +38,6 @@ import it.polimi.stopit.controller.Controller;
 
 public class ScheduleService extends Service {
     private NotificationManager mNM;
-    public static final String PREFS_NAME = "StopItPrefs";
     private static List<MutableInterval> list;
     private static long nextCiga;
     private static MutableDateTime start;
@@ -146,7 +146,7 @@ public class ScheduleService extends Service {
                     public void run() {
 
                         mNM.cancel(n);
-                        SharedPreferences p=getSharedPreferences(PREFS_NAME, 0);
+                        SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
                         Firebase.setAndroidContext(ScheduleService.this);
                         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                         long points=p.getLong("points",0);
@@ -167,7 +167,7 @@ public class ScheduleService extends Service {
         list=loadSchedule();
         if(list==null) {
 
-            SharedPreferences userdata = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
             start=new MutableDateTime();
             end=new MutableDateTime();
@@ -177,7 +177,7 @@ public class ScheduleService extends Service {
             end.setHourOfDay(23);
             end.setMinuteOfHour(0);
 
-            list = splitDuration(start, end, (long) userdata.getInt("CPD", 0));
+            list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
             saveSchedule(list);
         }
     }

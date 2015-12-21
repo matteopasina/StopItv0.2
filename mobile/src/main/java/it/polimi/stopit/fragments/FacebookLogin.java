@@ -6,6 +6,7 @@ package it.polimi.stopit.fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,6 @@ public class FacebookLogin extends Fragment {
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
-    public static final String PREFS_NAME = "StopItPrefs";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class FacebookLogin extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 settings.edit().clear();
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("ID", Profile.getCurrentProfile().getId());

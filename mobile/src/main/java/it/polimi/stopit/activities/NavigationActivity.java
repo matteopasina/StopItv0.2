@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -43,14 +44,15 @@ public class NavigationActivity extends AppCompatActivity
 
     User user=new User();
     private long points;
-    public static final String PREFS_NAME = "StopItPrefs";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
         user.setID(settings.getString("ID", null));
         user.setName(settings.getString("name", null));
         user.setSurname(settings.getString("surname", null));
@@ -58,26 +60,31 @@ public class NavigationActivity extends AppCompatActivity
         user.setProfilePic(settings.getString("image", null));
 
 
-
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
         if(isOnline()) {
-            myFirebaseRef.addValueEventListener(new ValueEventListener() {
+
+            myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
+
                     if (!snapshot.child(user.getID()).exists()) {
+
                         myFirebaseRef.child(user.getID()).setValue(user);
+
                     }
                     if (snapshot.child(user.getID()).child("points").getValue() == null) {
+
                         points = 0;
+
                     } else {
+
                         points = (long) snapshot.child(user.getID()).child("points").getValue();
 
                     }
 
                     user.setPoints(points);
 
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putString("ID", user.getID());
                     editor.putString("name", user.getName());
@@ -86,8 +93,9 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("image", user.getProfilePic());
                     // Commit the edits!
                     editor.commit();
+
                     try {
-                        Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+                        Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
                         FragmentManager fragmentManager = getFragmentManager();
 
@@ -96,7 +104,7 @@ public class NavigationActivity extends AppCompatActivity
                         ft.replace(R.id.content_frame, fragment);
 
                         ft.commit();
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -106,10 +114,11 @@ public class NavigationActivity extends AppCompatActivity
                 public void onCancelled(FirebaseError error) {
                 }
             });
+
         }
         else{
             Toast.makeText(NavigationActivity.this, "Offline", Toast.LENGTH_SHORT).show();
-            Fragment fragment = ProfileFragment.newInstance(user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+            Fragment fragment = ProfileFragment.newInstance(user.getID(),user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
             FragmentManager fragmentManager = getFragmentManager();
 
@@ -181,7 +190,10 @@ public class NavigationActivity extends AppCompatActivity
 
         if (id == R.id.profile) {
 
-            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+            user.setPoints(settings.getLong("points",0));
+
+            Fragment fragment = ProfileFragment.newInstance(user.getID(),user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
 
             FragmentManager fragmentManager=getFragmentManager();
 
@@ -238,7 +250,8 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.stats) {
 
-            Fragment fragment = ProfileFragment.newInstance(user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            Fragment fragment = ProfileFragment.newInstance(user.getID(),
+                    user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
 
             FragmentManager fragmentManager=getFragmentManager();
 
