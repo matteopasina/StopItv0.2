@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,14 +52,15 @@ import it.polimi.stopit.services.ScheduleService;
  */
 public class ProfileFragment extends Fragment {
 
+    private static final String ARG_ID = "ID";
     private static final String ARG_NAME = "name";
     private static final String ARG_SURNAME = "surname";
     private static final String ARG_POINTS = "points";
     private static final String ARG_IMAGE = "imageURL";
-    private static final String PREFS_NAME = "StopItPrefs";
 
 
     // TODO: Rename and change types of parameters
+    private String ID;
     private String name;
     private String surname;
     private String points;
@@ -74,9 +76,10 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static Fragment newInstance(String name, String surname, String points,String imageURL) {
+    public static Fragment newInstance(String ID,String name, String surname, String points,String imageURL) {
         Fragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_ID, ID);
         args.putString(ARG_NAME, name);
         args.putString(ARG_SURNAME, surname);
         args.putString(ARG_POINTS, points);
@@ -89,6 +92,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            ID = getArguments().getString(ARG_ID);
             name = getArguments().getString(ARG_NAME);
             surname = getArguments().getString(ARG_SURNAME);
             points = getArguments().getString(ARG_POINTS);
@@ -100,17 +104,44 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
+        final Animation down=AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+        final Animation up= AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         TextView usernameText = (TextView) view.findViewById(R.id.username);
         usernameText.setText("" + name + " " + surname);
 
-        TextView showPoints = (TextView) view.findViewById(R.id.points);
+        final TextView showPoints = (TextView) view.findViewById(R.id.points);
         showPoints.setText("Points:  " + points);
 
-        TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
+        final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
 
-        smokeOrDont(losePoints);
+        Firebase.setAndroidContext(getActivity());
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+ID+"/points");
+        fire.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                long delta = (long) snapshot.getValue() - Long.valueOf(points);
+                if (delta < 0) {
+                    losePoints.setText("-"+String.valueOf(delta));
+                    losePoints.setVisibility(TextView.VISIBLE);
+                    losePoints.setTextColor(Color.parseColor("#B71C1C"));
+                    losePoints.startAnimation(down);
+                } else if (delta > 0) {
+                    losePoints.setText("+"+String.valueOf(delta));
+                    losePoints.setVisibility(TextView.VISIBLE);
+                    losePoints.setTextColor(Color.parseColor("#8BC34A"));
+                    losePoints.startAnimation(up);
+                }
+                points = snapshot.getValue().toString();
+                showPoints.setText("Points:  " + points);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
 
         CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
@@ -201,10 +232,15 @@ public class ProfileFragment extends Fragment {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME, 0);
+                                SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(getActivity());
                                 Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
+                                p.edit().putLong("points", Long.parseLong(points) - 50);
+                                SharedPreferences.Editor editor = p.edit();
+                                editor.putLong("points", Long.parseLong(points) - 50);
+                                // Commit the edits!
+                                editor.commit();
 
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
@@ -340,7 +376,7 @@ public class ProfileFragment extends Fragment {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    SharedPreferences p=getActivity().getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
                     Firebase.setAndroidContext(getActivity());
                     final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                     long points=p.getLong("points",0);

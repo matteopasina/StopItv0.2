@@ -19,7 +19,6 @@ import it.polimi.stopit.database.DatabaseSeeder;
 public class FirstLoginSettingsActivity extends AppCompatActivity {
 
     // TODO mettere a posto i commenti ettutto
-    public static final String PREFS_NAME = "StopItPrefs";
    // private static boolean first=false,last=false;
    // private static int hourOfDayFirst,hourOfDayLast=24,minuteFirst,minuteLast=60;
 
@@ -28,7 +27,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login_settings);
 
-        final SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         setTitle("Welcome, " + settings.getString("name", null));
 
@@ -87,15 +86,10 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
 
                             SharedPreferences.Editor editor = settings.edit();
-                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(FirstLoginSettingsActivity.this);
-                            SharedPreferences.Editor defaultEditor = sharedPref.edit();
-                            defaultEditor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
-                            editor.putInt("CPD", cigaPerDay.getProgress() / 2);
+                            editor.putString("CPD",String.valueOf(cigaPerDay.getProgress() / 2));
 
-                            defaultEditor.putString("cigcost", String.valueOf(cigCostVal.getText()));
-                            editor.putInt("cigcost", cost);
+                            editor.putString("cigcost", String.valueOf(cigCostVal.getText()));
                             editor.commit();
-                            defaultEditor.commit();
 
                             startActivity(intent);
                             finish();

@@ -65,6 +65,7 @@
                     android:layout_below="@+id/username"
                     android:layout_marginTop="15dp"
                     android:layout_toEndOf="@id/points"
+                    android:layout_marginLeft="-30dp"
                     android:visibility="invisible" />
 
             </RelativeLayout>
