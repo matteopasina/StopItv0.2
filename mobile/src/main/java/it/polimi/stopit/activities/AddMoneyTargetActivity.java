@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -22,7 +24,7 @@ import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
 import it.polimi.stopit.model.MoneyTarget;
 
-public class AddMoneyTargetActivity extends AppCompatActivity {
+public class AddMoneyTargetActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +68,34 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
 
                 int price;
                 int duration=timePicker.getValue();
+                duration=duration*7;
+                int maxPrice;
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
+
+                int cigCost = Integer.parseInt(settings.getString("cigcost", null));
+                int cigPerDay = Integer.parseInt(settings.getString("CPD", null));
+                maxPrice=(cigCost*cigPerDay*duration)/100;
 
                 try{
 
                     price=Integer.parseInt(priceText.getText().toString());
 
-                    if(price>0 && price<=1000){
+                    if(price>0){
 
+                        if(price<=maxPrice){
 
-                        showDialog("TEST",price,duration,R.drawable.travel);
+                            int cigToReduce=price*100/cigCost;
+                            showDialog("TEST",price,duration,R.drawable.travel,cigToReduce);
+                        }else{
+
+                            Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
+
+                        }
 
                     }else{
 
-                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a price between 1 and 1000 €", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price", Toast.LENGTH_SHORT).show();
                     }
 
                 }catch(Exception e){
@@ -102,7 +119,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(String nam,int pric, int duratio,int imageResourc){
+    public void showDialog(String nam,int pric, int duratio,int imageResourc,int cigToReduce){
 
         final String name=nam;
         final int price=pric;
@@ -115,7 +132,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
 
-                        insertTarget(name,price,duration*7,imageResource);
+                        insertTarget(name,price,duration,imageResource);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -126,7 +143,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMoneyTargetActivity.this);
-        builder.setMessage("Adding "+ name +", price = "+price+" duration="+duration+" weeks confirm?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce/duratio)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
@@ -149,5 +166,9 @@ public class AddMoneyTargetActivity extends AppCompatActivity {
         ft.commit();
 
         getSupportActionBar().setTitle("Money Target");
+    }
+
+    public void OnFragmentInteractionListener(){
+
     }
 }
