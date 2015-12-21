@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,6 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         TextView setCiga=(TextView) findViewById(R.id.SetCiga);
-        setCiga.setText("How many cigarettes per day do you usually smoke?");
 
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();
@@ -62,25 +62,54 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
             }
         });
 
-       /* Button lastC=(Button)findViewById(R.id.button);
-        lastC.setEnabled(false);*/
+        TextView cigCost=(TextView) findViewById(R.id.cig_cost);
+        final EditText cigCostVal=(EditText) findViewById(R.id.cigcost_text);
+
         Button done=(Button) findViewById(R.id.done);
-        //done.setEnabled(false);
+
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(cigaPerDay.getProgress()!=0) {
-                    Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
 
-                    SharedPreferences.Editor editor = settings.edit();
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(FirstLoginSettingsActivity.this);
-                    SharedPreferences.Editor defaultEditor=sharedPref.edit();
-                    defaultEditor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
-                    editor.putInt("CPD", cigaPerDay.getProgress() / 2);
-                    editor.commit();
-                    defaultEditor.commit();
+                    int cost=0;
+                    try{
 
-                    startActivity(intent);
-                    finish();
+                        cost=Integer.parseInt(cigCostVal.getText().toString());
+
+                    }catch (Exception e){
+
+                        Toast.makeText(FirstLoginSettingsActivity.this, "Please insert a valid cost", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(cost>0){
+
+                        if(cost<=50){
+                            Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
+
+                            SharedPreferences.Editor editor = settings.edit();
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(FirstLoginSettingsActivity.this);
+                            SharedPreferences.Editor defaultEditor = sharedPref.edit();
+                            defaultEditor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
+                            editor.putInt("CPD", cigaPerDay.getProgress() / 2);
+
+                            defaultEditor.putString("cigcost", String.valueOf(cigCostVal.getText()));
+                            editor.putInt("cigcost", cost);
+                            editor.commit();
+                            defaultEditor.commit();
+
+                            startActivity(intent);
+                            finish();
+
+                        }else{
+
+                            Toast.makeText(FirstLoginSettingsActivity.this, "Are you sure? Insert a realistic price", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else{
+
+                        Toast.makeText(FirstLoginSettingsActivity.this, "Please insert a valid cost", Toast.LENGTH_SHORT).show();
+                    }
+
                 }else{
                     Toast.makeText(FirstLoginSettingsActivity.this, "So you don't smoke? :)", Toast.LENGTH_SHORT).show();
                 }
