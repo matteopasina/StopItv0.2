@@ -18,13 +18,17 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
 import it.polimi.stopit.model.MoneyTarget;
 
-public class AddMoneyTargetActivity extends AppCompatActivity{
+public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassingData{
+
+    String name;
+    int imgRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity{
         getSupportActionBar().setTitle("Add new money target");
 
         Fragment moneyGalleryFragment = new MoneyGalleryFragment();
+        ((MoneyGalleryFragment)moneyGalleryFragment).registerActivity(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.rel_layout_content, moneyGalleryFragment).commit();
 
@@ -77,30 +82,38 @@ public class AddMoneyTargetActivity extends AppCompatActivity{
                 int cigPerDay = Integer.parseInt(settings.getString("CPD", null));
                 maxPrice=(cigCost*cigPerDay*duration)/100;
 
-                try{
+                if(name==null || imgRes==0){
 
-                    price=Integer.parseInt(priceText.getText().toString());
+                    System.out.println("Name: "+name+" imgRes = "+imgRes);
+                    Toast.makeText(AddMoneyTargetActivity.this, "Select a category", Toast.LENGTH_SHORT).show();
 
-                    if(price>0){
+                }else{
 
-                        if(price<=maxPrice){
+                    try{
 
-                            int cigToReduce=price*100/cigCost;
-                            showDialog("TEST",price,duration,R.drawable.travel,cigToReduce);
+                        price=Integer.parseInt(priceText.getText().toString());
+
+                        if(price>0){
+
+                            if(price<=maxPrice){
+
+                                int cigToReduce=price*100/cigCost;
+                                showDialog(name,price,duration,imgRes,cigToReduce);
+                            }else{
+
+                                Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
+
+                            }
+
                         }else{
 
-                            Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else{
+                    }catch(Exception e){
 
-                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a vald price ", Toast.LENGTH_SHORT).show();
                     }
-
-                }catch(Exception e){
-
-                    Toast.makeText(AddMoneyTargetActivity.this, "Insert a vald price ", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -168,7 +181,11 @@ public class AddMoneyTargetActivity extends AppCompatActivity{
         getSupportActionBar().setTitle("Money Target");
     }
 
-    public void OnFragmentInteractionListener(){
 
+    @Override
+    public void callBack(String name,int imgResource) {
+        System.out.println("Name: "+name+" imgRes = "+imgResource);
+        this.name=name;
+        this.imgRes=imgResource;
     }
 }

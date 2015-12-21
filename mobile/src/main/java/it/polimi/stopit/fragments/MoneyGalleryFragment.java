@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.MoneyRecyclerViewAdapter;
 import it.polimi.stopit.database.DatabaseHandler;
@@ -20,7 +21,7 @@ import it.polimi.stopit.model.MoneyTarget;
 public class MoneyGalleryFragment extends Fragment {
 
     private List<MoneyTarget> mTargets;
-    private OnListFragmentInteractionListener mListener;
+    private OnPassingData myListener;
     private DatabaseHandler db;
 
     public MoneyGalleryFragment() {
@@ -30,6 +31,10 @@ public class MoneyGalleryFragment extends Fragment {
         Fragment fragment = new MoneyGalleryFragment();
 
         return fragment;
+    }
+
+    public void registerActivity(OnPassingData activity){
+        myListener = activity;
     }
 
     @Override
@@ -56,7 +61,7 @@ public class MoneyGalleryFragment extends Fragment {
 
             recyclerView.setLayoutManager(layoutManager);
 
-            recyclerView.setAdapter(new MoneyRecyclerViewAdapter(mTargets, mListener));
+            recyclerView.setAdapter(new MoneyRecyclerViewAdapter(mTargets,myListener));
         }
         return view;
     }
@@ -65,19 +70,11 @@ public class MoneyGalleryFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-
-    public interface OnListFragmentInteractionListener {
-
-    }
 }

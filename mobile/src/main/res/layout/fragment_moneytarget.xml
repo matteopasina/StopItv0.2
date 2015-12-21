@@ -56,7 +56,7 @@
                     android:id="@+id/target_progress"
                     android:layout_width="100dp"
                     android:layout_height="5dp"
-                    android:progressBackgroundTint="@color/buttonBackground"
+                    android:background="#E1F5FE"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_marginTop="5dp"
                     android:layout_below="@+id/target_price" />

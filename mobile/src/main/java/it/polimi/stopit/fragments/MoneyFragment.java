@@ -65,7 +65,7 @@ public class MoneyFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(new MoneyTargetsAdapter(mTargets));
+        recyclerView.setAdapter(new MoneyTargetsAdapter(mTargets,getActivity()));
 
 
         return view;

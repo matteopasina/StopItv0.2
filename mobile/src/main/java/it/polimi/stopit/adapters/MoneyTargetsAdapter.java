@@ -1,5 +1,7 @@
 package it.polimi.stopit.adapters;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +21,12 @@ import it.polimi.stopit.model.MoneyTarget;
 public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapter.ViewHolder>{
 
     private final List<MoneyTarget> mTargets;
+    private Context context;
 
-    public MoneyTargetsAdapter(List<MoneyTarget> items) {
+    public MoneyTargetsAdapter(List<MoneyTarget> items, Context context) {
+
         mTargets = items;
+        this.context=context;
     }
 
     @Override
@@ -39,11 +44,22 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
         holder.targetImg.setImageResource(target.getImageResource());
         holder.targetName.setText(target.getName());
-        holder.targetPrice.setText(target.getMoneySaved() + " / " + target.getMoneyAmount() + " €");
         holder.targetDuration.setText("" + (target.getDuration()));
         holder.progressBar.setMax((int) target.getMoneyAmount());
-        //holder.progressBar.setProgress((int) target.getMoneySaved());
-        holder.progressBar.setProgress(10);
+
+        if(target.getMoneySaved()==target.getMoneyAmount()){
+
+            holder.progressBar.setProgress((int) target.getMoneySaved());
+            holder.targetPrice.setText("Completed!!");
+            holder.progressBar.invalidateDrawable(ContextCompat.getDrawable(context,R.drawable.progress_bar));
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_completed));
+
+        }else {
+
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_bar));
+            holder.progressBar.setProgress((int) target.getMoneySaved());
+            holder.targetPrice.setText(target.getMoneySaved() + " / " + target.getMoneyAmount() + " €");
+        }
     }
 
     @Override

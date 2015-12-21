@@ -2,8 +2,6 @@ package it.polimi.stopit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +11,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
@@ -36,7 +30,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
@@ -195,6 +189,9 @@ public class ProfileFragment extends Fragment {
         smoke.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+
+                Controller controller=new Controller(getActivity());
+                controller.updateMoneyTarget(getActivity(),10);
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

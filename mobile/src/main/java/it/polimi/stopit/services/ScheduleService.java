@@ -29,6 +29,7 @@ import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.controller.Controller;
 
 /**
  * Created by matteo on 13/12/15.
@@ -189,6 +190,9 @@ public class ScheduleService extends Service {
         if (end.isBeforeNow()) {
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
             System.out.println("endbefore"+end);
+            Controller controller = new Controller(getBaseContext());
+            controller.dailyControl();
+
         } else if (start.isAfterNow()) {
             nextCiga = start.getMillis() - now.getMillis();
             System.out.println("startafter");

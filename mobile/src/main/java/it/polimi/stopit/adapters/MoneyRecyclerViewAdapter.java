@@ -1,5 +1,6 @@
 package it.polimi.stopit.adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
-import it.polimi.stopit.fragments.MoneyGalleryFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.MoneyTarget;
 
 /**
@@ -21,11 +22,11 @@ import it.polimi.stopit.model.MoneyTarget;
 public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecyclerViewAdapter.ViewHolder> {
 
     private final List<MoneyTarget> mTargets;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnPassingData myListener;
 
-    public MoneyRecyclerViewAdapter(List<MoneyTarget> items, OnListFragmentInteractionListener listener) {
+    public MoneyRecyclerViewAdapter(List<MoneyTarget> items, OnPassingData myListener) {
         mTargets = items;
-        mListener = listener;
+        this.myListener = myListener;
     }
 
     @Override
@@ -33,29 +34,27 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_moneygallery, parent, false);
 
-
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (v.isSelected()) {
+
                     v.setSelected(false);
                     v.clearAnimation();
+                    v.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
+
 
                 } else {
 
-                    /*
-                    for(int i=0;i<parent.getChildCount();i++){
-
-                        RecyclerView viewI=(RecyclerView) parent.getChildAt(i).findViewById(R.id.list);
-                        viewI.findViewById(R.id.target_image).clearAnimation();
-                        viewI.destroyDrawingCache();
-                        viewI.setSelected(false);
-                        viewI.setBackgroundColor(Color.TRANSPARENT);
-                    }*/
                     v.setSelected(true);
                     Animation animationPop = AnimationUtils.loadAnimation(v.getContext(), R.anim.popup);
                     v.findViewById(R.id.target_image).setAnimation(animationPop);
+                    v.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
+
+                    ImageView img=(ImageView) v.findViewById(R.id.target_image);
+                    TextView name=(TextView) v.findViewById(R.id.target_name);
+                    myListener.callBack(name.getText().toString(),Integer.parseInt(img.getTag().toString()));
                 }
             }
         });
@@ -69,10 +68,9 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         MoneyTarget target=mTargets.get(position);
 
         holder.targetPic.setImageResource(target.getImageResource());
+        holder.targetPic.setTag(target.getImageResource());
         holder.targetName.setText(target.getName());
-
-        // mark  the view as selected:
-        holder.mView.setSelected(mTargets.contains(position));
+        //holder.setIsRecyclable(false);
 
     }
 
