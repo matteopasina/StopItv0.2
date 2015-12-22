@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
 import it.polimi.stopit.model.User;
@@ -66,6 +67,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String MONEYCAT_NAME = "name";
     private static final String MONEYCAT_IMAGE = "image";
 
+    // TABLE MONEY CATEGORIES
+    private static final String TABLE_CHALLENGES = "challenges";
+
+    private static final String CHALLENGE_ID = "id";
+    private static final String CHALLENGE_OPPONENTID = "opponentid";
+    private static final String CHALLENGE_POINTS = "points";
+    private static final String CHALLENGE_OPPONENT_POINTS = "opponentpoints";
+    private static final String CHALLENGE_START_TIME = "starttime";
+    private static final String CHALLENGE_END_TIME = "endtime";
+    private static final String CHALLENGE_ACCEPTED = "challengeaccepted";
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -101,6 +113,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String CREATE_MONEYCAT_TABLE = "CREATE TABLE " + TABLE_MONEY_CATEGORIES + "("
                 + MONEYCAT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYCAT_NAME + " TEXT," + MONEYCAT_IMAGE + " INTEGER" + ")";
         db.execSQL(CREATE_MONEYCAT_TABLE);
+
+        // Create Challenges categories table
+        String CREATE_CHALLENGES_TABLE = "CREATE TABLE " + TABLE_CHALLENGES + "("
+                + CHALLENGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
+                CHALLENGE_OPPONENT_POINTS + " INTEGER,"+ CHALLENGE_START_TIME + " TEXT," + CHALLENGE_END_TIME + " TEXT,"
+                + CHALLENGE_ACCEPTED + " TEXT" + ")";
+        db.execSQL(CREATE_CHALLENGES_TABLE);
     }
 
     @Override
@@ -111,6 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MONEY_TARGETS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHALLENGES);
 
         // Create tables again
         onCreate(db);
@@ -206,6 +226,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
     }
 
+    public void addChallenge(Challenge challenge) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CHALLENGE_ID, challenge.getID());
+        values.put(CHALLENGE_OPPONENTID, challenge.getOpponentID());
+        values.put(CHALLENGE_POINTS, challenge.getMyPoints());
+        values.put(CHALLENGE_OPPONENT_POINTS, challenge.getOpponentPoints());
+        values.put(CHALLENGE_START_TIME, challenge.getStartTime());
+        values.put(CHALLENGE_END_TIME, challenge.getEndTime());
+        String accepted= (challenge.isAccepted()) ? "true" : "false";
+        values.put(CHALLENGE_ACCEPTED, accepted);
+
+        // Inserting Row
+        db.insert(TABLE_CHALLENGES, null, values);
+        db.close();
+    }
+
     // GET SINGLE ROW
 
     public Cigarette getCigarette(int id){
@@ -276,6 +315,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return moneyTarget;
     }
 
+    public Challenge getChallenge(int id){
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
+                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
+                CHALLENGE_ACCEPTED}, CHALLENGE_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                cursor.getLong(5),cursor.getString(6));
+
+        return challenge;
+
+    }
+
     // GET ALL ROWS
 
     public List<Achievement> getAllAchievements() {
@@ -316,6 +374,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
 
         return contactList;
+    }
+
+    public List<Challenge> getAllChallenges() {
+
+        List<Challenge> challengeList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CHALLENGES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                        cursor.getLong(5),cursor.getString(6));
+                challengeList.add(challenge);
+
+            } while (cursor.moveToNext());
+        }
+
+        return challengeList;
     }
 
     // GET ALL TARGETS EXCEPT DEFAULT

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,15 @@ public class ChallengeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_challenge_list, container, false);
 
         mChallenges=new ArrayList<>();
+        db=new DatabaseHandler(getActivity());
+        mChallenges=db.getAllChallenges();
+
+        if(!mChallenges.isEmpty()) {
+            for(int i=0;i< mChallenges.size();i++) {
+                System.out.println(mChallenges.get(i).getOpponentID());
+            }
+        }
+
         fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
 
         fab.setOnClickListener(new View.OnClickListener() {

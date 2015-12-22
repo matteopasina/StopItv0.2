@@ -4,12 +4,12 @@
     android:repeatCount="0" >
 
     <translate
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_longAnimTime"
         android:fromYDelta="0%"
         android:toYDelta="100%" />
 
     <alpha
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_longAnimTime"
         android:fromAlpha="1.0"
         android:toAlpha="0.0" />
 

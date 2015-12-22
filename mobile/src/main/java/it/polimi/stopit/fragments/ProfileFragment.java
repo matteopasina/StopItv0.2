@@ -66,7 +66,6 @@ public class ProfileFragment extends Fragment {
     private String points;
     private String imageURL;
     private BroadcastReceiver uiUpdated;
-    private static boolean lose=false;
     private static int gain=0;
 
 
@@ -116,6 +115,8 @@ public class ProfileFragment extends Fragment {
         showPoints.setText("Points:  " + points);
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
+
+        smokeOrDont();
 
         Firebase.setAndroidContext(getActivity());
         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+ID+"/points");
@@ -250,8 +251,6 @@ public class ProfileFragment extends Fragment {
                                 i.putExtra("time", dt);
                                 getActivity().sendBroadcast(i);
 
-                                lose=true;
-
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -355,15 +354,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void smokeOrDont(TextView losePoints){
-        if(lose) {
-            losePoints.setText("-50");
-            losePoints.setVisibility(TextView.VISIBLE);
-            losePoints.setTextColor(Color.RED);
-            Animation anim=AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-            losePoints.startAnimation(anim);
-            lose=false;
-        }
+    private void smokeOrDont(){
         if(gain!=0) {
             gain=0;
         }
@@ -404,12 +395,6 @@ public class ProfileFragment extends Fragment {
                     .setNegativeButton("smoke", dialogClickListener)
                     .setIcon(R.drawable.stopitsymbol)
                     .show();
-
-            losePoints.setText("+" + gain);
-            losePoints.setVisibility(TextView.VISIBLE);
-            losePoints.setTextColor(Color.GREEN);
-            Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
-            losePoints.startAnimation(anim);
         }
     }
 }
