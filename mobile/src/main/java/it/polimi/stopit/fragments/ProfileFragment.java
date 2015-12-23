@@ -2,8 +2,6 @@ package it.polimi.stopit.fragments;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +30,12 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
 import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
@@ -230,22 +228,27 @@ public class ProfileFragment extends Fragment {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         switch (which){
+
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
+
+                                DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(getActivity());
                                 Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
                                 p.edit().putLong("points", Long.parseLong(points) - 50);
+
                                 SharedPreferences.Editor editor = p.edit();
                                 editor.putLong("points", Long.parseLong(points) - 50);
-                                // Commit the edits!
+
                                 editor.commit();
 
-                                DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
-                                dbh.addCigarette(new Cigarette(1, dt.toDate(), "PORCONE"));
+                                DateTime date=new DateTime(new Instant());
+                                dbh.addCigarette(new Cigarette(1, date, "smoke"));
 
                                 Intent i = new Intent("SMOKE_OUTOFTIME");
                                 i.putExtra("time", dt);
@@ -255,6 +258,7 @@ public class ProfileFragment extends Fragment {
 
                             case DialogInterface.BUTTON_NEGATIVE:
                                 //No button clicked
+
                                 break;
                         }
                     }

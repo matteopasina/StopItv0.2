@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
@@ -47,7 +45,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String TABLE_CIGARETTES = "cigarettes";
 
     private static final String CIGARETTE_ID = "id";
-    private static final String CIGARETTE_DATE = "date";
+    private static final String CIGARETTE_YEAR = "year";
+    private static final String CIGARETTE_MONTH = "month";
+    private static final String CIGARETTE_DAY = "day";
+    private static final String CIGARETTE_HOUR = "hour";
+    private static final String CIGARETTE_MINUTES = "minutes";
     private static final String CIGARETTE_TYPE = "type";
 
     // TABLE MONEY TARGETS
@@ -99,8 +101,9 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Create Cigarettes table
         String CREATE_CIGARETTES_TABLE = "CREATE TABLE " + TABLE_CIGARETTES + "("
-                + CIGARETTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CIGARETTE_DATE + " TEXT," + CIGARETTE_TYPE + " TEXT"
+                + CIGARETTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CIGARETTE_YEAR + " INTEGER," + CIGARETTE_MONTH + " INTEGER," + CIGARETTE_DAY + " INTEGER," + CIGARETTE_HOUR + " INTEGER," + CIGARETTE_MINUTES + " INTEGER," + CIGARETTE_TYPE + " TEXT"
                 + ")";
+        System.out.println(CREATE_CIGARETTES_TABLE);
         db.execSQL(CREATE_CIGARETTES_TABLE);
 
         // Create Money Targets table
@@ -191,10 +194,16 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(CIGARETTE_DATE, cigarette.getDate().toString());
+        values.put(CIGARETTE_YEAR, cigarette.getDate().getYear());
+        values.put(CIGARETTE_MONTH, cigarette.getDate().getMonthOfYear());
+        values.put(CIGARETTE_DAY, cigarette.getDate().getDayOfMonth());
+        values.put(CIGARETTE_HOUR, cigarette.getDate().getHourOfDay());
+        values.put(CIGARETTE_MINUTES, cigarette.getDate().getMinuteOfHour());
         values.put(CIGARETTE_TYPE, cigarette.getType());
 
         // Inserting Row
+
+        System.out.println("New Cigarette Inserted : "+ values.toString());
         db.insert(TABLE_CIGARETTES, null, values);
         db.close();
     }
@@ -252,21 +261,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CIGARETTES, new String[] { CIGARETTE_ID,
-                        CIGARETTE_DATE, CIGARETTE_TYPE }, CIGARETTE_ID + "=?",
+                        CIGARETTE_YEAR,CIGARETTE_MONTH,CIGARETTE_DAY,CIGARETTE_HOUR, CIGARETTE_MINUTES,CIGARETTE_TYPE }, CIGARETTE_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        try {
-            date = format.parse(cursor.getString(1));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-        Cigarette cigarette = new Cigarette(Integer.parseInt(cursor.getString(0)),date,cursor.getString(2));
+        DateTime date= new DateTime(cursor.getInt(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
 
-        return cigarette;
+        return new Cigarette(cursor.getInt(0),date,cursor.getString(6));
 
     }
 
@@ -280,9 +282,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        Achievement achievement = new Achievement(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)!=0);
-
-        return achievement;
+        return new Achievement(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5)!=0);
     }
 
     public User getContact(int id) {
@@ -295,9 +295,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        User contact = new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
-
-        return contact;
+        return new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
     }
 
     public MoneyTarget getMoneyTarget(int id) {
@@ -310,9 +308,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        MoneyTarget moneyTarget = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
 
-        return moneyTarget;
+        return new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
     }
 
     public Challenge getChallenge(int id){
@@ -397,7 +394,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return challengeList;
     }
 
-    // GET ALL TARGETS EXCEPT DEFAULT
     public ArrayList<MoneyTarget> getAllTargets() {
 
         ArrayList<MoneyTarget> targetList = new ArrayList<>();
@@ -418,7 +414,29 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return targetList;
     }
 
-    // GET ALL TARGETS EXCEPT DEFAULT
+    public ArrayList<Cigarette> getDailyCigarettes(int year,int month,int day) {
+
+        ArrayList<Cigarette> cigList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CIGARETTES + "WHERE "+CIGARETTE_YEAR+"="+year+" AND "+CIGARETTE_MONTH+"="+month+" AND "+CIGARETTE_DAY+"="+day+" ";
+
+        System.out.println("Query = "+selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                DateTime date= new DateTime(cursor.getInt(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
+                cigList.add(new Cigarette(cursor.getInt(0),date,cursor.getString(6)));
+
+            } while (cursor.moveToNext());
+        }
+
+        return cigList;
+    }
+
+    // GET ALL CATEGORIES
     public ArrayList<MoneyTarget> getAllCategories() {
 
         ArrayList<MoneyTarget> targetList = new ArrayList<>();

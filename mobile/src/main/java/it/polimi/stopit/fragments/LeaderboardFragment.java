@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,13 +51,9 @@ public class LeaderboardFragment extends Fragment {
         db=new DatabaseHandler(getActivity());
         mLeaderboard=db.getAllContacts();
 
-        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-        User me = new User();
-        me.setID(settings.getString("ID", null));
-        me.setName(settings.getString("name", null));
-        me.setSurname(settings.getString("surname", null));
-        me.setPoints(settings.getLong("points", 0));
-        me.setProfilePic(settings.getString("image", null));
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0));
         mLeaderboard.add(me);
 
         mLeaderboard.add(new User("1", "Paulo", "Dybala", "http://scontent.cdninstagram.com/hphotos-xta1/t51.2885-19/s150x150/12139892_453222071547866_1052697760_a.jpg", Long.parseLong("100")));

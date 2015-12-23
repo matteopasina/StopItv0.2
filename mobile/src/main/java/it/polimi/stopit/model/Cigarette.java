@@ -1,6 +1,6 @@
 package it.polimi.stopit.model;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 /**
  * Created by matteo on 15/12/15.
@@ -8,12 +8,12 @@ import java.util.Date;
 public class Cigarette {
 
     private int id;
-    private Date date;
+    private DateTime date;
     private String type;
 
     public Cigarette(){}
 
-    public Cigarette(int id,Date date,String type){
+    public Cigarette(int id,DateTime date,String type){
 
         this.id=id;
         this.date=date;
@@ -28,11 +28,11 @@ public class Cigarette {
         this.type = type;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 
