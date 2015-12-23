@@ -414,6 +414,28 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return targetList;
     }
 
+    public boolean targetAlreadyInProgress() {
+
+        ArrayList<MoneyTarget> targetList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_MONEY_TARGETS + " WHERE NOT "+MONEYTARGET_AMOUNT + " = " + MONEYTARGET_SAVED + "";
+
+        System.out.println("QUERY = "+selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
+                targetList.add(target);
+
+            } while (cursor.moveToNext());
+        }
+
+        return (targetList.size()>0);
+    }
+
+
     public ArrayList<Cigarette> getDailyCigarettes(int year,int month,int day) {
 
         ArrayList<Cigarette> cigList = new ArrayList<>();

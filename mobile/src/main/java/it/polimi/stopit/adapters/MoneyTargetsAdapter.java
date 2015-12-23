@@ -50,7 +50,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
         if(target.getMoneySaved()==target.getMoneyAmount()){
 
             holder.progressBar.setProgress((int) target.getMoneySaved());
-            holder.targetPrice.setText("Completed!!");
+            holder.targetPrice.setText("Completed");
             holder.progressBar.invalidateDrawable(ContextCompat.getDrawable(context,R.drawable.progress_bar));
             holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_completed));
 
@@ -58,7 +58,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
             holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_bar));
             holder.progressBar.setProgress((int) target.getMoneySaved());
-            holder.targetPrice.setText(target.getMoneySaved() + " / " + target.getMoneyAmount() + " €");
+            holder.targetPrice.setText((target.getMoneySaved()/100)+"."+(target.getMoneySaved()%100)+" / " + target.getMoneyAmount()/100 + " €");
         }
     }
 

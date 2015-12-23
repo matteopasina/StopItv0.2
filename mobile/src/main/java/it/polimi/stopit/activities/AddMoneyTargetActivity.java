@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -80,28 +81,28 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
                 int cigCost = Integer.parseInt(settings.getString("cigcost", null));
                 int cigPerDay = Integer.parseInt(settings.getString("CPD", null));
-                maxPrice=(cigCost*cigPerDay*duration)/100;
+
+                maxPrice=(cigCost*cigPerDay*duration);
 
                 if(name==null || imgRes==0){
 
-                    System.out.println("Name: "+name+" imgRes = "+imgRes);
                     Toast.makeText(AddMoneyTargetActivity.this, "Select a category", Toast.LENGTH_SHORT).show();
 
                 }else{
 
                     try{
 
-                        price=Integer.parseInt(priceText.getText().toString());
+                        price=Integer.parseInt(priceText.getText().toString())*100;
 
                         if(price>0){
 
                             if(price<=maxPrice){
 
-                                int cigToReduce=price*100/cigCost;
-                                showDialog(name,price,duration,imgRes,cigToReduce);
+                                int cigToReduce=price/cigCost;
+                                showDialog(name,price,duration,imgRes,cigPerDay-cigToReduce,cigToReduce);
                             }else{
 
-                                Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice/100+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -132,12 +133,8 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(String nam,int pric, int duratio,int imageResourc,int cigToReduce){
+    public void showDialog(final String name,final int price,final int duration,final int imageResource, final int CPD,final int cigToReduce){
 
-        final String name=nam;
-        final int price=pric;
-        final int duration=duratio;
-        final int imageResource=imageResourc;
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -145,7 +142,13 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
 
-                        insertTarget(name,price,duration,imageResource);
+                        insertTarget(name, price, duration, imageResource);
+                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
+                        settings.edit().putString("CPD",String.valueOf(CPD));
+
+                        Intent intent=new Intent(getApplicationContext(),NavigationActivity.class);
+                        startActivity(intent);
+
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -156,7 +159,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMoneyTargetActivity.this);
-        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce/duratio)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce/duration)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }

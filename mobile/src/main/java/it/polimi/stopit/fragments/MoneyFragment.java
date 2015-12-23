@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -50,8 +51,18 @@ public class MoneyFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Intent intent = new Intent(getActivity(),AddMoneyTargetActivity.class);
-                getActivity().startActivity(intent);
+                DatabaseHandler db=new DatabaseHandler(getActivity());
+                if(!db.targetAlreadyInProgress()){
+
+                    System.out.println(" DB RESPONSE = "+db.targetAlreadyInProgress());
+                    Intent intent = new Intent(getActivity(),AddMoneyTargetActivity.class);
+                    getActivity().startActivity(intent);
+
+                }else{
+
+                    Toast.makeText(getActivity(), "Complete your current targets before adding a new one", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

@@ -191,7 +191,7 @@ public class ScheduleService extends Service {
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
             System.out.println("endbefore"+end);
             Controller controller = new Controller(getBaseContext());
-            controller.dailyControl();
+            controller.dailyMoneyControl();
 
         } else if (start.isAfterNow()) {
             nextCiga = start.getMillis() - now.getMillis();
@@ -205,8 +205,6 @@ public class ScheduleService extends Service {
                 }
             }
         }
-        /*System.out.println("nextciga list:"+list);
-        System.out.println(nextCiga);*/
     }
 
     public void saveSchedule(List<MutableInterval> list){
