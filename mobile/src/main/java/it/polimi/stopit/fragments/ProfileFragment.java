@@ -375,16 +375,23 @@ public class ProfileFragment extends Fragment {
                     Firebase.setAndroidContext(getActivity());
                     final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                     long points=p.getLong("points",0);
+                    DatabaseHandler dbh=new DatabaseHandler(getActivity());
+                    DateTime date;
+
                     switch (which){
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             gain=gain*2;
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            date=new DateTime(new Instant());
+                            dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
                             //No button clicked
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            date=new DateTime(new Instant());
+                            dbh.addCigarette(new Cigarette(1, date, "notsmoke"));
                             break;
                     }
                 }
