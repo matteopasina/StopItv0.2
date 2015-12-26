@@ -87,7 +87,11 @@ public class Controller {
         }
         else{
             currentTarget.setMoneySaved(newMoney);
-            currentTarget.setDuration(currentTarget.getDuration()-1);
+
+            if(moneySaved>0){
+                currentTarget.setDuration(currentTarget.getDuration()-1);
+            }
+
         }
 
 
