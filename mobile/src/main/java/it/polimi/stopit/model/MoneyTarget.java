@@ -11,10 +11,11 @@ public class MoneyTarget {
     private int duration;
     private String name;
     private int imageResource;
+    private int cigReduced;
 
     public MoneyTarget(){}
 
-    public MoneyTarget(int id,String name,long moneyAmount,long moneySaved,int duration,int imageResource){
+    public MoneyTarget(int id,String name,long moneyAmount,long moneySaved,int duration,int imageResource,int cigReduced){
 
         this.id=id;
         this.moneyAmount=moneyAmount;
@@ -22,6 +23,15 @@ public class MoneyTarget {
         this.duration=duration;
         this.name=name;
         this.imageResource=imageResource;
+        this.cigReduced=cigReduced;
+    }
+
+    public int getCigReduced() {
+        return cigReduced;
+    }
+
+    public void setCigReduced(int cigReduced) {
+        this.cigReduced = cigReduced;
     }
 
     public String getName() {

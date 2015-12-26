@@ -89,6 +89,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             editor.putString("CPD",String.valueOf(cigaPerDay.getProgress() / 2));
 
                             editor.putString("cigcost", String.valueOf(cigCostVal.getText()));
+
                             editor.commit();
 
                             startActivity(intent);

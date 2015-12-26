@@ -61,6 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String MONEYTARGET_SAVED = "saved";
     private static final String MONEYTARGET_DURATION = "duration";
     private static final String MONEYTARGET_IMAGE = "image";
+    private static final String MONEYTARGET_CIGREDUCED = "reduced";
 
     // TABLE MONEY CATEGORIES
     private static final String TABLE_MONEY_CATEGORIES = "moneycategories";
@@ -109,7 +110,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Create Money Targets table
         String CREATE_MONEY_TABLE = "CREATE TABLE " + TABLE_MONEY_TARGETS + "("
                 + MONEYTARGET_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYTARGET_NAME + " TEXT," + MONEYTARGET_AMOUNT + " INTEGER,"
-                + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_DURATION + " INTEGER,"+ MONEYTARGET_IMAGE + " INTEGER" + ")";
+                + MONEYTARGET_SAVED + " INTEGER," + MONEYTARGET_DURATION + " INTEGER,"+ MONEYTARGET_IMAGE + " INTEGER," + MONEYTARGET_CIGREDUCED + " INTEGER"+ ")";
         db.execSQL(CREATE_MONEY_TABLE);
 
         // Create Money Targets categories table
@@ -170,6 +171,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(MONEYTARGET_SAVED, target.getMoneySaved());
         values.put(MONEYTARGET_DURATION, target.getDuration());
         values.put(MONEYTARGET_IMAGE, target.getImageResource());
+        values.put(MONEYTARGET_CIGREDUCED, target.getCigReduced());
 
         // Inserting Row
         db.insert(TABLE_MONEY_TARGETS, null, values);
@@ -303,13 +305,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_MONEY_TARGETS, new String[]{MONEYTARGET_ID,
-                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_DURATION, MONEYTARGET_IMAGE}, MONEYTARGET_ID + "=?",
+                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_DURATION, MONEYTARGET_IMAGE,MONEYTARGET_CIGREDUCED}, MONEYTARGET_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
 
-        return new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
+        return new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5),cursor.getInt(6));
     }
 
     public Challenge getChallenge(int id){
@@ -405,7 +407,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5),cursor.getInt(6));
                 targetList.add(target);
 
             } while (cursor.moveToNext());
@@ -416,23 +418,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     public boolean targetAlreadyInProgress() {
 
-        ArrayList<MoneyTarget> targetList = new ArrayList<>();
-
         String selectQuery = "SELECT  * FROM " + TABLE_MONEY_TARGETS + " WHERE NOT "+MONEYTARGET_AMOUNT + " = " + MONEYTARGET_SAVED + "";
 
-        System.out.println("QUERY = "+selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5));
-                targetList.add(target);
-
-            } while (cursor.moveToNext());
-        }
-
-        return (targetList.size()>0);
+        return cursor.moveToFirst();
     }
 
 
@@ -440,9 +431,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         ArrayList<Cigarette> cigList = new ArrayList<>();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_CIGARETTES + "WHERE "+CIGARETTE_YEAR+"="+year+" AND "+CIGARETTE_MONTH+"="+month+" AND "+CIGARETTE_DAY+"="+day+" ";
+        String selectQuery = "SELECT  * FROM " + TABLE_CIGARETTES + " WHERE "+CIGARETTE_YEAR+"="+year+" AND "+CIGARETTE_MONTH+"="+month+" AND "+CIGARETTE_DAY+"="+day+" ";
 
-        System.out.println("Query = "+selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -470,7 +460,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),100,100,100,cursor.getInt(2));
+                MoneyTarget target = new MoneyTarget(cursor.getInt(0),cursor.getString(1),100,100,100,cursor.getInt(2),0);
                 targetList.add(target);
 
             } while (cursor.moveToNext());
@@ -523,6 +513,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(MONEYTARGET_SAVED, target.getMoneySaved());
         values.put(MONEYTARGET_DURATION, target.getDuration());
         values.put(MONEYTARGET_IMAGE, target.getImageResource());
+        values.put(MONEYTARGET_CIGREDUCED, target.getCigReduced());
 
         // updating row
         return db.update(TABLE_MONEY_TARGETS, values, MONEYTARGET_ID + " = ?",

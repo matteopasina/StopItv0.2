@@ -14,7 +14,7 @@
         android:id="@+id/cat_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Category"
+        android:text="@string/catlabel"
         android:layout_marginLeft="150dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="10dp"
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="115dp"
-                android:text="Value in €:"
+                android:text="@string/pricelabel"
                 android:textSize="18sp"/>
 
             <EditText
@@ -74,7 +74,7 @@
                 android:id="@+id/time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time to complete:"
+                android:text="@string/timelabel"
                 android:layout_marginTop="35dp"
                 android:textSize="18sp"/>
 

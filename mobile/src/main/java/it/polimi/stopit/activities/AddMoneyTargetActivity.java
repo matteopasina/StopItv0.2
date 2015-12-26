@@ -2,7 +2,6 @@ package it.polimi.stopit.activities;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,13 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandler;
-import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
 import it.polimi.stopit.model.MoneyTarget;
 
@@ -41,17 +38,14 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Add new money target");
 
+
         Fragment moneyGalleryFragment = new MoneyGalleryFragment();
         ((MoneyGalleryFragment)moneyGalleryFragment).registerActivity(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.rel_layout_content, moneyGalleryFragment).commit();
 
-        TextView catLabel= (TextView) findViewById(R.id.cat_label);
-        TextView priceLabel= (TextView) findViewById(R.id.price_label);
         final EditText priceText = (EditText) findViewById(R.id.price_text);
-        String[] priceValues = new String[100];
 
-        TextView timeLabel=(TextView) findViewById(R.id.time_label);
         final NumberPicker timePicker = (NumberPicker) findViewById(R.id.time_picker);
         String[] timeValues = new String[52];
 
@@ -73,8 +67,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
             public void onClick(View v) {
 
                 int price;
-                int duration=timePicker.getValue();
-                duration=duration*7;
+                int duration=timePicker.getValue()*7;
                 int maxPrice;
 
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
@@ -98,7 +91,8 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
                             if(price<=maxPrice){
 
-                                int cigToReduce=price/cigCost;
+                                int cigToReduce=(price/(cigCost*duration));
+
                                 showDialog(name,price,duration,imgRes,cigPerDay-cigToReduce,cigToReduce);
                             }else{
 
@@ -113,7 +107,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
                     }catch(Exception e){
 
-                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a vald price ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price ", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -142,12 +136,13 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
 
-                        insertTarget(name, price, duration, imageResource);
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
-                        settings.edit().putString("CPD",String.valueOf(CPD));
+                        settings.edit().putString("CPD",String.valueOf(CPD)).commit();
 
                         Intent intent=new Intent(getApplicationContext(),NavigationActivity.class);
                         startActivity(intent);
+
+                        insertTarget(name, price, duration, imageResource,cigToReduce);
 
                         break;
 
@@ -159,35 +154,24 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMoneyTargetActivity.this);
-        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce/duration)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
 
-    public void insertTarget(String name,int price, int duration,int imageResource){
+    public void insertTarget(String name,int price, int duration,int imageResource,int cigToReduce){
 
         DatabaseHandler db=new DatabaseHandler(getApplication());
 
-        db.addMoneyTarget(new MoneyTarget(1,name,price,0,duration,imageResource));
-        Toast.makeText(AddMoneyTargetActivity.this, ""+name+" inserted correctly!", Toast.LENGTH_SHORT).show();
+        db.addMoneyTarget(new MoneyTarget(1, name, price, 0, duration, imageResource,cigToReduce));
+        Toast.makeText(AddMoneyTargetActivity.this, "" + name + " inserted correctly!", Toast.LENGTH_SHORT).show();
 
-        Fragment fragment = MoneyFragment.newInstance();
-
-        FragmentManager fragmentManager=getFragmentManager();
-
-        FragmentTransaction ft=fragmentManager.beginTransaction();
-
-        ft.replace(R.id.content_addmoneytar, fragment);
-
-        ft.commit();
-
-        getSupportActionBar().setTitle("Money Target");
     }
 
 
     @Override
     public void callBack(String name,int imgResource) {
-        System.out.println("Name: "+name+" imgRes = "+imgResource);
+
         this.name=name;
         this.imgRes=imgResource;
     }

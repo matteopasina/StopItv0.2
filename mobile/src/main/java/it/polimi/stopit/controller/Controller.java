@@ -36,7 +36,6 @@ public class Controller {
         int month=instant.get(DateTimeFieldType.monthOfYear());
         int day=instant.get(DateTimeFieldType.dayOfMonth());
 
-        int cigCost=Integer.parseInt(settings.getString("cigcost", null));
         int cigPD=Integer.parseInt(settings.getString("CPD", null));
 
         int numSmoked=0;
@@ -52,22 +51,18 @@ public class Controller {
             }
         }
 
-        if((numSmoked)<=cigPD){
+        updateMoneyTarget((cigPD-numSmoked));
 
-            updateMoneyTarget((cigPD-numSmoked)*cigCost);
-
-        }else{
-
-            updateMoneyTarget(-(numSmoked-cigPD)*cigCost);
-
-        }
     }
 
-    public void updateMoneyTarget(int moneySaved){
+    // updates money saved, saved is true if the user has smoked less or equal than his cpd
+
+    public void updateMoneyTarget(int notsmoked){
 
         ArrayList<MoneyTarget> moneyTargets=db.getAllTargets();
         MoneyTarget currentTarget=new MoneyTarget();
         boolean first=false;
+        int cigCost=Integer.parseInt(settings.getString("cigcost", null));
 
         for(MoneyTarget target:moneyTargets){
 
@@ -81,6 +76,7 @@ public class Controller {
 
         if(first==false) return;
 
+        int moneySaved=(currentTarget.getCigReduced()+notsmoked)*cigCost;
 
         long newMoney=currentTarget.getMoneySaved()+moneySaved;
 

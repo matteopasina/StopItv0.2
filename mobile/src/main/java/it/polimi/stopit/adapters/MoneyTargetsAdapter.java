@@ -58,7 +58,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
             holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_bar));
             holder.progressBar.setProgress((int) target.getMoneySaved());
-            holder.targetPrice.setText((target.getMoneySaved()/100)+"."+(target.getMoneySaved()%100)+" / " + target.getMoneyAmount()/100 + " €");
+            holder.targetPrice.setText((target.getMoneySaved()/100)+"."+(Math.abs(target.getMoneySaved()%100))+" / " + target.getMoneyAmount()/100 + " €");
         }
     }
 

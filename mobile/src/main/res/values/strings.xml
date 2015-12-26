@@ -56,4 +56,10 @@
     <string name="title_activity_new_challenge">NewChallengeActivity</string>
     <string name="title_choose">Choose</string>
 
+    <!-- Add new Money target-->
+
+    <string name="catlabel">Category</string>
+    <string name="pricelabel">Value in €:</string>
+    <string name="timelabel">Time to complete:</string>
+
 </resources>
