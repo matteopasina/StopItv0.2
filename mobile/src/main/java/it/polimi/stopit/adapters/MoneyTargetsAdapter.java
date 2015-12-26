@@ -1,6 +1,10 @@
 package it.polimi.stopit.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.MoneyTarget;
 
 /**
@@ -40,7 +45,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        MoneyTarget target=mTargets.get(position);
+        final MoneyTarget target=mTargets.get(position);
 
         holder.targetImg.setImageResource(target.getImageResource());
         holder.targetName.setText(target.getName());
@@ -49,10 +54,10 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
         if(target.getMoneySaved()==target.getMoneyAmount()){
 
-            holder.progressBar.setProgress((int) target.getMoneySaved());
-            holder.targetPrice.setText("Completed");
             holder.progressBar.invalidateDrawable(ContextCompat.getDrawable(context,R.drawable.progress_bar));
             holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_completed));
+            holder.progressBar.setProgress((int) target.getMoneySaved());
+            holder.targetPrice.setText("Completed");
 
         }else {
 
@@ -60,6 +65,49 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
             holder.progressBar.setProgress((int) target.getMoneySaved());
             holder.targetPrice.setText((target.getMoneySaved()/100)+"."+(Math.abs(target.getMoneySaved()%100))+" / " + target.getMoneyAmount()/100 + " €");
         }
+
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+
+                                DatabaseHandler db=new DatabaseHandler(context);
+
+                                if(target.getMoneyAmount()!=target.getMoneySaved()){
+
+                                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
+                                    int newCPD=Integer.parseInt(settings.getString("CPD", null))+target.getCigReduced();
+
+                                    SharedPreferences.Editor editor = settings.edit();
+                                    editor.putString("CPD",String.valueOf(newCPD));
+                                }
+
+
+                                db.deleteMoneyTarget(target);
+
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Do you want to delete this money target?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+
+                return true;
+            }
+        });
     }
 
     @Override

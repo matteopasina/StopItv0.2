@@ -54,7 +54,6 @@ public class MoneyFragment extends Fragment {
                 DatabaseHandler db=new DatabaseHandler(getActivity());
                 if(!db.targetAlreadyInProgress()){
 
-                    System.out.println(" DB RESPONSE = "+db.targetAlreadyInProgress());
                     Intent intent = new Intent(getActivity(),AddMoneyTargetActivity.class);
                     getActivity().startActivity(intent);
 
@@ -85,4 +84,5 @@ public class MoneyFragment extends Fragment {
     public interface OnFragmentInteractionListener {
 
     }
+
 }

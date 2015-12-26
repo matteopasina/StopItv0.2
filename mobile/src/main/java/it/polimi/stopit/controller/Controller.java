@@ -3,19 +3,13 @@ package it.polimi.stopit.controller;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
-
 import java.util.ArrayList;
-
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
 
-/**
- * Created by alessiorossotti on 21/12/15.
- */
 public class Controller {
 
     DatabaseHandler db;
@@ -74,7 +68,7 @@ public class Controller {
 
         }
 
-        if(first==false) return;
+        if(!first) return;
 
         int moneySaved=(currentTarget.getCigReduced()+notsmoked)*cigCost;
 
@@ -84,6 +78,11 @@ public class Controller {
 
             currentTarget.setMoneySaved(currentTarget.getMoneyAmount());
             currentTarget.setDuration(0);
+
+            int newCPD=Integer.parseInt(settings.getString("CPD", null))+currentTarget.getCigReduced();
+
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("CPD", String.valueOf(newCPD));
         }
         else{
             currentTarget.setMoneySaved(newMoney);

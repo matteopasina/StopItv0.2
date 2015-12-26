@@ -530,4 +530,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void deleteMoneyTarget(MoneyTarget target) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_MONEY_TARGETS, MONEYTARGET_ID + " = ?",
+                new String[]{String.valueOf(target.getId())});
+        db.close();
+    }
+
 }
