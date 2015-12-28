@@ -71,14 +71,14 @@ public class ChallengeFragment extends Fragment {
         });
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listChallenge);
 
-            recyclerView.setAdapter(new ChallengeRecyclerViewAdapter(mChallenges, mListener));
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        recyclerView.setAdapter(new ChallengeRecyclerViewAdapter(mChallenges, getActivity()));
+
         return view;
     }
 

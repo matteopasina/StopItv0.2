@@ -130,8 +130,8 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
             targetImg=(ImageView) view.findViewById(R.id.target_image);
             targetName= (TextView) view.findViewById(R.id.target_name);
             targetPrice= (TextView) view.findViewById(R.id.target_price);
-            targetDuration= (TextView) view.findViewById(R.id.target_duration);
-            progressBar = (ProgressBar) view.findViewById(R.id.target_progress);
+            targetDuration= (TextView) view.findViewById(R.id.challenge_duration);
+            progressBar = (ProgressBar) view.findViewById(R.id.challenge_progress);
         }
     }
 
