@@ -43,6 +43,7 @@ public class ScheduleService extends Service {
     private static long nextCiga;
     private static MutableDateTime start;
     private static MutableDateTime end;
+    private boolean beginOfDay=false;
     CountDownTimer Count;
     /*
     * Receives the boroadcast from the button smoke on the main screen, the restarts the
@@ -74,6 +75,8 @@ public class ScheduleService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+
+        //setta lo schedule per la prima esecuzione
         firstStart();
         start=new MutableDateTime();
         end=new MutableDateTime();
@@ -84,35 +87,9 @@ public class ScheduleService extends Service {
         end.setMinuteOfHour(0);
         nextCiga(list, start, end);
         setCount(nextCiga);
+
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-            super.onStartCommand(intent, flags, startId);
-
-            registerReceiver(uiUpdated, new IntentFilter("SMOKE_OUTOFTIME"));
-
-            return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(uiUpdated);
-    }
-
-    IBinder mBinder = new LocalBinder();
-
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    public class LocalBinder extends Binder {
-        public ScheduleService getServerInstance() {
-            return ScheduleService.this;
-        }
-    }
 
     public void setCount(long next){
         Count=new CountDownTimer(next, 1000) {
@@ -126,6 +103,11 @@ public class ScheduleService extends Service {
             }
 
             public void onFinish() {
+
+                if(beginOfDay){
+                    deleteFile("schedule");
+                    firstStart();
+                }
 
                 sendNotification(calcPoints());
 
@@ -188,20 +170,26 @@ public class ScheduleService extends Service {
         MutableDateTime now = new MutableDateTime();
 
         if (end.isBeforeNow()) {
+            beginOfDay=true;
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
             System.out.println("endbefore"+end);
             Controller controller = new Controller(getBaseContext());
             controller.dailyMoneyControl();
+            controller.checkNotifications();
 
         } else if (start.isAfterNow()) {
+
             nextCiga = start.getMillis() - now.getMillis();
             System.out.println("startafter");
+
         } else {
             for (MutableInterval i : list) {
                 if (i.contains(now)) {
+
                     nextCiga = i.getEndMillis() - now.getMillis();
                     System.out.println("normal");
                     break;
+
                 }
             }
         }
@@ -313,4 +301,33 @@ public class ScheduleService extends Service {
         // Builds the notification and issues it.
         mNM.notify(NotificationID.getID(), mBuilder.build());
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        registerReceiver(uiUpdated, new IntentFilter("SMOKE_OUTOFTIME"));
+
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(uiUpdated);
+    }
+
+    IBinder mBinder = new LocalBinder();
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    public class LocalBinder extends Binder {
+        public ScheduleService getServerInstance() {
+            return ScheduleService.this;
+        }
+    }
+
 }

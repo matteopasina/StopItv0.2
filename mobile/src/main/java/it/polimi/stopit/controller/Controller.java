@@ -138,15 +138,14 @@ public class Controller {
         });
     }
 
-    public void sendNotification(String opponent) {
+    private void sendNotification(String opponent) {
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.stopitsymbol)
                         .setContentTitle("You have been challenged by "+opponent)
                         .setContentText("Smash his ass!")
                         .setAutoCancel(true);
-        // Sets an ID for the notification
-
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
@@ -155,8 +154,10 @@ public class Controller {
         // This ensures that navigating backward from the Activity leads out of
         // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
         // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(NavigationActivity.class);
+
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
@@ -165,9 +166,12 @@ public class Controller {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
+
         // Gets an instance of the NotificationManager service
         NotificationManager mNM =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         // Builds the notification and issues it.
         mNM.notify(NotificationID.getID(), mBuilder.build());
+
     }
 }
