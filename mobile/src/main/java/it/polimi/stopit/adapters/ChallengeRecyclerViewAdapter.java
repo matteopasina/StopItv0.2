@@ -61,28 +61,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             public void onCancelled(FirebaseError error) {
             }
         });
-        /*
-        MoneyTarget target=mTargets.get(position);
 
-        holder.targetPic.setImageResource(target.getImageResource());
-        holder.targetPic.setTag(target.getImageResource());
-        holder.targetName.setText(target.getName());
-        //holder.setIsRecyclable(false);
-
-        holder.mItem = mChallenges.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });*/
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
@@ -43,7 +44,6 @@ public class ScheduleService extends Service {
     private static MutableDateTime start;
     private static MutableDateTime end;
     CountDownTimer Count;
-    private static int n=0;
     /*
     * Receives the boroadcast from the button smoke on the main screen, the restarts the
     * timer with time shifted
@@ -145,7 +145,7 @@ public class ScheduleService extends Service {
 
                     public void run() {
 
-                        mNM.cancel(n);
+                        mNM.cancel(NotificationID.getID());
                         SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
                         Firebase.setAndroidContext(ScheduleService.this);
                         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -280,7 +280,6 @@ public class ScheduleService extends Service {
     }
 
     public void sendNotification(int points) {
-        n+=1;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.stopitsymbol)
@@ -288,7 +287,6 @@ public class ScheduleService extends Service {
                         .setContentText("You earned it")
                         .setAutoCancel(true);
         // Sets an ID for the notification
-        int mNotificationId = n;
 
 
         Intent resultIntent = new Intent(this, NavigationActivity.class);
@@ -313,6 +311,6 @@ public class ScheduleService extends Service {
         // Gets an instance of the NotificationManager service
         mNM =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        mNM.notify(mNotificationId, mBuilder.build());
+        mNM.notify(NotificationID.getID(), mBuilder.build());
     }
 }

@@ -3,6 +3,8 @@ package it.polimi.stopit.adapters;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -127,8 +130,15 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                             //Yes button clicked
                             DatabaseHandler dbh=new DatabaseHandler(view.getContext());
                             dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
-                                    ,mContacts.get(getLayoutPosition()).getID(),0,0,0,
-                                    (long)days.getProgress()*86400000, "false"));
+                                    , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
+                                    (long) days.getProgress() * 86400000, "false"));
+
+                            final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+
+                            Firebase.setAndroidContext(view.getContext());
+                            final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/"+mContacts.get(getLayoutPosition()).getID());
+
+                            fire.push().setValue(settings.getString("ID", null));
 
                             Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                             createChallenge.putExtra("ID",mContacts.get(getLayoutPosition()).getID());
