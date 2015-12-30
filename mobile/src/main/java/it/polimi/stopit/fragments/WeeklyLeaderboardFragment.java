@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.adapters.LeaderboardRecyclerViewAdapter;
+import it.polimi.stopit.adapters.WeeklyLeaderboardAdapter;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.User;
 
@@ -76,7 +76,7 @@ public class WeeklyLeaderboardFragment extends Fragment{
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            recyclerView.setAdapter(new LeaderboardRecyclerViewAdapter(mLeaderboard));
+            recyclerView.setAdapter(new WeeklyLeaderboardAdapter(mLeaderboard));
         }
 
         return view;

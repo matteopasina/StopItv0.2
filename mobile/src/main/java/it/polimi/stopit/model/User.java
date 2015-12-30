@@ -21,6 +21,8 @@ public class User {
         this.surname=surname;
         this.profilePic=profilePic;
         this.points=points;
+        this.dayPoints=Long.parseLong("0");
+        this.weekPoints = Long.parseLong("0");
     }
     public String getID() {
         return ID;
