@@ -85,7 +85,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
                                     int newCPD=Integer.parseInt(settings.getString("CPD", null))+target.getCigReduced();
 
                                     SharedPreferences.Editor editor = settings.edit();
-                                    editor.putString("CPD",String.valueOf(newCPD));
+                                    editor.putString("CPD",String.valueOf(newCPD)).apply();
                                 }
 
 
