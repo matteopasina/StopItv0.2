@@ -34,7 +34,6 @@ import com.squareup.picasso.Picasso;
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
-import it.polimi.stopit.fragments.LeaderboardFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.ProfileFragment;
 import it.polimi.stopit.model.User;
@@ -204,7 +203,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.leaderboard) {
 
-            Fragment fragment = LeaderboardFragment.newInstance();
+            /*Fragment fragment = LeaderboardFragment.newInstance();
 
             FragmentManager fragmentManager=getFragmentManager();
 
@@ -214,7 +213,11 @@ public class NavigationActivity extends AppCompatActivity
 
             ft.commit();
 
-            getSupportActionBar().setTitle("Leaderboard");
+            getSupportActionBar().setTitle("Leaderboard");*/
+
+            Intent intent = new Intent(this,LeaderboardActivity.class);
+
+            startActivity(intent);
 
         } else if (id == R.id.achievements) {
 

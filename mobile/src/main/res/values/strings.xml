@@ -62,4 +62,11 @@
     <string name="pricelabel">Value in €:</string>
     <string name="timelabel">Time to complete:</string>
 
+    <!-- Leaderboard -->
+    <string name="dailylead">DAILY</string>
+    <string name="weeklylead">WEEKLY</string>
+    <string name="alltimelead">ALL TIME</string>
+    <string name="title_activity_leaderboard">LeaderboardActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
 </resources>

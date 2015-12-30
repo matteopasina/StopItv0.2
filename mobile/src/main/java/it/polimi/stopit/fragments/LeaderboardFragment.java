@@ -1,6 +1,6 @@
 package it.polimi.stopit.fragments;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,12 +20,11 @@ import it.polimi.stopit.adapters.LeaderboardRecyclerViewAdapter;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.User;
 
-public class LeaderboardFragment extends Fragment {
+public class LeaderboardFragment extends Fragment{
 
     private OnListFragmentInteractionListener mListener;
     private ArrayList<User> mLeaderboard;
     private DatabaseHandler db;
-    public static final String PREFS_NAME = "StopItPrefs";
 
     public LeaderboardFragment() {
     }
