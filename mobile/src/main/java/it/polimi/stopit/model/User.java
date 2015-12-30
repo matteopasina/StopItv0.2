@@ -14,15 +14,15 @@ public class User {
 
     public User(){}
 
-    public User(String id,String name,String surname,String profilePic,Long points){
+    public User(String id,String name,String surname,String profilePic,Long points,Long weekPoints,Long dayPoints){
 
         this.ID=id;
         this.name=name;
         this.surname=surname;
         this.profilePic=profilePic;
         this.points=points;
-        this.dayPoints=Long.parseLong("0");
-        this.weekPoints = Long.parseLong("0");
+        this.dayPoints=dayPoints;
+        this.weekPoints = weekPoints;
     }
     public String getID() {
         return ID;

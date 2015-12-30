@@ -3,8 +3,6 @@ package it.polimi.stopit.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,8 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,7 +24,6 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -36,7 +31,6 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
@@ -64,7 +58,8 @@ public class NavigationActivity extends AppCompatActivity
         user.setSurname(settings.getString("surname", null));
         user.setPoints(settings.getLong("points", 0));
         user.setProfilePic(settings.getString("image", null));
-
+        user.setDayPoints(0);
+        user.setWeekPoints(0);
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -211,18 +206,6 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.leaderboard) {
 
-            /*Fragment fragment = AllTimeLeaderboardFragment.newInstance();
-
-            FragmentManager fragmentManager=getFragmentManager();
-
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
-
-            getSupportActionBar().setTitle("Leaderboard");*/
-
             Intent intent = new Intent(this,LeaderboardActivity.class);
 
             startActivity(intent);
@@ -313,21 +296,6 @@ public class NavigationActivity extends AppCompatActivity
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private void challengeFragment(){
-
-        Fragment fragment = ChallengeFragment.newInstance();
-
-        FragmentManager fragmentManager=getFragmentManager();
-
-        FragmentTransaction ft=fragmentManager.beginTransaction();
-
-        ft.replace(R.id.content_frame, fragment);
-
-        ft.commit();
-
-        getSupportActionBar().setTitle("Challenges");
     }
 }
 

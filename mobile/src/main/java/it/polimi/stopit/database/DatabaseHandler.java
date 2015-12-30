@@ -40,6 +40,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CONTACT_SURNAME = "surname";
     private static final String CONTACT_IMAGE = "image";
     private static final String CONTACT_POINTS = "points";
+    private static final String CONTACT_DAYPOINTS = "daypoints";
+    private static final String CONTACT_WEEKPOINTS = "weekpoints";
 
     // TABLE CIGARETTE
     private static final String TABLE_CIGARETTES = "cigarettes";
@@ -97,7 +99,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         // Create Contacts table
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
                 + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
-                + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER" + ")";
+                + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER," + CONTACT_DAYPOINTS + " INTEGER," + CONTACT_WEEKPOINTS + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
         // Create Cigarettes table
@@ -230,6 +232,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             values.put(CONTACT_SURNAME, contact.getSurname());
             values.put(CONTACT_IMAGE, contact.getProfilePic());
             values.put(CONTACT_POINTS, contact.getPoints());
+            values.put(CONTACT_DAYPOINTS, contact.getDayPoints());
+            values.put(CONTACT_WEEKPOINTS, contact.getWeekPoints());
 
             // Inserting Row
             db.insert(TABLE_CONTACTS, null, values);
@@ -292,12 +296,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CONTACTS, new String[]{CONTACT_ID,
-                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS}, CONTACT_ID + "=?",
+                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS,CONTACT_DAYPOINTS,CONTACT_WEEKPOINTS}, CONTACT_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        return new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
+        return new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)),Long.parseLong(cursor.getString(5)),Long.parseLong(cursor.getString(6)));
     }
 
     public MoneyTarget getMoneyTarget(int id) {
@@ -366,7 +370,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                User contact = new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)));
+                User contact = new User(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),Long.parseLong(cursor.getString(4)),Long.parseLong(cursor.getString(5)),Long.parseLong(cursor.getString(6)));
                 contactList.add(contact);
 
             } while (cursor.moveToNext());
