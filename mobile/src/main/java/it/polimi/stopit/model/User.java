@@ -8,7 +8,9 @@ public class User {
     private String ID;
     private String name,surname;
     private String profilePic;
-    private Long points;
+    private long points;
+    private long weekPoints;
+    private long dayPoints;
 
     public User(){}
 
@@ -50,12 +52,28 @@ public class User {
         this.profilePic = profilePic;
     }
 
-    public Long getPoints() {
+    public long getPoints() {
         return points;
     }
 
-    public void setPoints(Long points) {
+    public void setPoints(long points) {
         this.points = points;
+    }
+
+    public long getWeekPoints() {
+        return weekPoints;
+    }
+
+    public void setWeekPoints(long weekPoints) {
+        this.weekPoints = weekPoints;
+    }
+
+    public long getDayPoints() {
+        return dayPoints;
+    }
+
+    public void setDayPoints(long dayPoints) {
+        this.dayPoints = dayPoints;
     }
 }
 
