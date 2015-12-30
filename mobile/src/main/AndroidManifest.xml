@@ -62,7 +62,7 @@
         <activity
             android:name=".activities.LeaderboardActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/Leaderboard"/>
     </application>
 
 </manifest>

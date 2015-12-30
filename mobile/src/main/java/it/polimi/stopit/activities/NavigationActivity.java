@@ -203,7 +203,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.leaderboard) {
 
-            /*Fragment fragment = LeaderboardFragment.newInstance();
+            /*Fragment fragment = AllTimeLeaderboardFragment.newInstance();
 
             FragmentManager fragmentManager=getFragmentManager();
 

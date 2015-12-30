@@ -9,13 +9,16 @@ import android.view.MenuItem;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.ViewPagerAdapter;
-import it.polimi.stopit.fragments.LeaderboardFragment;
+import it.polimi.stopit.fragments.AllTimeLeaderboardFragment;
+import it.polimi.stopit.fragments.DailyLeaderboardFragment;
+import it.polimi.stopit.fragments.WeeklyLeaderboardFragment;
 
 public class LeaderboardActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private String ARG_TYPE = "TYPE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +41,10 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new LeaderboardFragment(), "DAILY");
-        adapter.addFragment(new LeaderboardFragment(), "WEEKLY");
-        adapter.addFragment(new LeaderboardFragment(), "ALL TIME");
+
+        adapter.addFragment(new DailyLeaderboardFragment(), "DAILY");
+        adapter.addFragment(new WeeklyLeaderboardFragment(), "WEEKLY");
+        adapter.addFragment(new AllTimeLeaderboardFragment(), "ALL TIME");
         viewPager.setAdapter(adapter);
     }
 

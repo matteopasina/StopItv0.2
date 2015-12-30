@@ -14,17 +14,14 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.fragments.LeaderboardFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.User;
 
 public class LeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<LeaderboardRecyclerViewAdapter.ViewHolder> {
 
-    private final OnListFragmentInteractionListener mListener;
     private final ArrayList<User> mLeaderboard;
 
-    public LeaderboardRecyclerViewAdapter(ArrayList<User> leaderboard, OnListFragmentInteractionListener listener) {
+    public LeaderboardRecyclerViewAdapter(ArrayList<User> leaderboard) {
         mLeaderboard = leaderboard;
-        mListener = listener;
     }
 
     @Override
