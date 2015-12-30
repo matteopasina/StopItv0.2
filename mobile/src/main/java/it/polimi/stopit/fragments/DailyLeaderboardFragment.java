@@ -87,7 +87,7 @@ public class DailyLeaderboardFragment extends Fragment{
         @Override
         public int compare(User contact1, User contact2) {
 
-            return contact2.getPoints().compareTo(contact1.getPoints());
+            return contact2.getDayPoints().compareTo(contact1.getDayPoints());
 
         }
     }
