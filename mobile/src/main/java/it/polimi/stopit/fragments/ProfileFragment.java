@@ -65,6 +65,7 @@ public class ProfileFragment extends Fragment {
     private String imageURL;
     private BroadcastReceiver uiUpdated;
     private static int gain=0;
+    static String IDopponent=null;
 
 
     private OnFragmentInteractionListener mListener;
@@ -375,6 +376,7 @@ public class ProfileFragment extends Fragment {
                     Firebase.setAndroidContext(getActivity());
                     final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                     long points=p.getLong("points",0);
+                    SharedPreferences.Editor editor = p.edit();
                     DatabaseHandler dbh=new DatabaseHandler(getActivity());
                     DateTime date;
 
@@ -382,6 +384,10 @@ public class ProfileFragment extends Fragment {
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             gain=gain*2;
+
+                            editor.putLong("points", points+gain);
+                            editor.commit();
+
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
@@ -389,6 +395,10 @@ public class ProfileFragment extends Fragment {
 
                         case DialogInterface.BUTTON_NEGATIVE:
                             //No button clicked
+
+                            editor.putLong("points", points+gain);
+                            editor.commit();
+
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "notsmoke"));
@@ -399,9 +409,56 @@ public class ProfileFragment extends Fragment {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Choose")
+                    .setCancelable(false)
                     .setMessage("You take the blue pill—the story ends, you wake up in your " +
-                    "bed and believe whatever you want to believe. You take the red pill—you stay in " +
-                    "Wonderland, and I show you how deep the rabbit hole goes")
+                            "bed and believe whatever you want to believe. You take the red pill—you stay in " +
+                            "Wonderland, and I show you how deep the rabbit hole goes")
+                    .setPositiveButton("Don't smoke", dialogClickListener)
+                    .setNegativeButton("smoke", dialogClickListener)
+                    .setIcon(R.drawable.stopitsymbol)
+                    .show();
+        }
+    }
+
+    private void challenge(){
+
+        if(getActivity().getIntent().getExtras()!=null) {
+            IDopponent = getActivity().getIntent().getExtras().getString("IDopponent", null);
+            getActivity().getIntent().removeExtra("IDopponent");
+        }
+
+        if(!IDopponent.isEmpty()) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    Firebase.setAndroidContext(getActivity());
+                    final Firebase fireNotification = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
+                    final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
+
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            Firebase newChallenge=fireChallenge.push();
+                            newChallenge.child("Player 1").setValue(p.getString("ID",null));
+                            newChallenge.child("Player 2").setValue(IDopponent);
+                            newChallenge.child("Points 1").setValue(0);
+                            newChallenge.child("Points 2").setValue(0);
+
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Challenge!")
+                    .setCancelable(false)
+                    .setMessage("")
                     .setPositiveButton("Don't smoke", dialogClickListener)
                     .setNegativeButton("smoke", dialogClickListener)
                     .setIcon(R.drawable.stopitsymbol)

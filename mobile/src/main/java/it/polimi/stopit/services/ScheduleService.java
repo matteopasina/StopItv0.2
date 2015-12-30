@@ -16,7 +16,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -32,6 +35,8 @@ import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Challenge;
 
 /**
  * Created by matteo on 13/12/15.
@@ -45,8 +50,9 @@ public class ScheduleService extends Service {
     private static MutableDateTime end;
     private boolean beginOfDay=false;
     CountDownTimer Count;
+
     /*
-    * Receives the boroadcast from the button smoke on the main screen, the restarts the
+    * Receives the broadcast from the button smoke on the main screen, the restarts the
     * timer with time shifted
     * */
     private BroadcastReceiver uiUpdated=new BroadcastReceiver() {
@@ -54,6 +60,7 @@ public class ScheduleService extends Service {
         public void onReceive(Context context, Intent intent) {
             Count.cancel();
             if(intent.getSerializableExtra("time")!=null){
+
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
                 start=new MutableDateTime();
                 end=new MutableDateTime();
@@ -64,9 +71,12 @@ public class ScheduleService extends Service {
                 end.setMinuteOfHour(0);
                 nextCiga(list, start, end);
                 saveSchedule(list);
+
             }
+
             Count=null;
             setCount(nextCiga);
+
         }
     };
 
@@ -87,7 +97,8 @@ public class ScheduleService extends Service {
         end.setMinuteOfHour(0);
         nextCiga(list, start, end);
         setCount(nextCiga);
-
+        SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
+        checkChallenges(p);
     }
 
 
@@ -107,6 +118,7 @@ public class ScheduleService extends Service {
                 if(beginOfDay){
                     deleteFile("schedule");
                     firstStart();
+                    beginOfDay=false;
                 }
 
                 sendNotification(calcPoints());
@@ -161,6 +173,7 @@ public class ScheduleService extends Service {
 
             list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
             saveSchedule(list);
+
         }
     }
 
@@ -170,12 +183,12 @@ public class ScheduleService extends Service {
         MutableDateTime now = new MutableDateTime();
 
         if (end.isBeforeNow()) {
+
             beginOfDay=true;
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
-            System.out.println("endbefore"+end);
+            System.out.println("endbefore" + end);
             Controller controller = new Controller(getBaseContext());
             controller.dailyMoneyControl();
-            controller.checkNotifications();
 
         } else if (start.isAfterNow()) {
 
@@ -267,6 +280,122 @@ public class ScheduleService extends Service {
         return list;
     }
 
+    private void checkChallenges(final SharedPreferences settings){
+        Firebase.setAndroidContext(this);
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
+
+        /*fire.addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot data,String string){
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot data){
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });*/
+
+        fire.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                // do some stuff once
+                DataSnapshot notification = snapshot.child(settings.getString("ID", null));
+                if (notification.getChildrenCount() != 0) {
+
+                    for (final DataSnapshot children : notification.getChildren()) {
+
+                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                        final DatabaseHandler dbh=new DatabaseHandler(ScheduleService.this);
+                        final SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
+
+                        fire.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+
+                                //costruisci testo notifica
+                                String opponent = snapshot.child(children.child("Opponent").getValue().toString()).child("name").getValue().toString() + " " +
+                                        snapshot.child(children.child("Opponent").getValue().toString()).child("surname").getValue().toString();
+
+                                //manda notifica
+                                sendNotificationChallenge(opponent, children.child("Opponent").getValue().toString());
+
+                                //aggiungi challenge al DB
+                                dbh.addChallenge(new Challenge(p.getString("ID",null)
+                                        , children.child("Opponent").getValue().toString() , 0, 0, 0,
+                                        (long) children.child("Duration").getValue(), "false"));
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        });
+                    }
+
+                    fire.child(settings.getString("ID", null)).removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    private void sendNotificationChallenge(String opponent,String ID) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setContentTitle(opponent+" challenged you!")
+                        .setContentText("Smash his ass!")
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(this, NavigationActivity.class);
+
+        resultIntent.putExtra("IDopponent",ID);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM =(NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNM.notify(NotificationID.getID(), mBuilder.build());
+
+    }
+
     public void sendNotification(int points) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -301,6 +430,7 @@ public class ScheduleService extends Service {
         // Builds the notification and issues it.
         mNM.notify(NotificationID.getID(), mBuilder.build());
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

@@ -37,6 +37,7 @@ public class Controller {
         this.context = context;
         db = new DatabaseHandler(context);
         settings = PreferenceManager.getDefaultSharedPreferences(context);
+
     }
 
     public void dailyMoneyControl(){
