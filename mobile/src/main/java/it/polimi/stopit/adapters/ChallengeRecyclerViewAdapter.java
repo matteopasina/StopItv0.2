@@ -16,10 +16,15 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.Interval;
+import org.joda.time.MutableDateTime;
+import org.joda.time.MutableInterval;
+
 import java.net.URI;
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.fragments.ChallengeFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.Challenge;
 
@@ -52,7 +57,17 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                 holder.opponentName.setText(snapshot.child(challenge.getOpponentID()).child("name").getValue().toString());
                 Picasso.with(context).load(snapshot.child(challenge.getOpponentID()).child("profilePic").getValue().toString())
                         .into(holder.opponentImg);
-                holder.challengeDuration.setText("Pending");
+
+                if(!challenge.isAccepted()) {
+
+                    holder.challengeDuration.setText("Pending");
+
+                }else{
+
+                    MutableInterval duration=new MutableInterval();
+                    duration.setInterval(challenge.getStartTime(), challenge.getEndTime());
+                    holder.challengeDuration.setText(String.valueOf(duration.toDuration().getStandardDays()));
+                }
                 holder.challengeProgress.setProgress(0);
 
             }

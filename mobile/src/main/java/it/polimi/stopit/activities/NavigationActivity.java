@@ -3,6 +3,8 @@ package it.polimi.stopit.activities;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -31,6 +36,7 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
+import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
@@ -43,6 +49,7 @@ public class NavigationActivity extends AppCompatActivity
 
     User user=new User();
     private long points;
+
 
 
     @Override
@@ -62,6 +69,7 @@ public class NavigationActivity extends AppCompatActivity
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
         if(isOnline()) {
+
 
                 myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -322,3 +330,4 @@ public class NavigationActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Challenges");
     }
 }
+
