@@ -47,7 +47,9 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(7,"10 Activities","Do 10 alternative activities",200,R.drawable.achievement_star,false));
         db.addAchievement(new Achievement(8,"20 Activities","Do 20 alternative activities",400,R.drawable.achievement_star,false));
         db.addAchievement(new Achievement(9,"50 Activities","Do 50 alternative activities",600,R.drawable.achievement_star,false));
-
+        db.addAchievement(new Achievement(10,"Sportsman","Do 10 sport activities",1000,R.drawable.sportsman,false));
+        db.addAchievement(new Achievement(11,"Social","Do 10 social activities",1000,R.drawable.social,false));
+        db.addAchievement(new Achievement(12,"Artist","Do 10 art activities",1000,R.drawable.artist,false));
     }
 
     public void loadContacts(){
