@@ -1,6 +1,7 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -84,7 +85,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         return mChallenges.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public final View mView;
         public final TextView opponentName;
         public final TextView challengeDuration;
@@ -106,6 +107,11 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         @Override
         public String toString() {
             return super.toString() + " '";
+        }
+
+        @Override
+        public void onClick(final View view) {
+
         }
     }
 }

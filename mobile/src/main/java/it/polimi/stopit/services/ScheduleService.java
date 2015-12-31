@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -86,6 +87,8 @@ public class ScheduleService extends Service {
     public void onCreate(){
         super.onCreate();
 
+        deleteFile("schedule");
+
         //setta lo schedule per la prima esecuzione
         firstStart();
         start=new MutableDateTime();
@@ -99,6 +102,7 @@ public class ScheduleService extends Service {
         setCount(nextCiga);
         SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
         checkChallenges(p);
+
     }
 
 
@@ -191,11 +195,12 @@ public class ScheduleService extends Service {
             controller.dailyMoneyControl();
 
         } else if (start.isAfterNow()) {
-
+            beginOfDay=true;
             nextCiga = start.getMillis() - now.getMillis();
             System.out.println("startafter");
 
         } else {
+
             for (MutableInterval i : list) {
                 if (i.contains(now)) {
 
@@ -212,7 +217,7 @@ public class ScheduleService extends Service {
         String filename = "schedule";
 
         try {
-            FileOutputStream fos = this.openFileOutput (filename, Context.MODE_PRIVATE );
+            FileOutputStream fos = this.openFileOutput(filename, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream( fos );
             oos.writeObject ( list );
             oos.close ();
@@ -281,71 +286,49 @@ public class ScheduleService extends Service {
     }
 
     private void checkChallenges(final SharedPreferences settings){
+
         Firebase.setAndroidContext(this);
         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
-
-        /*fire.addChildEventListener(new ChildEventListener() {
-
-            @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot data,String string){
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot data){
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });*/
 
         fire.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 // do some stuff once
-                DataSnapshot notification = snapshot.child(settings.getString("ID", null));
+                final DataSnapshot notification = snapshot.child(settings.getString("ID", null));
+
                 if (notification.getChildrenCount() != 0) {
 
-                    for (final DataSnapshot children : notification.getChildren()) {
+                    final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                    final DatabaseHandler dbh=new DatabaseHandler(ScheduleService.this);
+                    final SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
-                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                        final DatabaseHandler dbh=new DatabaseHandler(ScheduleService.this);
-                        final SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
+                    fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
 
-                        fire.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
+                            //costruisci testo notifica
+                            System.out.println(notification.child("opponent").getValue().toString());
+                            String opponent = snapshot.child(notification.child("opponent").getValue().toString())
+                                    .child("name").getValue().toString() + " " +
+                                    snapshot.child(notification.child("opponent").getValue().toString())
+                                            .child("surname").getValue().toString();
 
-                                //costruisci testo notifica
-                                String opponent = snapshot.child(children.child("Opponent").getValue().toString()).child("name").getValue().toString() + " " +
-                                        snapshot.child(children.child("Opponent").getValue().toString()).child("surname").getValue().toString();
 
-                                //manda notifica
-                                sendNotificationChallenge(opponent, children.child("Opponent").getValue().toString());
+                            //manda notifica
+                            sendNotificationChallenge(opponent, notification.child("opponent").getValue().toString());
 
-                                //aggiungi challenge al DB
-                                dbh.addChallenge(new Challenge(p.getString("ID",null)
-                                        , children.child("Opponent").getValue().toString() , 0, 0, 0,
-                                        (long) children.child("Duration").getValue(), "false"));
-                            }
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        });
-                    }
+                            //aggiungi challenge al DB
+                            dbh.addChallenge(new Challenge(p.getString("ID",null)
+                                    , notification.child("opponent").getValue().toString() , 0, 0, 0,
+                                    (long) notification.child("duration").getValue(), "false"));
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                        }
+                    });
 
                     fire.child(settings.getString("ID", null)).removeValue();
                 }
