@@ -51,6 +51,7 @@ public class ScheduleService extends Service {
     private static MutableDateTime end;
     private boolean beginOfDay=false;
     CountDownTimer Count;
+    int notificationID=0;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
@@ -143,7 +144,7 @@ public class ScheduleService extends Service {
 
                     public void run() {
 
-                        mNM.cancel(NotificationID.getID());
+                        mNM.cancel(notificationID);
                         SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
                         Firebase.setAndroidContext(ScheduleService.this);
                         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -320,9 +321,9 @@ public class ScheduleService extends Service {
 
 
                             //aggiungi challenge al DB
-                            dbh.addChallenge(new Challenge(p.getString("ID",null)
+                            dbh.addChallenge(new Challenge(notification.child("opponent").getValue().toString()
                                     , notification.child("opponent").getValue().toString() , 0, 0, 0,
-                                    (long) notification.child("duration").getValue(), "false"));
+                                    (long) notification.child("duration").getValue()*86400000, "false"));
                         }
 
                         @Override
@@ -411,7 +412,8 @@ public class ScheduleService extends Service {
         // Gets an instance of the NotificationManager service
         mNM =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        mNM.notify(NotificationID.getID(), mBuilder.build());
+        notificationID=NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
     }
 
 

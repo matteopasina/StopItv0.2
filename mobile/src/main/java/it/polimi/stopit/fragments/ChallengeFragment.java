@@ -52,12 +52,6 @@ public class ChallengeFragment extends Fragment {
         db=new DatabaseHandler(getActivity());
         mChallenges=db.getAllChallenges();
 
-        if(!mChallenges.isEmpty()) {
-            for(int i=0;i< mChallenges.size();i++) {
-                System.out.println(mChallenges.get(i).getOpponentID());
-            }
-        }
-
         fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
 
         fab.setOnClickListener(new View.OnClickListener() {
