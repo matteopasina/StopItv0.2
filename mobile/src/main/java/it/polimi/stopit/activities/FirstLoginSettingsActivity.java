@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
@@ -39,6 +40,10 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();
         dbSeed.seedMoneyCategories();
+
+        Controller cont=new Controller(this);
+        cont.setDailyAlarm();
+        cont.setWeeklyAlarm();
 
         final TextView progressText=(TextView) findViewById(R.id.progress);
         progressText.setText("25/50");

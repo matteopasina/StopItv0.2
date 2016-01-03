@@ -1,12 +1,12 @@
 package it.polimi.stopit.controller;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -17,10 +17,13 @@ import com.firebase.client.ValueEventListener;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
+import it.polimi.stopit.Receivers.ControllerReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
@@ -62,7 +65,7 @@ public class Controller {
             }
         }
 
-        updateMoneyTarget((cigPD-numSmoked));
+        updateMoneyTarget((cigPD - numSmoked));
 
     }
 
@@ -121,15 +124,15 @@ public class Controller {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 // do some stuff once
-                DataSnapshot notification=snapshot.child("Notifications").child(settings.getString("ID",null));
-                DataSnapshot users=snapshot.child("Users");
+                DataSnapshot notification = snapshot.child("Notifications").child(settings.getString("ID", null));
+                DataSnapshot users = snapshot.child("Users");
                 if (notification.getChildrenCount() != 0) {
                     for (DataSnapshot children : notification.getChildren()) {
-                        String opponent=users.child(children.getValue().toString()).child("name").toString()+" "+
+                        String opponent = users.child(children.getValue().toString()).child("name").toString() + " " +
                                 users.child(children.getValue().toString()).child("surname").toString();
                         sendNotification(opponent);
                     }
-                    fire.child("Notifications").child(settings.getString("ID",null)).removeValue();
+                    fire.child("Notifications").child(settings.getString("ID", null)).removeValue();
                 }
             }
 
@@ -174,5 +177,43 @@ public class Controller {
         // Builds the notification and issues it.
         mNM.notify(NotificationID.getID(), mBuilder.build());
 
+    }
+
+    public void setDailyAlarm(){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        calendar.set(Calendar.HOUR_OF_DAY, 24);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ControllerReceiver.class);
+        intent.putExtra("type","day");
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
+
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pi);
+    }
+
+    public void setWeeklyAlarm(){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        calendar.set(Calendar.HOUR_OF_DAY, 24);
+        calendar.set(Calendar.MINUTE, 50);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ControllerReceiver.class);
+        intent.putExtra("type","week");
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
+
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY*7, pi);
     }
 }

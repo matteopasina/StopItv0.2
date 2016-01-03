@@ -16,7 +16,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -35,7 +34,6 @@ import java.util.List;
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
-import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
 
@@ -192,8 +190,6 @@ public class ScheduleService extends Service {
             beginOfDay=true;
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
             System.out.println("endbefore" + end);
-            Controller controller = new Controller(getBaseContext());
-            controller.dailyMoneyControl();
 
         } else if (start.isAfterNow()) {
             beginOfDay=true;

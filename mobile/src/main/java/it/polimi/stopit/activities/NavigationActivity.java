@@ -43,8 +43,8 @@ public class NavigationActivity extends AppCompatActivity
 
     User user=new User();
     private long points;
-
-
+    private long daypoints;
+    private long weekpoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,8 @@ public class NavigationActivity extends AppCompatActivity
         user.setSurname(settings.getString("surname", null));
         user.setPoints(settings.getLong("points", 0));
         user.setProfilePic(settings.getString("image", null));
-        user.setDayPoints(0);
-        user.setWeekPoints(0);
+        user.setDayPoints(settings.getLong("dayPoints", 0));
+        user.setWeekPoints(settings.getLong("weekPoints", 0));
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -82,10 +82,14 @@ public class NavigationActivity extends AppCompatActivity
                         } else {
 
                             points = (long) snapshot.child(user.getID()).child("points").getValue();
+                            daypoints = (long) snapshot.child(user.getID()).child("dayPoints").getValue();
+                            weekpoints = (long) snapshot.child(user.getID()).child("weekPoints").getValue();
 
                         }
 
                         user.setPoints(points);
+                        user.setDayPoints(daypoints);
+                        user.setWeekPoints(weekpoints);
 
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString("ID", user.getID());
@@ -93,6 +97,8 @@ public class NavigationActivity extends AppCompatActivity
                         editor.putString("surname", user.getSurname());
                         editor.putLong("points", user.getPoints());
                         editor.putString("image", user.getProfilePic());
+                        editor.putLong("dayPoints", user.getDayPoints());
+                        editor.putLong("weekPoints", user.getWeekPoints());
 
                         editor.commit();
 

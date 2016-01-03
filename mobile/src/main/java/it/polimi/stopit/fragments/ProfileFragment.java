@@ -40,14 +40,6 @@ import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends Fragment {
 
     private static final String ARG_ID = "ID";
@@ -56,8 +48,6 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_POINTS = "points";
     private static final String ARG_IMAGE = "imageURL";
 
-
-    // TODO: Rename and change types of parameters
     private String ID;
     private String name;
     private String surname;
@@ -240,12 +230,16 @@ public class ProfileFragment extends Fragment {
                                 Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
-                                p.edit().putLong("points", Long.parseLong(points) - 50);
+                                fire.child(p.getString("ID", null)).child("dayPoints").setValue(p.getLong("dayPoints", 0) - 50);
+                                fire.child(p.getString("ID", null)).child("weekPoints").setValue(p.getLong("weekPoints",0) - 50);
+                                p.edit().putLong("points", Long.parseLong(points) - 50).apply();
+                                p.edit().putLong("weekPoints", p.getLong("weekPoints",0) - 50).apply();
+                                p.edit().putLong("dayPoints", p.getLong("dayPoints", 0) - 50).apply();
 
-                                SharedPreferences.Editor editor = p.edit();
+                                /*SharedPreferences.Editor editor = p.edit();
                                 editor.putLong("points", Long.parseLong(points) - 50);
 
-                                editor.commit();
+                                editor.commit();*/
 
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
                                 DateTime date=new DateTime(new Instant());
@@ -375,7 +369,9 @@ public class ProfileFragment extends Fragment {
                     SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
                     Firebase.setAndroidContext(getActivity());
                     final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                    long points=p.getLong("points",0);
+                    long points=p.getLong("points", 0);
+                    long daypoints=p.getLong("dayPoints", 0);
+                    long weekpoints=p.getLong("weekPoints", 0);
                     SharedPreferences.Editor editor = p.edit();
                     DatabaseHandler dbh=new DatabaseHandler(getActivity());
                     DateTime date;
@@ -384,11 +380,14 @@ public class ProfileFragment extends Fragment {
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             gain=gain*2;
-
+                            editor.putLong("dayPoints",daypoints+gain);
+                            editor.putLong("weekPoints",weekpoints+gain);
                             editor.putLong("points", points+gain);
                             editor.commit();
 
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
+                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
@@ -397,9 +396,13 @@ public class ProfileFragment extends Fragment {
                             //No button clicked
 
                             editor.putLong("points", points+gain);
+                            editor.putLong("dayPoints",daypoints+gain);
+                            editor.putLong("weekPoints",weekpoints+gain);
                             editor.commit();
 
                             fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
+                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "notsmoke"));
                             break;
