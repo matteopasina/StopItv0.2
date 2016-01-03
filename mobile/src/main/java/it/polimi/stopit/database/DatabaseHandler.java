@@ -122,7 +122,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Create Challenges categories table
         String CREATE_CHALLENGES_TABLE = "CREATE TABLE " + TABLE_CHALLENGES + "("
-                + CHALLENGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
+                + CHALLENGE_ID + " TEXT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
                 CHALLENGE_OPPONENT_POINTS + " INTEGER,"+ CHALLENGE_START_TIME + " TEXT," + CHALLENGE_END_TIME + " TEXT,"
                 + CHALLENGE_ACCEPTED + " TEXT" + ")";
         db.execSQL(CREATE_CHALLENGES_TABLE);
@@ -318,7 +318,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return new MoneyTarget(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getInt(4),cursor.getInt(5),cursor.getInt(6));
     }
 
-    public Challenge getChallenge(int id){
+    public Challenge getChallenge(String id){
 
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -326,7 +326,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
                         CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
                 CHALLENGE_ACCEPTED}, CHALLENGE_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+                new String[] { id }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -489,6 +489,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     // UPDATE ROW
 
+    public int updateChallenge(Challenge challenge) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CHALLENGE_ID, challenge.getID());
+        values.put(CHALLENGE_OPPONENTID, challenge.getOpponentID());
+        values.put(CHALLENGE_POINTS, challenge.getMyPoints());
+        values.put(CHALLENGE_OPPONENT_POINTS, challenge.getOpponentPoints());
+        values.put(CHALLENGE_START_TIME, challenge.getStartTime());
+        values.put(CHALLENGE_END_TIME, challenge.getEndTime());
+        String accepted= (challenge.isAccepted()) ? "true" : "false";
+        values.put(CHALLENGE_ACCEPTED, accepted);
+
+        // updating row
+        return db.update(TABLE_CHALLENGES, values, CHALLENGE_OPPONENTID + " = ?",
+                new String[] { challenge.getOpponentID() });
+    }
+
     public int updateAchievement(Achievement achievement) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -525,6 +544,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     //DELETE ROW
+
+    public void deleteChallenge(String id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CHALLENGES, CHALLENGE_OPPONENTID + " = ?",
+                new String[]{ id });
+        db.close();
+    }
 
     public void deleteAchievement(Achievement achievement) {
 
