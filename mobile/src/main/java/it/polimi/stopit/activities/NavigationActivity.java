@@ -246,18 +246,9 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.stats) {
 
-            Fragment fragment = ProfileFragment.newInstance(user.getID(),
-                    user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            Intent intent = new Intent(getApplicationContext(),StatisticsActivity.class);
 
-            FragmentManager fragmentManager=getFragmentManager();
-
-            FragmentTransaction ft=fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
-
-            getSupportActionBar().setTitle("Statistics");
+            startActivity(intent);
 
         } else if (id == R.id.money) {
 
