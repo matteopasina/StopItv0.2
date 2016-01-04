@@ -37,6 +37,7 @@ import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.database.DatabaseSeeder;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.services.ScheduleService;
 
@@ -86,6 +87,11 @@ public class ProfileFragment extends Fragment {
             points = getArguments().getString(ARG_POINTS);
             imageURL = getArguments().getString(ARG_IMAGE);
         }
+        DatabaseHandler db=new DatabaseHandler(getActivity());
+        db.deleteAllContacts();
+
+        DatabaseSeeder dbs=new DatabaseSeeder(getActivity());
+        dbs.loadContacts();
     }
 
     @Override

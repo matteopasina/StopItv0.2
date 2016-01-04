@@ -18,7 +18,6 @@ public class LeaderboardActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private String ARG_TYPE = "TYPE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

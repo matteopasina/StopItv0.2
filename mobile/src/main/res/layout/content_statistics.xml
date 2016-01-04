@@ -12,4 +12,84 @@
     tools:context="it.polimi.stopit.activities.StatisticsActivity"
     tools:showIn="@layout/activity_statistics">
 
+    <LinearLayout
+        android:id="@+id/linlayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linlayout2">
+
+        <ImageView
+            android:id="@+id/cig_avoided_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/stopitsymbol"/>
+
+        <TextView
+            android:id="@+id/cig_avoided"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:text="cigarettes avoided"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linlayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linlayout3">
+
+        <ImageView
+            android:id="@+id/health_saved_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/stopitsymbol"/>
+
+        <TextView
+            android:id="@+id/health_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:text="health saved"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linlayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="35dp"
+        android:layout_alignParentLeft="true">
+
+        <ImageView
+            android:id="@+id/money_saved_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/stopitsymbol"/>
+
+        <TextView
+            android:id="@+id/money_saved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:text="money saved"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

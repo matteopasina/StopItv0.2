@@ -569,4 +569,15 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void deleteAllContacts() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
+                + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
+                + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER," + CONTACT_DAYPOINTS + " INTEGER," + CONTACT_WEEKPOINTS + " INTEGER" + ")";
+        db.execSQL(CREATE_CONTACTS_TABLE);
+        db.close();
+    }
+
 }
