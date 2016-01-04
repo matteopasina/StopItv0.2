@@ -34,6 +34,7 @@ import java.util.List;
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
 
@@ -143,11 +144,8 @@ public class ScheduleService extends Service {
                     public void run() {
 
                         mNM.cancel(notificationID);
-                        SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-                        Firebase.setAndroidContext(ScheduleService.this);
-                        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                        long points=p.getLong("points",0);
-                        fire.child(p.getString("ID", null)).child("points").setValue(points + calcPoints()*2);
+                        Controller controller=new Controller(ScheduleService.this);
+                        controller.updatePoints(calcPoints());
 
                     }
 
@@ -357,6 +355,7 @@ public class ScheduleService extends Service {
 
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
+
                                 DataSnapshot C = snapshot.child(accepted.getValue().toString());
                                 Challenge chall = new Challenge(accepted.getValue().toString(),
                                         C.child("id").getValue().toString(),
@@ -365,7 +364,13 @@ public class ScheduleService extends Service {
                                         (long) C.child("startTime").getValue(),
                                         (long) C.child("endTime").getValue(),
                                         C.child("accepted").getValue().toString());
+
                                 dbh.updateChallenge(chall);
+
+                                Controller controller=new Controller(ScheduleService.this);
+                                controller.setChallengeAlarm(chall.getStartTime(),
+                                        chall.getEndTime()-chall.getStartTime(),
+                                        chall.getID());
                             }
 
                             @Override

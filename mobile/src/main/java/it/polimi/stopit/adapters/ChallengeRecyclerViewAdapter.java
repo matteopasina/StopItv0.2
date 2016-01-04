@@ -31,7 +31,9 @@ import java.net.URI;
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.activities.ChallengeDetail;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.ChallengeFragment.OnListFragmentInteractionListener;
@@ -127,7 +129,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         public void onClick(final View view) {
 
             final DatabaseHandler dbh = new DatabaseHandler(view.getContext());
-            final Challenge challenge = dbh.getChallenge(mChallenges.get(getLayoutPosition()).getOpponentID());
+            final Challenge challenge = dbh.getChallengeByOpponentID(mChallenges.get(getLayoutPosition()).getOpponentID());
             final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
 
             if (!challenge.isAccepted()) {
@@ -151,7 +153,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                 challenge.setEndTime(now.getMillis() + challenge.getEndTime());
 
                                 newChallenge.setValue(challenge);
-                                newChallenge.child("id").setValue(p.getString("ID",null));
+                                newChallenge.child("id").setValue(p.getString("ID", null));
 
                                 dbh.updateChallenge(challenge);
                                 mChallenges.set(getLayoutPosition(), challenge);
@@ -159,6 +161,11 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
 
                                 final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/"+p.getString("ID", null));
                                 accept.setValue(newChallenge.getKey());
+
+                                Controller controller=new Controller(context);
+                                controller.setChallengeAlarm(challenge.getStartTime(),
+                                        challenge.getEndTime()-challenge.getStartTime(),
+                                        newChallenge.getKey());
 
                                 break;
 
@@ -183,6 +190,13 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                         .setPositiveButton("Accept", dialogClickListener)
                         .setNegativeButton("Refuse", dialogClickListener)
                         .show();
+
+            }
+            if(challenge.isAccepted()){
+
+                Intent startDetail=new Intent(context,ChallengeDetail.class);
+                startDetail.putExtra(mChallenges.get(getLayoutPosition()).getOpponentID(),"opponentID");
+                context.startActivity(startDetail);
 
             }
         }

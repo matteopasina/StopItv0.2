@@ -337,6 +337,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
+    public Challenge getChallengeByOpponentID(String id){
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
+                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
+                        CHALLENGE_ACCEPTED}, CHALLENGE_OPPONENTID + "=?",
+                new String[] { id }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                cursor.getLong(5),cursor.getString(6));
+
+        return challenge;
+
+    }
+
     // GET ALL ROWS
 
     public List<Achievement> getAllAchievements() {
@@ -548,7 +567,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public void deleteChallenge(String id) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CHALLENGES, CHALLENGE_OPPONENTID + " = ?",
+        db.delete(TABLE_CHALLENGES, CHALLENGE_ID + " = ?",
                 new String[]{ id });
         db.close();
     }

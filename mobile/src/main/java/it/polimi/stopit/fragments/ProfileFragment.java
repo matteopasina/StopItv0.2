@@ -36,6 +36,7 @@ import org.joda.time.Instant;
 import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.database.DatabaseSeeder;
 import it.polimi.stopit.model.Cigarette;
@@ -233,11 +234,13 @@ public class ProfileFragment extends Fragment {
 
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(getActivity());
-                                Firebase.setAndroidContext(getActivity());
+                                Controller controller=new Controller(getActivity());
+                                controller.updatePoints(-50);
+                                /*Firebase.setAndroidContext(getActivity());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                                 fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
                                 fire.child(p.getString("ID", null)).child("dayPoints").setValue(p.getLong("dayPoints", 0) - 50);
-                                fire.child(p.getString("ID", null)).child("weekPoints").setValue(p.getLong("weekPoints",0) - 50);
+                                fire.child(p.getString("ID", null)).child("weekPoints").setValue(p.getLong("weekPoints",0) - 50);*/
                                 p.edit().putLong("points", Long.parseLong(points) - 50).apply();
                                 p.edit().putLong("weekPoints", p.getLong("weekPoints",0) - 50).apply();
                                 p.edit().putLong("dayPoints", p.getLong("dayPoints", 0) - 50).apply();
@@ -373,8 +376,9 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    Firebase.setAndroidContext(getActivity());
-                    final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                    /*Firebase.setAndroidContext(getActivity());
+                    final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");*/
+                    Controller controller=new Controller(getActivity());
                     long points=p.getLong("points", 0);
                     long daypoints=p.getLong("dayPoints", 0);
                     long weekpoints=p.getLong("weekPoints", 0);
@@ -387,13 +391,16 @@ public class ProfileFragment extends Fragment {
                             //Yes button clicked
                             gain=gain*2;
                             editor.putLong("dayPoints",daypoints+gain);
-                            editor.putLong("weekPoints",weekpoints+gain);
-                            editor.putLong("points", points+gain);
+                            editor.putLong("weekPoints", weekpoints + gain);
+                            editor.putLong("points", points + gain);
                             editor.commit();
 
-                            fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            controller.updatePoints(gain);
+
+                            /*fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
                             fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
-                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);
+                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);*/
+
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
@@ -406,9 +413,11 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("weekPoints",weekpoints+gain);
                             editor.commit();
 
-                            fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
+                            controller.updatePoints(gain);
+
+                            /*fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
                             fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
-                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);
+                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);*/
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "notsmoke"));
                             break;
@@ -429,49 +438,4 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void challenge(){
-
-        if(getActivity().getIntent().getExtras()!=null) {
-            IDopponent = getActivity().getIntent().getExtras().getString("IDopponent", null);
-            getActivity().getIntent().removeExtra("IDopponent");
-        }
-
-        if(!IDopponent.isEmpty()) {
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    Firebase.setAndroidContext(getActivity());
-                    final Firebase fireNotification = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
-                    final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
-
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
-                            Firebase newChallenge=fireChallenge.push();
-                            newChallenge.child("Player 1").setValue(p.getString("ID",null));
-                            newChallenge.child("Player 2").setValue(IDopponent);
-                            newChallenge.child("Points 1").setValue(0);
-                            newChallenge.child("Points 2").setValue(0);
-
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-
-                            break;
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Challenge!")
-                    .setCancelable(false)
-                    .setMessage("")
-                    .setPositiveButton("Don't smoke", dialogClickListener)
-                    .setNegativeButton("smoke", dialogClickListener)
-                    .setIcon(R.drawable.stopitsymbol)
-                    .show();
-        }
-    }
 }

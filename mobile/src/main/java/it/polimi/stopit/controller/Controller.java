@@ -17,15 +17,19 @@ import com.firebase.client.ValueEventListener;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
+import it.polimi.stopit.Receivers.ChallengeReceiver;
 import it.polimi.stopit.Receivers.ControllerReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
 
@@ -117,68 +121,6 @@ public class Controller {
         db.updateMoneyTarget(currentTarget);
     }
 
-    public void checkNotifications(){
-        Firebase.setAndroidContext(context);
-        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/");
-        fire.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                // do some stuff once
-                DataSnapshot notification = snapshot.child("Notifications").child(settings.getString("ID", null));
-                DataSnapshot users = snapshot.child("Users");
-                if (notification.getChildrenCount() != 0) {
-                    for (DataSnapshot children : notification.getChildren()) {
-                        String opponent = users.child(children.getValue().toString()).child("name").toString() + " " +
-                                users.child(children.getValue().toString()).child("surname").toString();
-                        sendNotification(opponent);
-                    }
-                    fire.child("Notifications").child(settings.getString("ID", null)).removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-    }
-
-    private void sendNotification(String opponent) {
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.stopitsymbol)
-                        .setContentTitle("You have been challenged by "+opponent)
-                        .setContentText("Smash his ass!")
-                        .setAutoCancel(true);
-
-        Intent resultIntent = new Intent(context, NavigationActivity.class);
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
-
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNM =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Builds the notification and issues it.
-        mNM.notify(NotificationID.getID(), mBuilder.build());
-
-    }
-
     public void setDailyAlarm(){
 
         Calendar calendar = Calendar.getInstance();
@@ -215,5 +157,96 @@ public class Controller {
 
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY*7, pi);
+    }
+
+    public void setChallengeAlarm(long startTime,long duration, String challengeKey){
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ChallengeReceiver.class);
+        intent.putExtra("challengekey",challengeKey);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
+
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime,
+                duration , pi);
+    }
+
+    public void sendCustomNotification(String title,String text){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        int notificationID=NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
+    }
+
+    public void updatePoints(final long points){
+
+        Firebase.setAndroidContext(context);
+        final Firebase user = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+settings.getString("ID",null));
+        //setta tutti i punti giornalieri, settimanali e totali prendendo da firebase quelli vecchi e sommandoli
+        user.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                user.child("points").setValue((long) snapshot.child("points").getValue() + points);
+                user.child("weekPoints").setValue((long)snapshot.child("weekPoints").getValue() + points);
+                user.child("dayPoints").setValue((long)snapshot.child("dayPoints").getValue() + points);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+        //per ogni challenge aggiorna i punti su firebase e in locale
+        DatabaseHandler dbh=new DatabaseHandler(context);
+        List<Challenge> challengeList=dbh.getAllChallenges();
+
+        for(Challenge challenge : challengeList) {
+
+            final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
+            VS.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    //se sei tu lo sfidante
+                    if(dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID",null))){
+                        VS.child("myPoints").setValue( (long)dataSnapshot.child("myPoints").getValue() + points);
+                    }
+                    else if(dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID",null))){
+                        VS.child("opponentPoints").setValue( (long)dataSnapshot.child("opponentPoints").getValue() + points);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+        }
     }
 }
