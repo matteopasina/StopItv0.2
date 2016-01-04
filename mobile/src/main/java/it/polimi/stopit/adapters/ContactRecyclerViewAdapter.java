@@ -130,7 +130,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                             //Yes button clicked
                             DatabaseHandler dbh=new DatabaseHandler(view.getContext());
                             SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(view.getContext());
-                            dbh.addChallenge(new Challenge(p.getString("ID",null)
+                            dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
                                     , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
                                     (long) days.getProgress() * 86400000, "false"));
 

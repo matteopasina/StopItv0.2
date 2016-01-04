@@ -128,6 +128,8 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
 
             final DatabaseHandler dbh = new DatabaseHandler(view.getContext());
             final Challenge challenge = dbh.getChallenge(mChallenges.get(getLayoutPosition()).getOpponentID());
+            final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+
             if (!challenge.isAccepted()) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
@@ -137,32 +139,26 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
 
-                                System.out.println("yes button: " + mChallenges.get(getLayoutPosition()).getOpponentID());
-                                SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
-
                                 Firebase.setAndroidContext(view.getContext());
                                 final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
                                 Firebase newChallenge = fire.push();
 
-                                newChallenge.child("ID1").setValue(challenge.getOpponentID());
-                                newChallenge.child("ID2").setValue(p.getString("ID", null));
-                                newChallenge.child("Points1").setValue(0);
-                                newChallenge.child("Points2").setValue(0);
+                                MutableDateTime now = new MutableDateTime();
 
                                 challenge.setID(newChallenge.getKey());
                                 challenge.setAccepted(true);
-                                MutableDateTime now = new MutableDateTime();
                                 challenge.setStartTime(now.getMillis());
                                 challenge.setEndTime(now.getMillis() + challenge.getEndTime());
 
-                                System.out.println(challenge.getID());
-                                System.out.println(challenge.getOpponentID());
-                                System.out.println("endtime: " + challenge.getEndTime());
-                                System.out.println("startTime: " + challenge.getStartTime());
+                                newChallenge.setValue(challenge);
+                                newChallenge.child("id").setValue(p.getString("ID",null));
 
                                 dbh.updateChallenge(challenge);
-                                mChallenges.set(getLayoutPosition(),challenge);
+                                mChallenges.set(getLayoutPosition(), challenge);
                                 notifyDataSetChanged();
+
+                                final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/"+p.getString("ID", null));
+                                accept.setValue(newChallenge.getKey());
 
                                 break;
 
@@ -172,6 +168,9 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                 dbh.deleteChallenge(mChallenges.get(getLayoutPosition()).getOpponentID());
                                 mChallenges.remove(getLayoutPosition());
                                 notifyDataSetChanged();
+
+                                final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/"+p.getString("ID", null));
+                                decline.setValue("0");
 
                                 break;
                         }

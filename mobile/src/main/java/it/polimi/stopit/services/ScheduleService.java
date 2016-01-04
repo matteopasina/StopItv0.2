@@ -101,7 +101,7 @@ public class ScheduleService extends Service {
         setCount(nextCiga);
         SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
         checkChallenges(p);
-
+        checkAccepted(p);
     }
 
 
@@ -291,21 +291,20 @@ public class ScheduleService extends Service {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                // do some stuff once
+
                 final DataSnapshot notification = snapshot.child(settings.getString("ID", null));
 
+                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
                 if (notification.getChildrenCount() != 0) {
 
                     final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
                     final DatabaseHandler dbh=new DatabaseHandler(ScheduleService.this);
-                    final SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
                     fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
 
                             //costruisci testo notifica
-                            System.out.println(notification.child("opponent").getValue().toString());
                             String opponent = snapshot.child(notification.child("opponent").getValue().toString())
                                     .child("name").getValue().toString() + " " +
                                     snapshot.child(notification.child("opponent").getValue().toString())
@@ -318,19 +317,67 @@ public class ScheduleService extends Service {
 
                             //aggiungi challenge al DB
                             dbh.addChallenge(new Challenge(notification.child("opponent").getValue().toString()
-                                    , notification.child("opponent").getValue().toString() , 0, 0, 0,
-                                    (long) notification.child("duration").getValue()*86400000, "false"));
+                                    , notification.child("opponent").getValue().toString(), 0, 0, 0,
+                                    (long) notification.child("duration").getValue() * 86400000, "false"));
                         }
 
                         @Override
                         public void onCancelled(FirebaseError firebaseError) {
                         }
                     });
-
                     fire.child(settings.getString("ID", null)).removeValue();
                 }
             }
 
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    private void checkAccepted(final SharedPreferences settings){
+        Firebase.setAndroidContext(this);
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted");
+
+        fire.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
+
+                //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
+                if(accepted.exists()) {
+                    if (accepted.getValue().toString() != "0") {
+
+                        final DatabaseHandler dbh = new DatabaseHandler(ScheduleService.this);
+                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
+
+                        fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                DataSnapshot C = snapshot.child(accepted.getValue().toString());
+                                Challenge chall = new Challenge(accepted.getValue().toString(),
+                                        C.child("id").getValue().toString(),
+                                        (long) C.child("myPoints").getValue(),
+                                        (long) C.child("opponentPoints").getValue(),
+                                        (long) C.child("startTime").getValue(),
+                                        (long) C.child("endTime").getValue(),
+                                        C.child("accepted").getValue().toString());
+                                dbh.updateChallenge(chall);
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+
+                        });
+
+                        fire.child(settings.getString("ID", null)).removeValue();
+                    }
+                }
+            }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
