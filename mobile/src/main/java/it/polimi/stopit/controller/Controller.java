@@ -228,6 +228,9 @@ public class Controller {
 
         for(Challenge challenge : challengeList) {
 
+            challenge.setMyPoints(challenge.getMyPoints()+points);
+            challenge.setOpponentPoints(challenge.getOpponentPoints()+points);
+
             final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
             VS.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -236,6 +239,7 @@ public class Controller {
                     //se sei tu lo sfidante
                     if(dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID",null))){
                         VS.child("myPoints").setValue( (long)dataSnapshot.child("myPoints").getValue() + points);
+
                     }
                     else if(dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID",null))){
                         VS.child("opponentPoints").setValue( (long)dataSnapshot.child("opponentPoints").getValue() + points);

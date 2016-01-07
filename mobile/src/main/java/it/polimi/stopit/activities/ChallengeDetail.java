@@ -1,13 +1,25 @@
 package it.polimi.stopit.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
+
+import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Challenge;
 
 public class ChallengeDetail extends AppCompatActivity {
 
@@ -15,17 +27,94 @@ public class ChallengeDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge_detail);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Challenge Detail");
+
+        final TextView opponentName=(TextView) findViewById(R.id.vsName);
+        final TextView yourPoints=(TextView) findViewById(R.id.yourPoints);
+        final TextView opponentPoints=(TextView) findViewById(R.id.opponentPoints);
+        final TextView timeLeft=(TextView) findViewById(R.id.timeLeft);
+
+        final SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(this);
+
+        String opponentID=getIntent().getStringExtra("opponentID");
+        DatabaseHandler dbh=new DatabaseHandler(this);
+        Challenge challenge=dbh.getChallengeByOpponentID(opponentID);
+        yourPoints.setText(String.valueOf(challenge.getOpponentPoints()));
+        opponentPoints.setText(String.valueOf(challenge.getMyPoints()));
+
+        MutableDateTime time=new MutableDateTime();
+        time.setMillis(challenge.getEndTime()-time.getMillis());
+
+        int days=(int)(time.getMillis())/(1000*60*60*24);
+        time.setMillis(time.getMillis()-days*1000*60*60*24);
+
+        int hours=(int)(time.getMillis())/(1000*60*60);
+        time.setMillis(time.getMillis()-hours*1000*60*60);
+
+        int minutes=(int)(time.getMillis())/(1000*60);
+        timeLeft.setText(days+":"+hours+":"+minutes);
+
+
+        Firebase.setAndroidContext(this);
+        final Firebase fireOpponent = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+opponentID);
+        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
+
+        fireChallenge.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("id").getValue().toString().equals(p.getString("ID",null))){
+                    yourPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
+                    opponentPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
+                }
+                else if(dataSnapshot.child("opponentID").getValue().toString().equals(p.getString("ID",null))){
+                    yourPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
+                    opponentPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
             }
         });
+
+
+        CircularImageView yourPic=(CircularImageView) findViewById(R.id.yourPic);
+        Picasso.with(this.getApplicationContext()).load(p.getString("image",null)).into(yourPic);
+
+        final CircularImageView opponentPic=(CircularImageView) findViewById(R.id.opponentPic);
+        fireOpponent.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                opponentName.setText(dataSnapshot.child("name").getValue().toString());
+                Picasso.with(ChallengeDetail.this.getApplicationContext())
+                        .load(dataSnapshot.child("profilePic").getValue().toString())
+                        .into(opponentPic);
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+
+            this.finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

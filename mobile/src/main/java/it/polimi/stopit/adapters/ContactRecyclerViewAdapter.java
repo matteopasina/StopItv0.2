@@ -141,7 +141,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                             Firebase challenge=fire.push();
                             challenge.child("opponent").setValue(settings.getString("ID", null));
-                            challenge.child("duration").setValue(days.getProgress() * 86400000);
+                            challenge.child("duration").setValue((long)days.getProgress() * 86400000);
 
                             Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                             createChallenge.putExtra("ID",mContacts.get(getLayoutPosition()).getID());

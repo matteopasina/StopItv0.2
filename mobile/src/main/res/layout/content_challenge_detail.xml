@@ -12,4 +12,106 @@
     tools:context="it.polimi.stopit.activities.ChallengeDetail"
     tools:showIn="@layout/activity_challenge_detail">
 
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical" >
+
+        <RelativeLayout
+            android:id="@+id/uno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center" >
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/yourPic"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                app:border_color="#EEEEEE"
+                app:border_width="0dp"
+                app:shadow="true"
+                app:shadow_radius="5"
+                app:shadow_color="@color/shadows"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/you"
+                android:text="You"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_below="@+id/yourPic"
+                android:layout_marginTop="30dp" />
+
+            <TextView
+                android:id="@+id/yourPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_below="@+id/you"
+                android:layout_marginTop="30dp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/VS"
+            android:text="VS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <RelativeLayout
+            android:id="@+id/due"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center" >
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/opponentPic"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                app:border_color="#EEEEEE"
+                app:border_width="0dp"
+                app:shadow="true"
+                app:shadow_radius="5"
+                app:shadow_color="@color/shadows"
+                android:layout_marginLeft="20dp"/>
+
+            <TextView
+                android:id="@+id/vsName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_below="@+id/opponentPic"
+                android:layout_marginTop="30dp" />
+
+            <TextView
+                android:id="@+id/opponentPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_below="@+id/vsName"
+                android:layout_marginTop="30dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/timeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/linear"
+        android:layout_marginTop="30dp" />
+
 </RelativeLayout>

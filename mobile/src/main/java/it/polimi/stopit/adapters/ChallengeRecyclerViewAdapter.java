@@ -195,7 +195,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             if(challenge.isAccepted()){
 
                 Intent startDetail=new Intent(context,ChallengeDetail.class);
-                startDetail.putExtra(mChallenges.get(getLayoutPosition()).getOpponentID(),"opponentID");
+                startDetail.putExtra("opponentID",mChallenges.get(getLayoutPosition()).getOpponentID());
                 context.startActivity(startDetail);
 
             }
