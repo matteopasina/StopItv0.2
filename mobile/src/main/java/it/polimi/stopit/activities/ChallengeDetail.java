@@ -58,7 +58,7 @@ public class ChallengeDetail extends AppCompatActivity {
         time.setMillis(time.getMillis()-hours*1000*60*60);
 
         int minutes=(int)(time.getMillis())/(1000*60);
-        timeLeft.setText(days+":"+hours+":"+minutes);
+        timeLeft.setText(days+" days "+hours+" hours "+minutes+" minutes");
 
 
         Firebase.setAndroidContext(this);

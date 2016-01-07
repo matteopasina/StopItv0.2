@@ -23,7 +23,8 @@
             android:id="@+id/uno"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="10dp"
             android:gravity="center" >
 
             <com.mikhaellopez.circularimageview.CircularImageView
@@ -58,18 +59,35 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/VS"
-            android:text="VS"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
         <RelativeLayout
             android:id="@+id/due"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/VS"
+                android:text="VS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="120dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:text="Points"
+                android:layout_below="@+id/VS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:gravity="center" >
 
             <com.mikhaellopez.circularimageview.CircularImageView
@@ -106,11 +124,19 @@
     </LinearLayout>
 
     <TextView
+        android:text="Time left:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/linear"
+        android:layout_marginTop="30dp" />
+
+    <TextView
         android:id="@+id/timeLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignParentBottom="true"
         android:layout_below="@+id/linear"
         android:layout_marginTop="30dp" />
 
