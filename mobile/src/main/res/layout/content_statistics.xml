@@ -23,7 +23,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="50dp"
-            android:background="@drawable/stopitsymbol"/>
+            android:background="@drawable/cig_avoided"/>
 
         <TextView
             android:id="@+id/cig_avoided"
@@ -41,7 +41,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="10dp"
             android:layout_below="@id/cig_avoided_img"
-            android:background="@drawable/healthcare"/>
+            android:background="@drawable/health"/>
 
         <TextView
             android:id="@+id/health_saved"

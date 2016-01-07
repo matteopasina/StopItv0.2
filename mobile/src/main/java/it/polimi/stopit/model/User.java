@@ -14,7 +14,7 @@ public class User {
 
     public User(){}
 
-    public User(String id,String name,String surname,String profilePic,Long points,Long weekPoints,Long dayPoints){
+    public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints){
 
         this.ID=id;
         this.name=name;

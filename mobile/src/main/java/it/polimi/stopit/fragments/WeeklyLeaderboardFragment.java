@@ -55,7 +55,7 @@ public class WeeklyLeaderboardFragment extends Fragment{
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mLeaderboard=db.getAllContacts();
-        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("weekPoints", 0),settings.getLong("dayPoints", 0));
+        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0));
         mLeaderboard.add(me);
         mLeaderboard.add(new User("1", "Paulo", "Dybala", "http://scontent.cdninstagram.com/hphotos-xta1/t51.2885-19/s150x150/12139892_453222071547866_1052697760_a.jpg", Long.parseLong("2110"),Long.parseLong("780"),Long.parseLong("575")));
         mLeaderboard.add(new User("2", "Lionel", "Messi", "https://e120c7a329d82deabb254b6d6abcaeb74cd6f833.googledrive.com/host/0B3-zO2AfoiQjWXRqUVVUX19mdFk/players/Argentina/Lionel_MESSI.png", Long.parseLong("5670"),Long.parseLong("3200"),Long.parseLong("480")));
