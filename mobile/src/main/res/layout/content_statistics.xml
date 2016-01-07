@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="35dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/linlayout2">
@@ -32,8 +32,8 @@
             android:id="@+id/cig_avoided"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
             android:text="cigarettes avoided"
             android:textSize="18sp"/>
 
@@ -53,14 +53,14 @@
             android:id="@+id/health_saved_img"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/stopitsymbol"/>
+            android:background="@drawable/healthcare"/>
 
         <TextView
             android:id="@+id/health_saved"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
             android:text="health saved"
             android:textSize="18sp"/>
 
@@ -79,14 +79,14 @@
             android:id="@+id/money_saved_img"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/stopitsymbol"/>
+            android:background="@drawable/saved_money"/>
 
         <TextView
             android:id="@+id/money_saved"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
             android:text="money saved"
             android:textSize="18sp"/>
 

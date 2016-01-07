@@ -3,6 +3,7 @@ package it.polimi.stopit.database;
 import android.content.Context;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
@@ -57,6 +58,10 @@ public class DatabaseSeeder {
         friends=new JSONArray();
         facebookFriends=new ArrayList<>();
         contacts=db.getAllContacts();
+
+        if(!FacebookSdk.isInitialized()){
+            FacebookSdk.sdkInitialize(context);
+        }
 
         GraphRequest request = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
