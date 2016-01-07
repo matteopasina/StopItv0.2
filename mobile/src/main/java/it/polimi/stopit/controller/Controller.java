@@ -17,7 +17,6 @@ import com.firebase.client.ValueEventListener;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
-import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -156,7 +155,7 @@ public class Controller {
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
 
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY*7, pi);
+                AlarmManager.INTERVAL_DAY * 7, pi);
     }
 
     public void setChallengeAlarm(long startTime,long duration, String challengeKey){
@@ -252,5 +251,17 @@ public class Controller {
                 }
             });
         }
+    }
+
+    public int getCigAvoided(){
+
+        return db.getCigarettesAvoided();
+    }
+
+    public int getMoneySaved(){
+
+        int cigCost=Integer.parseInt(settings.getString("cigcost", null));
+
+        return cigCost*db.getCigarettesAvoided();
     }
 }

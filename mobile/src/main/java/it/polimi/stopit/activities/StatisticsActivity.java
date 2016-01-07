@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 
 public class StatisticsActivity extends AppCompatActivity {
 
@@ -18,6 +20,18 @@ public class StatisticsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Statistics");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Controller control=new Controller(this);
+
+        TextView moneySaved=(TextView) findViewById(R.id.money_saved);
+        int monSaved=control.getMoneySaved();
+        moneySaved.setText(monSaved/100+"."+monSaved%100+" € saved");
+
+        TextView cigAvoided=(TextView) findViewById(R.id.cig_avoided);
+        cigAvoided.setText(control.getCigAvoided()+" cigarettes avoided");
+
+        TextView healthSaved=(TextView) findViewById(R.id.health_saved);
+        healthSaved.setText("-"+control.getCigAvoided()/100 + "% risk of cancer ");
     }
 
     @Override

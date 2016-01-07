@@ -449,7 +449,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return cursor.moveToFirst();
     }
 
-
     public ArrayList<Cigarette> getDailyCigarettes(int year,int month,int day) {
 
         ArrayList<Cigarette> cigList = new ArrayList<>();
@@ -469,6 +468,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
 
         return cigList;
+    }
+
+    public int getCigarettesAvoided() {
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CIGARETTES + " WHERE "+CIGARETTE_TYPE+"='notsmoke'";
+        int count=0;
+        long days=0;
+        boolean first=true;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                count++;
+
+            } while (cursor.moveToNext());
+        }
+
+        return count;
     }
 
     // GET ALL CATEGORIES
