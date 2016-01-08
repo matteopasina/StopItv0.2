@@ -375,6 +375,7 @@ public class ScheduleService extends Service {
                                 controller.setChallengeAlarm(chall.getStartTime(),
                                         chall.getEndTime()-chall.getStartTime(),
                                         chall.getID());
+                                controller.sendCustomNotification("Challenge accepted","Don't smoke if you want to win!");
                             }
 
                             @Override

@@ -99,7 +99,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         return mChallenges.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener{
 
         public final View mView;
         public final TextView opponentName;
@@ -118,6 +118,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             opponentImg = (ImageView) view.findViewById(R.id.opponent_image);
             challengeProgress=(ProgressBar)view.findViewById(R.id.challenge_progress);
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
             view.setClickable(true);
         }
 
@@ -134,10 +135,9 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
 
             if (!challenge.isAccepted()) {
-                if(challenge.isChallenger()){
+                if (challenge.isChallenger()) {
                     Toast.makeText(context, "Wait for your opponent to respond", Toast.LENGTH_SHORT).show();
-                }
-                else if(!challenge.isChallenger()) {
+                } else if (!challenge.isChallenger()) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -164,7 +164,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     mChallenges.set(getLayoutPosition(), challenge);
                                     notifyDataSetChanged();
 
-                                    final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + p.getString("ID", null));
+                                    final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID());
                                     accept.setValue(newChallenge.getKey());
 
                                     Controller controller = new Controller(context);
@@ -181,7 +181,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     mChallenges.remove(getLayoutPosition());
                                     notifyDataSetChanged();
 
-                                    final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + p.getString("ID", null));
+                                    final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID());
                                     decline.setValue("0");
 
                                     break;
@@ -197,14 +197,56 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                             .show();
 
                 }
-            }
-            else if(challenge.isAccepted()){
+            } else if (challenge.isAccepted()) {
 
-                Intent startDetail=new Intent(context,ChallengeDetail.class);
-                startDetail.putExtra("opponentID",mChallenges.get(getLayoutPosition()).getOpponentID());
+                Intent startDetail = new Intent(context, ChallengeDetail.class);
+                startDetail.putExtra("opponentID", mChallenges.get(getLayoutPosition()).getOpponentID());
                 context.startActivity(startDetail);
 
             }
+        }
+
+        @Override
+        public boolean onLongClick(final View view){
+
+            final DatabaseHandler dbh = new DatabaseHandler(view.getContext());
+            final Challenge challenge = dbh.getChallengeByOpponentID(mChallenges.get(getLayoutPosition()).getOpponentID());
+
+            if(challenge.isChallenger()) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+
+                                Firebase.setAndroidContext(view.getContext());
+                                final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/"+challenge.getOpponentID()
+                                        +"/"+challenge.getID());
+                                fire.removeValue();
+                                dbh.deleteChallenge(challenge.getID());
+                                mChallenges.remove(getLayoutPosition());
+                                notifyDataSetChanged();
+
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Remove the invite of challenge?")
+                        .setTitle("Cancel?")
+                        .setPositiveButton("yes", dialogClickListener)
+                        .setNegativeButton("no", dialogClickListener)
+                        .show();
+            }
+            return true;
         }
     }
 }

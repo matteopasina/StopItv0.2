@@ -129,9 +129,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             DatabaseHandler dbh=new DatabaseHandler(view.getContext());
-                            dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
-                                    , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
-                                    (long) days.getProgress() * 86400000, "false" ,"true"));
 
                             final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(view.getContext());
 
@@ -139,8 +136,13 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                             final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/"+mContacts.get(getLayoutPosition()).getID());
 
                             Firebase challenge=fire.push();
-                            challenge.child("opponent").setValue(settings.getString("ID", null));
+
+                            dbh.addChallenge(new Challenge(challenge.getKey()
+                                    , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
+                                    (long) days.getProgress() * 86400000, "false", "true"));
+
                             challenge.child("duration").setValue(days.getProgress());
+                            challenge.child("opponent").setValue(settings.getString("ID", null));
 
                             Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                             createChallenge.putExtra("ID",mContacts.get(getLayoutPosition()).getID());
