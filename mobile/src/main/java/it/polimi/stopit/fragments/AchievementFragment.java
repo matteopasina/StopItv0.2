@@ -57,6 +57,7 @@ public class AchievementFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new AchievementRecyclerViewAdapter(mAchievements, mListener));
         }
+
         return view;
     }
 
