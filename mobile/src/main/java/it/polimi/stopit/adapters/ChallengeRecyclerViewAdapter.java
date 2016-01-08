@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -133,66 +134,71 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
 
             if (!challenge.isAccepted()) {
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                if(challenge.isChallenger()){
+                    Toast.makeText(context, "Wait for your opponent to respond", Toast.LENGTH_SHORT).show();
+                }
+                else if(!challenge.isChallenger()) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    //Yes button clicked
 
-                                Firebase.setAndroidContext(view.getContext());
-                                final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
-                                Firebase newChallenge = fire.push();
+                                    Firebase.setAndroidContext(view.getContext());
+                                    final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
+                                    Firebase newChallenge = fire.push();
 
-                                MutableDateTime now = new MutableDateTime();
+                                    MutableDateTime now = new MutableDateTime();
 
-                                challenge.setID(newChallenge.getKey());
-                                challenge.setAccepted(true);
-                                challenge.setStartTime(now.getMillis());
-                                challenge.setEndTime(now.getMillis() + challenge.getEndTime());
+                                    challenge.setID(newChallenge.getKey());
+                                    challenge.setAccepted(true);
+                                    challenge.setStartTime(now.getMillis());
+                                    challenge.setEndTime(now.getMillis() + challenge.getEndTime());
 
-                                newChallenge.setValue(challenge);
-                                newChallenge.child("id").setValue(p.getString("ID", null));
+                                    newChallenge.setValue(challenge);
+                                    newChallenge.child("id").setValue(p.getString("ID", null));
 
-                                dbh.updateChallenge(challenge);
-                                mChallenges.set(getLayoutPosition(), challenge);
-                                notifyDataSetChanged();
+                                    dbh.updateChallenge(challenge);
+                                    mChallenges.set(getLayoutPosition(), challenge);
+                                    notifyDataSetChanged();
 
-                                final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/"+p.getString("ID", null));
-                                accept.setValue(newChallenge.getKey());
+                                    final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + p.getString("ID", null));
+                                    accept.setValue(newChallenge.getKey());
 
-                                Controller controller=new Controller(context);
-                                controller.setChallengeAlarm(challenge.getStartTime(),
-                                        challenge.getEndTime()-challenge.getStartTime(),
-                                        newChallenge.getKey());
+                                    Controller controller = new Controller(context);
+                                    controller.setChallengeAlarm(challenge.getStartTime(),
+                                            challenge.getEndTime() - challenge.getStartTime(),
+                                            newChallenge.getKey());
 
-                                break;
+                                    break;
 
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
 
-                                dbh.deleteChallenge(mChallenges.get(getLayoutPosition()).getOpponentID());
-                                mChallenges.remove(getLayoutPosition());
-                                notifyDataSetChanged();
+                                    dbh.deleteChallenge(mChallenges.get(getLayoutPosition()).getOpponentID());
+                                    mChallenges.remove(getLayoutPosition());
+                                    notifyDataSetChanged();
 
-                                final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/"+p.getString("ID", null));
-                                decline.setValue("0");
+                                    final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + p.getString("ID", null));
+                                    decline.setValue("0");
 
-                                break;
+                                    break;
+                            }
                         }
-                    }
-                };
+                    };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setMessage("Accept the challenge of " + opponentName.getText() + "?")
-                        .setTitle("Challenge!")
-                        .setPositiveButton("Accept", dialogClickListener)
-                        .setNegativeButton("Refuse", dialogClickListener)
-                        .show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("Accept the challenge of " + opponentName.getText() + "?")
+                            .setTitle("Challenge!")
+                            .setPositiveButton("Accept", dialogClickListener)
+                            .setNegativeButton("Refuse", dialogClickListener)
+                            .show();
 
+                }
             }
-            if(challenge.isAccepted()){
+            else if(challenge.isAccepted()){
 
                 Intent startDetail=new Intent(context,ChallengeDetail.class);
                 startDetail.putExtra("opponentID",mChallenges.get(getLayoutPosition()).getOpponentID());

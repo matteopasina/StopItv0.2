@@ -1,11 +1,14 @@
 package it.polimi.stopit.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -39,17 +42,19 @@ public class ChallengeDetail extends AppCompatActivity {
         final TextView yourPoints=(TextView) findViewById(R.id.yourPoints);
         final TextView opponentPoints=(TextView) findViewById(R.id.opponentPoints);
         final TextView timeLeft=(TextView) findViewById(R.id.timeLeft);
+        final Button giveUp=(Button) findViewById(R.id.give_up);
+        giveUp.setText("Give up");
 
         final SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(this);
 
         String opponentID=getIntent().getStringExtra("opponentID");
-        DatabaseHandler dbh=new DatabaseHandler(this);
-        Challenge challenge=dbh.getChallengeByOpponentID(opponentID);
+        final DatabaseHandler dbh=new DatabaseHandler(this);
+        final Challenge challenge=dbh.getChallengeByOpponentID(opponentID);
         yourPoints.setText(String.valueOf(challenge.getOpponentPoints()));
         opponentPoints.setText(String.valueOf(challenge.getMyPoints()));
 
         MutableDateTime time=new MutableDateTime();
-        time.setMillis(challenge.getEndTime()-time.getMillis());
+        time.setMillis(challenge.getEndTime() - time.getMillis());
 
         int days=(int)(time.getMillis())/(1000*60*60*24);
         time.setMillis(time.getMillis()-days*1000*60*60*24);
@@ -102,6 +107,17 @@ public class ChallengeDetail extends AppCompatActivity {
             @Override
             public void onCancelled(FirebaseError firebaseError) {
 
+            }
+        });
+
+        giveUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
+                fireChallenge.removeValue();
+                dbh.deleteChallenge(challenge.getID());
+                Intent intent=new Intent(ChallengeDetail.this,NavigationActivity.class);
+                startActivity(intent);
             }
         });
     }

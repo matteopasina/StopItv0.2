@@ -295,34 +295,37 @@ public class ScheduleService extends Service {
                 //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
                 if (notification.getChildrenCount() != 0) {
 
-                    final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                    final DatabaseHandler dbh=new DatabaseHandler(ScheduleService.this);
+                    for(final DataSnapshot children : notification.getChildren()) {
 
-                    fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
+                        final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                        final DatabaseHandler dbh = new DatabaseHandler(ScheduleService.this);
 
-                            //costruisci testo notifica
-                            String opponent = snapshot.child(notification.child("opponent").getValue().toString())
-                                    .child("name").getValue().toString() + " " +
-                                    snapshot.child(notification.child("opponent").getValue().toString())
-                                            .child("surname").getValue().toString();
+                        fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
 
-
-                            //manda notifica
-                            sendNotificationChallenge(opponent, notification.child("opponent").getValue().toString());
+                                //costruisci testo notifica
+                                String opponent = snapshot.child(children.child("opponent").getValue().toString())
+                                        .child("name").getValue().toString() + " " +
+                                        snapshot.child(children.child("opponent").getValue().toString())
+                                                .child("surname").getValue().toString();
 
 
-                            //aggiungi challenge al DB
-                            dbh.addChallenge(new Challenge(notification.child("opponent").getValue().toString()
-                                    , notification.child("opponent").getValue().toString(), 0, 0, 0,
-                                    (long) notification.child("duration").getValue() * 86400000, "false"));
-                        }
+                                //manda notifica
+                                sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                        }
-                    });
+
+                                //aggiungi challenge al DB
+                                dbh.addChallenge(new Challenge(children.child("opponent").getValue().toString()
+                                        , children.child("opponent").getValue().toString(), 0, 0, 0,
+                                        (long) children.child("duration").getValue() * 86400000, "false", "false"));
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        });
+                    }
                     fire.child(settings.getString("ID", null)).removeValue();
                 }
             }
@@ -363,7 +366,8 @@ public class ScheduleService extends Service {
                                         (long) C.child("opponentPoints").getValue(),
                                         (long) C.child("startTime").getValue(),
                                         (long) C.child("endTime").getValue(),
-                                        C.child("accepted").getValue().toString());
+                                        C.child("accepted").getValue().toString(),
+                                        C.child("challenger").getValue().toString());
 
                                 dbh.updateChallenge(chall);
 

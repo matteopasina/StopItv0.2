@@ -129,10 +129,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             DatabaseHandler dbh=new DatabaseHandler(view.getContext());
-                            SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(view.getContext());
                             dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
                                     , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
-                                    (long) days.getProgress() * 86400000, "false"));
+                                    (long) days.getProgress() * 86400000, "false" ,"true"));
 
                             final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(view.getContext());
 
@@ -141,7 +140,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                             Firebase challenge=fire.push();
                             challenge.child("opponent").setValue(settings.getString("ID", null));
-                            challenge.child("duration").setValue((long)days.getProgress() * 86400000);
+                            challenge.child("duration").setValue(days.getProgress());
 
                             Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                             createChallenge.putExtra("ID",mContacts.get(getLayoutPosition()).getID());

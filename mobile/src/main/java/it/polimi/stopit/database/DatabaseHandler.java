@@ -82,6 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CHALLENGE_START_TIME = "starttime";
     private static final String CHALLENGE_END_TIME = "endtime";
     private static final String CHALLENGE_ACCEPTED = "challengeaccepted";
+    private static final String CHALLENGE_CHALLENGER = "challengechallenger";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -124,7 +125,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String CREATE_CHALLENGES_TABLE = "CREATE TABLE " + TABLE_CHALLENGES + "("
                 + CHALLENGE_ID + " TEXT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
                 CHALLENGE_OPPONENT_POINTS + " INTEGER,"+ CHALLENGE_START_TIME + " TEXT," + CHALLENGE_END_TIME + " TEXT,"
-                + CHALLENGE_ACCEPTED + " TEXT" + ")";
+                + CHALLENGE_ACCEPTED + " TEXT,"+ CHALLENGE_CHALLENGER + " TEXT" + ")";
         db.execSQL(CREATE_CHALLENGES_TABLE);
     }
 
@@ -254,6 +255,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CHALLENGE_END_TIME, challenge.getEndTime());
         String accepted= (challenge.isAccepted()) ? "true" : "false";
         values.put(CHALLENGE_ACCEPTED, accepted);
+        String challenger= (challenge.isChallenger()) ? "true" : "false";
+        values.put(CHALLENGE_CHALLENGER, challenger);
 
         // Inserting Row
         db.insert(TABLE_CHALLENGES, null, values);
@@ -325,13 +328,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
                         CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
-                CHALLENGE_ACCEPTED}, CHALLENGE_ID + "=?",
+                CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER}, CHALLENGE_ID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                cursor.getLong(5),cursor.getString(6));
+                cursor.getLong(5),cursor.getString(6),cursor.getString(7));
 
         return challenge;
 
@@ -344,13 +347,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
                         CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
-                        CHALLENGE_ACCEPTED}, CHALLENGE_OPPONENTID + "=?",
+                        CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER}, CHALLENGE_OPPONENTID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                cursor.getLong(5),cursor.getString(6));
+                cursor.getLong(5),cursor.getString(6),cursor.getString(7));
 
         return challenge;
 
@@ -410,7 +413,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
                 Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                        cursor.getLong(5),cursor.getString(6));
+                        cursor.getLong(5),cursor.getString(6),cursor.getString(7));
                 challengeList.add(challenge);
 
             } while (cursor.moveToNext());
@@ -541,6 +544,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CHALLENGE_END_TIME, challenge.getEndTime());
         String accepted= (challenge.isAccepted()) ? "true" : "false";
         values.put(CHALLENGE_ACCEPTED, accepted);
+        String challenger= (challenge.isChallenger()) ? "true" : "false";
+        values.put(CHALLENGE_CHALLENGER, challenger);
 
         // updating row
         return db.update(TABLE_CHALLENGES, values, CHALLENGE_OPPONENTID + " = ?",

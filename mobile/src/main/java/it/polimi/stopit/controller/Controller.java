@@ -226,30 +226,31 @@ public class Controller {
         List<Challenge> challengeList=dbh.getAllChallenges();
 
         for(Challenge challenge : challengeList) {
+            if(challenge.isAccepted()) {
 
-            challenge.setMyPoints(challenge.getMyPoints()+points);
-            challenge.setOpponentPoints(challenge.getOpponentPoints()+points);
+                challenge.setMyPoints(challenge.getMyPoints() + points);
+                challenge.setOpponentPoints(challenge.getOpponentPoints() + points);
 
-            final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
-            VS.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
+                VS.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    //se sei tu lo sfidante
-                    if(dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID",null))){
-                        VS.child("myPoints").setValue( (long)dataSnapshot.child("myPoints").getValue() + points);
+                        //se sei tu lo sfidante
+                        if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
+                            VS.child("myPoints").setValue((long) dataSnapshot.child("myPoints").getValue() + points);
+
+                        } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
+                            VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
 
                     }
-                    else if(dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID",null))){
-                        VS.child("opponentPoints").setValue( (long)dataSnapshot.child("opponentPoints").getValue() + points);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
+                });
+            }
         }
     }
 

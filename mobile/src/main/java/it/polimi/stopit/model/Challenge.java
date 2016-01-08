@@ -12,8 +12,9 @@ public class Challenge {
     private long startTime;
     private long endTime;
     private Boolean accepted;
+    private Boolean challenger;
 
-    public Challenge(String ID, String opponentID, long points, long opponentpoints, long starttime, long endtime, String accepted) {
+    public Challenge(String ID, String opponentID, long points, long opponentpoints, long starttime, long endtime, String accepted,String challenger) {
         this.ID=ID;
         this.opponentID=opponentID;
         this.myPoints=points;
@@ -21,6 +22,7 @@ public class Challenge {
         this.startTime=starttime;
         this.endTime=endtime;
         this.accepted=Boolean.valueOf(accepted);
+        this.challenger=Boolean.valueOf(challenger);
     }
 
     public long getStartTime() {
@@ -77,6 +79,14 @@ public class Challenge {
 
     public void setOpponentPoints(long opponentPoints) {
         this.opponentPoints = opponentPoints;
+    }
+
+    public boolean isChallenger() {
+        return challenger;
+    }
+
+    public void setChallenger(boolean challenger) {
+        this.challenger = challenger;
     }
 
 }

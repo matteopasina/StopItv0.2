@@ -127,7 +127,6 @@
         android:text="Time left:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_below="@+id/linear"
         android:layout_marginTop="30dp" />
 
@@ -136,8 +135,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
         android:layout_below="@+id/linear"
         android:layout_marginTop="30dp" />
+
+    <Button
+        android:id="@+id/give_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeLeft"
+        android:layout_centerInParent="true"
+        android:textColor="#07A"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_alignParentBottom="true" />
+
 
 </RelativeLayout>
