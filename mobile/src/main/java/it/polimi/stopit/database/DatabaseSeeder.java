@@ -57,6 +57,8 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(16, "Top10", "In all time leaderboard", 100, R.drawable.winner, false));
         db.addAchievement(new Achievement(17, "Top3", "In all time leaderboard", 250, R.drawable.winner, false));
         db.addAchievement(new Achievement(18, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true));
+        db.addAchievement(new Achievement(19, "Challenger", "Win a challenge", 500, R.drawable.challenge, true));
+        db.addAchievement(new Achievement(20, "Super Challenger", "Win 5 challenges", 2000, R.drawable.five_challenge, true));
 
     }
 
