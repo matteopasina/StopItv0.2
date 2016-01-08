@@ -73,7 +73,7 @@ public class DatabaseSeeder {
 
                         try {
                             friends = response.getJSONObject().getJSONArray("data");
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 

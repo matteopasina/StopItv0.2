@@ -88,7 +88,6 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
                                     editor.putString("CPD",String.valueOf(newCPD)).apply();
                                 }
 
-
                                 db.deleteMoneyTarget(target);
 
                                 break;

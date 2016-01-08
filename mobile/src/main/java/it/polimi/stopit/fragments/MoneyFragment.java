@@ -27,7 +27,7 @@ public class MoneyFragment extends Fragment {
     private FloatingActionButton fab;
 
     public MoneyFragment() {
-        // Required empty public constructor
+
     }
 
     public static Fragment newInstance() {
@@ -79,10 +79,6 @@ public class MoneyFragment extends Fragment {
 
 
         return view;
-    }
-
-    public interface OnFragmentInteractionListener {
-
     }
 
 }
