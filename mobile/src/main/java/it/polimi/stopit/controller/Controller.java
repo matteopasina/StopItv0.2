@@ -28,6 +28,7 @@ import it.polimi.stopit.Receivers.ChallengeReceiver;
 import it.polimi.stopit.Receivers.ControllerReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
@@ -69,6 +70,68 @@ public class Controller {
         }
 
         updateMoneyTarget((cigPD - numSmoked));
+
+        SharedPreferences.Editor editor = settings.edit();
+
+        if(numSmoked==0){
+
+            int noSmokeDays=0;
+            Achievement achievement;
+
+            try{
+
+                noSmokeDays=settings.getInt("noSmokeDays",0);
+
+            }catch (Exception e){
+
+            }
+
+            if(noSmokeDays>0){
+
+                noSmokeDays+=1;
+                editor.putInt("noSmokeDays",noSmokeDays).apply();
+
+                if(noSmokeDays==3){
+
+                    achievement=new Achievement(2, "Three Days Stop", "Don't smoke for three days", 400, R.drawable.stop_three_days, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(400);
+
+                }else if(noSmokeDays==7){
+
+                    achievement=new Achievement(3, "One Week Stop", "Don't smoke for one week", 600, R.drawable.stop_one_week, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(600);
+
+                }else if(noSmokeDays==14){
+
+                    achievement=new Achievement(4, "Two Weeks Stop", "Don't smoke for two weeks", 800, R.drawable.stop_two_weeks, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(800);
+
+
+                }else if(noSmokeDays==30){
+
+                    achievement=new Achievement(5, "One Month Stop", "Don't smoke for one month", 1000, R.drawable.stop_one_month, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(1000);
+
+                }
+
+            }else{
+
+                editor.putInt("noSmokeDays",1).apply();
+                achievement=new Achievement(1, "One Day Stop", "Don't smoke for one day", 200, R.drawable.stop_one_day, true);
+                db.updateAchievement(achievement);
+                updatePoints(200);
+            }
+
+
+        }else{
+
+            editor.putInt("noSmokeDays",0).apply();
+
+        }
 
     }
 
@@ -118,6 +181,30 @@ public class Controller {
 
 
         db.updateMoneyTarget(currentTarget);
+    }
+
+    public void updateLeaderboardAchievement(String type){
+
+        Achievement achievement;
+
+        if(type.equals("first")){
+
+            achievement=new Achievement(18, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true);
+            db.updateAchievement(achievement);
+            updatePoints(500);
+
+        }else if(type.equals("top10")){
+
+            achievement=new Achievement(16, "Top10", "In all time leaderboard", 100, R.drawable.winner, true);
+            db.updateAchievement(achievement);
+            updatePoints(100);
+
+        }else if(type.equals("top3")){
+
+            achievement=new Achievement(17, "Top3", "In all time leaderboard", 250, R.drawable.winner, true);
+            db.updateAchievement(achievement);
+            updatePoints(250);
+        }
     }
 
     public void setDailyAlarm(){

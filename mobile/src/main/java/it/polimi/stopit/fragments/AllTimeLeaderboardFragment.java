@@ -17,6 +17,7 @@ import java.util.Comparator;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.LeaderboardRecyclerViewAdapter;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.User;
 
@@ -59,13 +60,32 @@ public class AllTimeLeaderboardFragment extends Fragment{
         mLeaderboard.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("1920"),Long.parseLong("900"),Long.parseLong("200")));
         mLeaderboard.add(new User("4", "Scarlett", "Johansson", "http://coolspotters.com/files/photos/1109436/scarlett-johansson-profile.png?1381189248", Long.parseLong("4560"),Long.parseLong("1200"),Long.parseLong("-50")));
         mLeaderboard.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("8800"),Long.parseLong("560"),Long.parseLong("340")));
-        mLeaderboard.add(new User("6", "Federica", "Nargi", "https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s320x320/e15/11252786_483822848436098_1537023381_n.jpg", Long.parseLong("1267"),Long.parseLong("650"),Long.parseLong("200")));
-        mLeaderboard.add(new User("7", "Alessandro", "Del Piero", "http://2.bp.blogspot.com/-dCln92KA_VY/T_2LuG2m5CI/AAAAAAAAA1o/Hpc9K0P8Jxo/s1600/Alessandro+Del+Piero-3.jpg", Long.parseLong("880"),Long.parseLong("700"),Long.parseLong("180")));
-        mLeaderboard.add(new User("8", "Gianluigi", "Buffon", "http://img.uefa.com/imgml/TP/players/14/2014/324x324/21307.jpg", Long.parseLong("3450"),Long.parseLong("1000"),Long.parseLong("80")));
-        mLeaderboard.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("1200"),Long.parseLong("150"),Long.parseLong("-100")));
+        mLeaderboard.add(new User("6", "Federica", "Nargi", "https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/s320x320/e15/11252786_483822848436098_1537023381_n.jpg", Long.parseLong("1267"), Long.parseLong("650"), Long.parseLong("200")));
+        mLeaderboard.add(new User("7", "Alessandro", "Del Piero", "http://2.bp.blogspot.com/-dCln92KA_VY/T_2LuG2m5CI/AAAAAAAAA1o/Hpc9K0P8Jxo/s1600/Alessandro+Del+Piero-3.jpg", Long.parseLong("880"), Long.parseLong("700"), Long.parseLong("180")));
+        mLeaderboard.add(new User("8", "Gianluigi", "Buffon", "http://img.uefa.com/imgml/TP/players/14/2014/324x324/21307.jpg", Long.parseLong("3450"), Long.parseLong("1000"), Long.parseLong("80")));
+        mLeaderboard.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("1200"), Long.parseLong("150"), Long.parseLong("-100")));
 
         // reorder the leaderboard
         Collections.sort(mLeaderboard,new leaderComparator());
+
+        for(int i=1;i<mLeaderboard.size();i++){
+
+            if(mLeaderboard.get(i).getID().equals(me.getID()) && i<11){
+
+                Controller controller=new Controller(getActivity());
+                controller.updateLeaderboardAchievement("top10");
+
+                if(i<4){
+
+                    controller.updateLeaderboardAchievement("top3");
+
+                    if(i==0){
+
+                        controller.updateLeaderboardAchievement("first");
+                    }
+                }
+            }
+        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {

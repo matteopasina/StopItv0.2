@@ -39,26 +39,26 @@ public class DatabaseSeeder {
 
     public void seedAchievements() {
 
-        db.addAchievement(new Achievement(1, "One Day Stop", "Don't smoke for one day", 200, R.drawable.stop_one_day, true));
-        db.addAchievement(new Achievement(2, "Three Days Stop", "Don't smoke for three days", 400, R.drawable.stop_three_days, true));
-        db.addAchievement(new Achievement(3, "One Week Stop", "Don't smoke for one week", 600, R.drawable.stop_one_week, true));
-        db.addAchievement(new Achievement(4, "Two Weeks Stop", "Don't smoke for two weeks", 800, R.drawable.stop_two_weeks, true));
-        db.addAchievement(new Achievement(5, "One Month Stop", "Don't smoke for one month", 1000, R.drawable.stop_one_month, true));
-        db.addAchievement(new Achievement(6, "Beginner", "Do an alternative activity", 100, R.drawable.achievement_star, true));
-        db.addAchievement(new Achievement(7, "10 Activities", "Do 10 alternative activities", 200, R.drawable.achievement_star, true));
+        db.addAchievement(new Achievement(1, "One Day Stop", "Don't smoke for one day", 200, R.drawable.stop_one_day, false));
+        db.addAchievement(new Achievement(2, "Three Days Stop", "Don't smoke for three days", 400, R.drawable.stop_three_days, false));
+        db.addAchievement(new Achievement(3, "One Week Stop", "Don't smoke for one week", 600, R.drawable.stop_one_week, false));
+        db.addAchievement(new Achievement(4, "Two Weeks Stop", "Don't smoke for two weeks", 800, R.drawable.stop_two_weeks, false));
+        db.addAchievement(new Achievement(5, "One Month Stop", "Don't smoke for one month", 1000, R.drawable.stop_one_month, false));
+        db.addAchievement(new Achievement(6, "Beginner", "Do an alternative activity", 100, R.drawable.achievement_star, false));
+        db.addAchievement(new Achievement(7, "10 Activities", "Do 10 alternative activities", 200, R.drawable.achievement_star, false));
         db.addAchievement(new Achievement(8, "20 Activities", "Do 20 alternative activities", 400, R.drawable.achievement_star, false));
         db.addAchievement(new Achievement(9, "50 Activities", "Do 50 alternative activities", 600, R.drawable.achievement_star, false));
-        db.addAchievement(new Achievement(10, "Sportsman", "Do 10 sport activities", 1000, R.drawable.sportsman, true));
-        db.addAchievement(new Achievement(11, "Social", "Do 10 social activities", 1000, R.drawable.social, true));
+        db.addAchievement(new Achievement(10, "Sportsman", "Do 10 sport activities", 1000, R.drawable.sportsman, false));
+        db.addAchievement(new Achievement(11, "Social", "Do 10 social activities", 1000, R.drawable.social, false));
         db.addAchievement(new Achievement(12, "Artist", "Do 10 art activities", 1000, R.drawable.artist, false));
-        db.addAchievement(new Achievement(13, "Food", "Do 10 food activities", 1000, R.drawable.food, true));
-        db.addAchievement(new Achievement(14, "Saver", "Complete a money target", 1000, R.drawable.saver, true));
-        db.addAchievement(new Achievement(15, "Super Saver", "Complete 3 money targets", 3000, R.drawable.super_saver, true));
+        db.addAchievement(new Achievement(13, "Food", "Do 10 food activities", 1000, R.drawable.food, false));
+        db.addAchievement(new Achievement(14, "Saver", "Complete a money target", 1000, R.drawable.saver, false));
+        db.addAchievement(new Achievement(15, "Super Saver", "Complete 3 money targets", 3000, R.drawable.super_saver, false));
         db.addAchievement(new Achievement(16, "Top10", "In all time leaderboard", 100, R.drawable.winner, false));
         db.addAchievement(new Achievement(17, "Top3", "In all time leaderboard", 250, R.drawable.winner, false));
-        db.addAchievement(new Achievement(18, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true));
-        db.addAchievement(new Achievement(19, "Challenger", "Win a challenge", 500, R.drawable.challenge, true));
-        db.addAchievement(new Achievement(20, "Super Challenger", "Win 5 challenges", 2000, R.drawable.five_challenge, true));
+        db.addAchievement(new Achievement(18, "Winner", "First in all time leaderboard", 500, R.drawable.winner, false));
+        db.addAchievement(new Achievement(19, "Challenger", "Win a challenge", 500, R.drawable.challenge, false));
+        db.addAchievement(new Achievement(20, "Super Challenger", "Win 5 challenges", 2000, R.drawable.five_challenge, false));
 
     }
 
