@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -107,10 +108,19 @@ public class ProfileFragment extends Fragment {
         TextView usernameText = (TextView) view.findViewById(R.id.username);
         usernameText.setText("" + name + " " + surname);
 
+        TextView level=(TextView) view.findViewById(R.id.level);
+
+        level.setText("Level 1 - Beginner");
+
         final TextView showPoints = (TextView) view.findViewById(R.id.points);
-        showPoints.setText("Points:  " + points);
+        showPoints.setText(points + " / 50000   points");
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
+
+        ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
+        levelProgress.setMax(50000);
+
+        levelProgress.setProgress(Integer.parseInt(points));
 
         smokeOrDont();
 
@@ -132,7 +142,7 @@ public class ProfileFragment extends Fragment {
                     losePoints.startAnimation(up);
                 }
                 points = snapshot.getValue().toString();
-                showPoints.setText("Points:  " + points);
+                showPoints.setText(points + " / 50000   points");
             }
 
             @Override

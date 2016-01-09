@@ -167,7 +167,7 @@ public class NavigationActivity extends AppCompatActivity
         TextView sidename = (TextView) findViewById(R.id.sideName);
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
         sidename.setText("" + user.getName() + " " + user.getSurname());
-        sidelevel.setText("Beginner: level 1");
+        sidelevel.setText("Level 1 - Beginner");
         CircularImageView sidebarpic=(CircularImageView) findViewById(R.id.sidebarPic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
 
