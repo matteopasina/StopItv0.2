@@ -17,10 +17,13 @@ import com.firebase.client.ValueEventListener;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
+import org.joda.time.MutableInterval;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
@@ -29,6 +32,7 @@ import it.polimi.stopit.Receivers.ControllerReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.AlternativeActivity;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
@@ -334,8 +338,7 @@ public class Controller {
 
 
         //per ogni challenge aggiorna i punti su firebase e in locale
-        DatabaseHandler dbh=new DatabaseHandler(context);
-        List<Challenge> challengeList=dbh.getAllChallenges();
+        List<Challenge> challengeList=db.getAllChallenges();
 
         for(Challenge challenge : challengeList) {
             if(challenge.isAccepted()) {
@@ -376,5 +379,221 @@ public class Controller {
         int cigCost=Integer.parseInt(settings.getString("cigcost", null));
 
         return cigCost*db.getCigarettesAvoided();
+    }
+
+    //check if there are challenges that you launched accepted
+    public void checkAccepted(){
+        Firebase.setAndroidContext(context);
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted");
+
+        fire.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
+
+                //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
+                if(accepted.exists()) {
+                    if (accepted.getValue().toString() != "0") {
+
+                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
+
+                        fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+
+                                DataSnapshot C = snapshot.child(accepted.getValue().toString());
+                                Challenge chall = new Challenge(accepted.getValue().toString(),
+                                        C.child("id").getValue().toString(),
+                                        (long) C.child("myPoints").getValue(),
+                                        (long) C.child("opponentPoints").getValue(),
+                                        (long) C.child("startTime").getValue(),
+                                        (long) C.child("endTime").getValue(),
+                                        C.child("accepted").getValue().toString(),
+                                        C.child("challenger").getValue().toString());
+
+                                db.updateChallenge(chall);
+
+                                Controller controller=new Controller(context);
+                                controller.setChallengeAlarm(chall.getStartTime(),
+                                        chall.getEndTime()-chall.getStartTime(),
+                                        chall.getID());
+                                controller.sendCustomNotification("Challenge accepted","Don't smoke if you want to win!");
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+
+                        });
+
+                        fire.child(settings.getString("ID", null)).removeValue();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    //check if there are challenges for you
+    public void checkChallenges(){
+
+        Firebase.setAndroidContext(context);
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
+
+        fire.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                final DataSnapshot notification = snapshot.child(settings.getString("ID", null));
+
+                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
+                if (notification.getChildrenCount() != 0) {
+
+                    for(final DataSnapshot children : notification.getChildren()) {
+
+                        final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+children.child("opponent").getValue().toString());
+
+                        fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+
+                                //costruisci testo notifica
+                                String opponent = snapshot.child("name").getValue().toString() + " " +
+                                        snapshot.child("surname").getValue().toString();
+
+
+                                //manda notifica
+                                sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
+
+
+                                //aggiungi challenge al DB
+                                db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
+                                        , children.child("opponent").getValue().toString(), 0, 0, 0,
+                                        (long) children.child("duration").getValue() * 86400000, "false", "false"));
+                            }
+
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                            }
+                        });
+                    }
+                    fire.child(settings.getString("ID", null)).removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
+    }
+
+    public void sendNotificationChallenge(String opponent,String ID) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setContentTitle(opponent+" challenged you!")
+                        .setContentText("Smash his ass!")
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+
+        resultIntent.putExtra("IDopponent",ID);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNM.notify(NotificationID.getID(), mBuilder.build());
+
+    }
+
+    public boolean sendAlternative(){
+
+        List<AlternativeActivity> alternativeActivityList=db.getAllAlternative();
+        AlternativeActivity alternativeChoosen;
+        System.out.println(alternativeActivityList);
+        for(AlternativeActivity activity: alternativeActivityList){
+            System.out.println(activity);
+            System.out.println(settings.getBoolean("food",false));
+            if(!settings.getBoolean(activity.getCategory(),false)){
+                alternativeActivityList.remove(activity);
+            }
+        }
+
+        ArrayList listWeight=new ArrayList();
+        for(AlternativeActivity activitySelected: alternativeActivityList){
+            int j=0;
+            for(int i=0;i < activitySelected.getFrequency(); i++)
+            {
+                listWeight.add(j);
+            }
+            j++;
+        }
+
+        if(alternativeActivityList.isEmpty()){
+            return false;
+        }
+        alternativeChoosen=alternativeActivityList.get((int)listWeight.get(new Random().nextInt(listWeight.size())));
+
+        sendAlternativeNotification(alternativeChoosen);
+        return true;
+    }
+
+    public void sendAlternativeNotification(AlternativeActivity alternativeActivity){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(alternativeActivity.getImage())
+                        .setContentTitle(alternativeActivity.getTitle())
+                        .setContentText(alternativeActivity.getDescription())
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+        resultIntent.putExtra("points",alternativeActivity.getBonusPoints());
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM =(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        int notificationID=NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
     }
 }

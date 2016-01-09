@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import it.polimi.stopit.NotificationID;
@@ -65,13 +66,7 @@ public class ScheduleService extends Service {
             if(intent.getSerializableExtra("time")!=null){
 
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
-                start=new MutableDateTime();
-                end=new MutableDateTime();
 
-                start.setHourOfDay(9);
-                start.setMinuteOfHour(0);
-                end.setHourOfDay(23);
-                end.setMinuteOfHour(0);
                 nextCiga(list, start, end);
                 saveSchedule(list);
 
@@ -94,13 +89,7 @@ public class ScheduleService extends Service {
 
         //setta lo schedule per la prima esecuzione
         firstStart();
-        start=new MutableDateTime();
-        end=new MutableDateTime();
 
-        start.setHourOfDay(9);
-        start.setMinuteOfHour(0);
-        end.setHourOfDay(23);
-        end.setMinuteOfHour(0);
         nextCiga(list, start, end);
         setCount(nextCiga);
 
@@ -129,15 +118,12 @@ public class ScheduleService extends Service {
                     beginOfDay=false;
                 }
 
-                sendNotification(calcPoints());
-
-                start=new MutableDateTime();
-                end=new MutableDateTime();
-
-                start.setHourOfDay(9);
-                start.setMinuteOfHour(0);
-                end.setHourOfDay(23);
-                end.setMinuteOfHour(0);
+                if(new Random().nextInt(100) > 1) {
+                    if(!controller.sendAlternative()) sendNotification(calcPoints());
+                }
+                else {
+                    sendNotification(calcPoints());
+                }
 
                 nextCiga(list, start, end);
 
@@ -148,7 +134,6 @@ public class ScheduleService extends Service {
                     public void run() {
 
                         mNM.cancel(notificationID);
-                        Controller controller=new Controller(ScheduleService.this);
                         controller.updatePoints(calcPoints());
 
                     }
@@ -244,7 +229,7 @@ public class ScheduleService extends Service {
     public int calcPoints(){
         long points=0;
         MutableDateTime now=new MutableDateTime();
-        now.setSecondOfDay(now.getSecondOfDay()-5);
+        now.setSecondOfDay(now.getSecondOfDay() - 5);
         for(MutableInterval i : list){
             if(i.contains(now)){
                 points=(i.getEndMillis()-i.getStartMillis())/60000;

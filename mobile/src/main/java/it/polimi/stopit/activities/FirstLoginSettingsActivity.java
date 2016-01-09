@@ -40,6 +40,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();
         dbSeed.seedMoneyCategories();
+        dbSeed.seedAlternatives();
 
         Controller cont=new Controller(this);
         cont.setDailyAlarm();

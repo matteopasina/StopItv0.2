@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.AlternativeActivity;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.Cigarette;
 import it.polimi.stopit.model.MoneyTarget;
@@ -72,7 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String MONEYCAT_NAME = "name";
     private static final String MONEYCAT_IMAGE = "image";
 
-    // TABLE MONEY CATEGORIES
+    // TABLE CHALLENGES
     private static final String TABLE_CHALLENGES = "challenges";
 
     private static final String CHALLENGE_ID = "id";
@@ -83,6 +84,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CHALLENGE_END_TIME = "endtime";
     private static final String CHALLENGE_ACCEPTED = "challengeaccepted";
     private static final String CHALLENGE_CHALLENGER = "challengechallenger";
+
+    //TABLE ALTERNATIVEACTIVITIES
+    private static final String TABLE_ALTERNATIVE_ACTIVITIES = "alternativeactivities";
+
+    private static final String ALTERNATIVE_ID = "id";
+    private static final String ALTERNATIVE_TITLE = "title";
+    private static final String ALTERNATIVE_DESCRIPTION = "description";
+    private static final String ALTERNATIVE_CATEGORY = "category";
+    private static final String ALTERNATIVE_BONUSPOINTS = "bonuspoints";
+    private static final String ALTERNATIVE_FREQUENCY = "frequency";
+    private static final String ALTERNATIVE_IMAGE = "alternative";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -121,12 +133,19 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 + MONEYCAT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + MONEYCAT_NAME + " TEXT," + MONEYCAT_IMAGE + " INTEGER" + ")";
         db.execSQL(CREATE_MONEYCAT_TABLE);
 
-        // Create Challenges categories table
+        // Create Challenges table
         String CREATE_CHALLENGES_TABLE = "CREATE TABLE " + TABLE_CHALLENGES + "("
                 + CHALLENGE_ID + " TEXT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
                 CHALLENGE_OPPONENT_POINTS + " INTEGER,"+ CHALLENGE_START_TIME + " TEXT," + CHALLENGE_END_TIME + " TEXT,"
                 + CHALLENGE_ACCEPTED + " TEXT,"+ CHALLENGE_CHALLENGER + " TEXT" + ")";
         db.execSQL(CREATE_CHALLENGES_TABLE);
+
+        // Create Challenges table
+        String CREATE_ALTERNATIVE_TABLE = "CREATE TABLE " + TABLE_ALTERNATIVE_ACTIVITIES + "("
+                + ALTERNATIVE_ID + " INTEGER PRIMARY KEY," + ALTERNATIVE_TITLE + " TEXT," + ALTERNATIVE_DESCRIPTION + " TEXT,"+
+                ALTERNATIVE_CATEGORY + " TEXT,"+ ALTERNATIVE_BONUSPOINTS + " INTEGER," + ALTERNATIVE_FREQUENCY + " INTEGER,"
+                + ALTERNATIVE_IMAGE + " INTEGER" + ")";
+        db.execSQL(CREATE_ALTERNATIVE_TABLE);
     }
 
     @Override
@@ -138,6 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CIGARETTES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MONEY_TARGETS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHALLENGES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALTERNATIVE_ACTIVITIES);
 
         // Create tables again
         onCreate(db);
@@ -263,6 +283,25 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void addAlternative(AlternativeActivity alternativeActivity) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ALTERNATIVE_ID, alternativeActivity.getID());
+        values.put(ALTERNATIVE_TITLE, alternativeActivity.getTitle());
+        values.put(ALTERNATIVE_DESCRIPTION, alternativeActivity.getDescription());
+        values.put(ALTERNATIVE_CATEGORY, alternativeActivity.getCategory());
+        values.put(ALTERNATIVE_FREQUENCY, alternativeActivity.getFrequency());
+        values.put(ALTERNATIVE_BONUSPOINTS, alternativeActivity.getBonusPoints());
+        values.put(ALTERNATIVE_IMAGE, alternativeActivity.getImage());
+
+
+        // Inserting Row
+        db.insert(TABLE_ACHIEVEMENTS, null, values);
+        db.close();
+    }
+
     // GET SINGLE ROW
 
     public Cigarette getCigarette(int id){
@@ -338,6 +377,20 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         return challenge;
 
+    }
+
+    public AlternativeActivity getAlternative(int id) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ALTERNATIVE_ACTIVITIES, new String[] { ALTERNATIVE_ID,
+                        ALTERNATIVE_TITLE, ALTERNATIVE_DESCRIPTION, ALTERNATIVE_CATEGORY,ALTERNATIVE_BONUSPOINTS,ALTERNATIVE_FREQUENCY,ALTERNATIVE_IMAGE }, ALTERNATIVE_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return new AlternativeActivity(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),
+                cursor.getInt(4),cursor.getInt(5),cursor.getInt(6));
     }
 
     public Challenge getChallengeByOpponentID(String id){
@@ -420,6 +473,26 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         }
 
         return challengeList;
+    }
+
+    public List<AlternativeActivity> getAllAlternative() {
+
+        List<AlternativeActivity> alternativeActivityList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_ALTERNATIVE_ACTIVITIES;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                AlternativeActivity alternativeActivity = new AlternativeActivity(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4),cursor.getInt(5),cursor.getInt(6));
+                alternativeActivityList.add(alternativeActivity);
+
+            } while (cursor.moveToNext());
+        }
+
+        return alternativeActivityList;
     }
 
     public ArrayList<MoneyTarget> getAllTargets() {
@@ -588,6 +661,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
 
     //DELETE ROW
+
+    public void deleteAlternative(AlternativeActivity alternativeActivity) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ALTERNATIVE_ACTIVITIES, ALTERNATIVE_ID + " = ?",
+                new String[]{String.valueOf(alternativeActivity.getID())});
+        db.close();
+    }
 
     public void deleteChallenge(String id) {
 

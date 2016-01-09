@@ -21,6 +21,7 @@ import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.model.Achievement;
+import it.polimi.stopit.model.AlternativeActivity;
 import it.polimi.stopit.model.User;
 
 public class DatabaseSeeder {
@@ -147,6 +148,16 @@ public class DatabaseSeeder {
         db.addMoneyCategory("Clothes",R.drawable.clothes);
         db.addMoneyCategory("Bicycle",R.drawable.bicycle);
         db.addMoneyCategory("Cash",R.drawable.money);
-        db.addMoneyCategory("Other",R.drawable.other);
+        db.addMoneyCategory("Other", R.drawable.other);
+    }
+
+    public void seedAlternatives() {
+
+        db.addAlternative(new AlternativeActivity(1, "Eat a Banana", "Instead of smoking, eat a banana","food", 200, 7, R.drawable.banana));
+        db.addAlternative(new AlternativeActivity(2, "Run for 20 minutes", "Go for a run", "sport", 400, 5, R.drawable.banana));
+        db.addAlternative(new AlternativeActivity(3, "Paint", "Paint something","art", 300, 3, R.drawable.banana));
+        db.addAlternative(new AlternativeActivity(4, "Magic points", "Easy points","various", 1000, 1, R.drawable.banana));
+        db.addAlternative(new AlternativeActivity(5, "Selfie!", "Take a selfie","social", 200, 7, R.drawable.banana));
+
     }
 }
