@@ -68,7 +68,7 @@ public class AllTimeLeaderboardFragment extends Fragment{
         // reorder the leaderboard
         Collections.sort(mLeaderboard,new leaderComparator());
 
-        for(int i=1;i<mLeaderboard.size();i++){
+        for(int i=0;i<mLeaderboard.size();i++){
 
             if(mLeaderboard.get(i).getID().equals(me.getID()) && i<11){
 
