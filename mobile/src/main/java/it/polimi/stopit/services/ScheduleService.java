@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
@@ -51,6 +52,7 @@ public class ScheduleService extends Service {
     private boolean beginOfDay=false;
     CountDownTimer Count;
     int notificationID=0;
+    Controller controller;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
@@ -86,6 +88,7 @@ public class ScheduleService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
+        controller=new Controller(this);
 
         deleteFile("schedule");
 
@@ -100,9 +103,10 @@ public class ScheduleService extends Service {
         end.setMinuteOfHour(0);
         nextCiga(list, start, end);
         setCount(nextCiga);
-        SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-        checkChallenges(p);
-        checkAccepted(p);
+
+        controller.checkChallenges();
+        controller.checkAccepted();
+
     }
 
 
@@ -278,159 +282,6 @@ public class ScheduleService extends Service {
         }
 
         return list;
-    }
-
-    private void checkChallenges(final SharedPreferences settings){
-
-        Firebase.setAndroidContext(this);
-        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
-
-        fire.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                final DataSnapshot notification = snapshot.child(settings.getString("ID", null));
-
-                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
-                if (notification.getChildrenCount() != 0) {
-
-                    for(final DataSnapshot children : notification.getChildren()) {
-
-                        final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                        final DatabaseHandler dbh = new DatabaseHandler(ScheduleService.this);
-
-                        fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-
-                                //costruisci testo notifica
-                                String opponent = snapshot.child(children.child("opponent").getValue().toString())
-                                        .child("name").getValue().toString() + " " +
-                                        snapshot.child(children.child("opponent").getValue().toString())
-                                                .child("surname").getValue().toString();
-
-
-                                //manda notifica
-                                sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
-
-
-                                //aggiungi challenge al DB
-                                dbh.addChallenge(new Challenge(children.child("opponent").getValue().toString()
-                                        , children.child("opponent").getValue().toString(), 0, 0, 0,
-                                        (long) children.child("duration").getValue() * 86400000, "false", "false"));
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        });
-                    }
-                    fire.child(settings.getString("ID", null)).removeValue();
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-    }
-
-    private void checkAccepted(final SharedPreferences settings){
-        Firebase.setAndroidContext(this);
-        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted");
-
-        fire.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
-
-                //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
-                if(accepted.exists()) {
-                    if (accepted.getValue().toString() != "0") {
-
-                        final DatabaseHandler dbh = new DatabaseHandler(ScheduleService.this);
-                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
-
-                        fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-
-                                DataSnapshot C = snapshot.child(accepted.getValue().toString());
-                                Challenge chall = new Challenge(accepted.getValue().toString(),
-                                        C.child("id").getValue().toString(),
-                                        (long) C.child("myPoints").getValue(),
-                                        (long) C.child("opponentPoints").getValue(),
-                                        (long) C.child("startTime").getValue(),
-                                        (long) C.child("endTime").getValue(),
-                                        C.child("accepted").getValue().toString(),
-                                        C.child("challenger").getValue().toString());
-
-                                dbh.updateChallenge(chall);
-
-                                Controller controller=new Controller(ScheduleService.this);
-                                controller.setChallengeAlarm(chall.getStartTime(),
-                                        chall.getEndTime()-chall.getStartTime(),
-                                        chall.getID());
-                                controller.sendCustomNotification("Challenge accepted","Don't smoke if you want to win!");
-                            }
-
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-
-                        });
-
-                        fire.child(settings.getString("ID", null)).removeValue();
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-            }
-        });
-    }
-
-    private void sendNotificationChallenge(String opponent,String ID) {
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.stopitsymbol)
-                        .setContentTitle(opponent+" challenged you!")
-                        .setContentText("Smash his ass!")
-                        .setAutoCancel(true);
-
-        Intent resultIntent = new Intent(this, NavigationActivity.class);
-
-        resultIntent.putExtra("IDopponent",ID);
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
-
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNM =(NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Builds the notification and issues it.
-        mNM.notify(NotificationID.getID(), mBuilder.build());
-
     }
 
     public void sendNotification(int points) {
