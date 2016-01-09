@@ -298,7 +298,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
 
         // Inserting Row
-        db.insert(TABLE_ACHIEVEMENTS, null, values);
+        db.insert(TABLE_ALTERNATIVE_ACTIVITIES, null, values);
         db.close();
     }
 

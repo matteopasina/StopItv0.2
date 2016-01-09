@@ -118,12 +118,12 @@ public class ScheduleService extends Service {
                     beginOfDay=false;
                 }
 
-                if(new Random().nextInt(100) > 1) {
+               /* if(new Random().nextInt(100) > 1) {
                     if(!controller.sendAlternative()) sendNotification(calcPoints());
                 }
-                else {
+                else {*/
                     sendNotification(calcPoints());
-                }
+               // }
 
                 nextCiga(list, start, end);
 
