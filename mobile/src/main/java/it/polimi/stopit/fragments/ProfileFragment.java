@@ -110,15 +110,17 @@ public class ProfileFragment extends Fragment {
 
         TextView level=(TextView) view.findViewById(R.id.level);
 
-        level.setText("Level 1 - Beginner");
+        Controller control=new Controller(getActivity());
+
+        level.setText(control.getLevel(Long.parseLong(points)));
 
         final TextView showPoints = (TextView) view.findViewById(R.id.points);
-        showPoints.setText(points + " / 50000   points");
+        showPoints.setText(points + " / "+((Long.parseLong(points)/1000)+1)*1000+"   points");
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
 
         ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
-        levelProgress.setMax(50000);
+        levelProgress.setMax((int)((Long.parseLong(points)/1000)+1)*1000);
 
         levelProgress.setProgress(Integer.parseInt(points));
 
@@ -142,7 +144,7 @@ public class ProfileFragment extends Fragment {
                     losePoints.startAnimation(up);
                 }
                 points = snapshot.getValue().toString();
-                showPoints.setText(points + " / 50000   points");
+                showPoints.setText(points + " / "+((Long.parseLong(points)/1000)+1)*1000+"   points");
             }
 
             @Override

@@ -17,8 +17,6 @@ import com.firebase.client.ValueEventListener;
 
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
-import org.joda.time.MutableDateTime;
-import org.joda.time.MutableInterval;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -573,7 +571,7 @@ public class Controller {
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("points",alternativeActivity.getBonusPoints());
+        resultIntent.putExtra("points", alternativeActivity.getBonusPoints());
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -595,5 +593,58 @@ public class Controller {
         // Builds the notification and issues it.
         int notificationID=NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
+    }
+
+    public String getLevel(long points){
+
+        String levelText="";
+        int level=(int)(points/1000)+1;
+
+        if(level < 10){
+
+            levelText="Level "+level+" - Beginner";
+
+        }else if(level < 20){
+
+            levelText="Level "+level+" - Novice";
+
+        }else if(level < 30){
+
+            levelText="Level "+level+" - Rookie";
+
+        }else if(level < 40){
+
+            levelText="Level "+level+" - Semi-Pro";
+
+        }else if(level < 50){
+
+            levelText="Level "+level+" - Pro";
+
+        }else if(level < 60){
+
+            levelText="Level "+level+" - Veteran";
+
+        }else if(level < 70){
+
+            levelText="Level "+level+" - Expert";
+
+        }else if(level < 80){
+
+            levelText="Level "+level+" - Magus";
+
+        }else if(level < 90){
+
+            levelText="Level "+level+" - Master";
+
+        }else if(level < 100){
+
+            levelText="Level "+level+" - Grandmaster";
+
+        }else{
+
+            levelText="Level 100 - Legend";
+        }
+
+        return levelText;
     }
 }

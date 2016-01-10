@@ -32,6 +32,7 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
@@ -78,6 +79,8 @@ public class NavigationActivity extends AppCompatActivity
                         if (snapshot.child(user.getID()).child("points").getValue() == null) {
 
                             points = 0;
+                            daypoints = 0;
+                            weekpoints = 0;
 
                         } else {
 
@@ -112,6 +115,7 @@ public class NavigationActivity extends AppCompatActivity
                             ft.replace(R.id.content_frame, fragment);
 
                             ft.commit();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -167,7 +171,13 @@ public class NavigationActivity extends AppCompatActivity
         TextView sidename = (TextView) findViewById(R.id.sideName);
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
         sidename.setText("" + user.getName() + " " + user.getSurname());
-        sidelevel.setText("Level 1 - Beginner");
+
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
+        long points=settings.getLong("points", 0);
+        Controller control=new Controller(this);
+
+        sidelevel.setText(control.getLevel(points));
+
         CircularImageView sidebarpic=(CircularImageView) findViewById(R.id.sidebarPic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
 
