@@ -164,7 +164,7 @@ public class ProfileFragment extends Fragment {
         final DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, dm);
+        float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9, dm);
 
         // Create background track
         arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
