@@ -550,8 +550,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         String selectQuery = "SELECT  * FROM " + TABLE_CIGARETTES + " WHERE "+CIGARETTE_TYPE+"='notsmoke'";
         int count=0;
-        long days=0;
-        boolean first=true;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

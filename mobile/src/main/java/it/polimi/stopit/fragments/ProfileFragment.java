@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
@@ -62,8 +61,6 @@ public class ProfileFragment extends Fragment {
     private static int gain=0;
     static String IDopponent=null;
 
-
-    private OnFragmentInteractionListener mListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -247,25 +244,15 @@ public class ProfileFragment extends Fragment {
                         switch (which){
 
                             case DialogInterface.BUTTON_POSITIVE:
-                                //Yes button clicked
 
                                 DatabaseHandler dbh=new DatabaseHandler(getActivity());
                                 SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(getActivity());
                                 Controller controller=new Controller(getActivity());
                                 controller.updatePoints(-50);
-                                /*Firebase.setAndroidContext(getActivity());
-                                final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-                                fire.child(p.getString("ID", null)).child("points").setValue(Long.parseLong(points) - 50);
-                                fire.child(p.getString("ID", null)).child("dayPoints").setValue(p.getLong("dayPoints", 0) - 50);
-                                fire.child(p.getString("ID", null)).child("weekPoints").setValue(p.getLong("weekPoints",0) - 50);*/
+
                                 p.edit().putLong("points", Long.parseLong(points) - 50).apply();
                                 p.edit().putLong("weekPoints", p.getLong("weekPoints",0) - 50).apply();
                                 p.edit().putLong("dayPoints", p.getLong("dayPoints", 0) - 50).apply();
-
-                                /*SharedPreferences.Editor editor = p.edit();
-                                editor.putLong("points", Long.parseLong(points) - 50);
-
-                                editor.commit();*/
 
                                 MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
                                 DateTime date=new DateTime(new Instant());
@@ -278,7 +265,6 @@ public class ProfileFragment extends Fragment {
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
-                                //No button clicked
 
                                 break;
                         }
@@ -294,34 +280,16 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         getActivity().unregisterReceiver(uiUpdated);
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     public void setTimer(TextView timerText,long millis){
@@ -380,10 +348,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void smokeOrDont(){
+
         if(gain!=0) {
             gain=0;
         }
         if(getActivity().getIntent().getExtras()!=null) {
+
             gain = getActivity().getIntent().getExtras().getInt("points", 0);
             getActivity().getIntent().removeExtra("points");
         }
@@ -392,9 +362,8 @@ public class ProfileFragment extends Fragment {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                     SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    /*Firebase.setAndroidContext(getActivity());
-                    final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");*/
                     Controller controller=new Controller(getActivity());
                     long points=p.getLong("points", 0);
                     long daypoints=p.getLong("dayPoints", 0);
@@ -405,7 +374,7 @@ public class ProfileFragment extends Fragment {
 
                     switch (which){
                         case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
+
                             gain=gain*2;
                             editor.putLong("dayPoints",daypoints+gain);
                             editor.putLong("weekPoints", weekpoints + gain);
@@ -414,16 +383,11 @@ public class ProfileFragment extends Fragment {
 
                             controller.updatePoints(gain);
 
-                            /*fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
-                            fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
-                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);*/
-
                             date=new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
 
                             editor.putLong("points", points+gain);
                             editor.putLong("dayPoints",daypoints+gain);
@@ -432,11 +396,6 @@ public class ProfileFragment extends Fragment {
 
                             controller.updatePoints(gain);
 
-                            /*fire.child(p.getString("ID", null)).child("points").setValue(points + gain);
-                            fire.child(p.getString("ID", null)).child("dayPoints").setValue(daypoints + gain);
-                            fire.child(p.getString("ID", null)).child("weekPoints").setValue(weekpoints + gain);*/
-                            date=new DateTime(new Instant());
-                            dbh.addCigarette(new Cigarette(1, date, "notsmoke"));
                             break;
                     }
                 }

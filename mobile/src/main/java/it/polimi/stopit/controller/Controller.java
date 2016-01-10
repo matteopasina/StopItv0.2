@@ -15,6 +15,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
 
@@ -171,9 +172,30 @@ public class Controller {
 
         }
 
-        if(!first) return;
+        if(!first){
 
-        int moneySaved=(currentTarget.getCigReduced()+notsmoked)*cigCost;
+            if(notsmoked>0){
+
+                for(int i=0;i<notsmoked;i++){
+
+                    db.addCigarette(new Cigarette(1,new DateTime(new Instant()),"notsmoke"));
+                }
+            }
+
+            return;
+        }
+
+        int newNotSmoked=currentTarget.getCigReduced()+notsmoked;
+
+        if((newNotSmoked)>0){
+
+            for(int i=0;i<newNotSmoked;i++){
+
+                db.addCigarette(new Cigarette(1,new DateTime(new Instant()),"notsmoke"));
+            }
+        }
+
+        int moneySaved=(newNotSmoked)*cigCost;
 
         long newMoney=currentTarget.getMoneySaved()+moneySaved;
 
