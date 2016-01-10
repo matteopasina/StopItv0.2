@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,18 +135,18 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot snapshot) {
                 long delta = (long) snapshot.getValue() - Long.valueOf(points);
                 if (delta < 0) {
-                    losePoints.setText("-"+String.valueOf(delta));
+                    losePoints.setText("-" + String.valueOf(delta));
                     losePoints.setVisibility(TextView.VISIBLE);
                     losePoints.setTextColor(Color.parseColor("#B71C1C"));
                     losePoints.startAnimation(down);
                 } else if (delta > 0) {
-                    losePoints.setText("+"+String.valueOf(delta));
+                    losePoints.setText("+" + String.valueOf(delta));
                     losePoints.setVisibility(TextView.VISIBLE);
                     losePoints.setTextColor(Color.parseColor("#8BC34A"));
                     losePoints.startAnimation(up);
                 }
                 points = snapshot.getValue().toString();
-                showPoints.setText(points + " / "+((Long.parseLong(points)/1000)+1)*1000+"   points");
+                showPoints.setText(points + " / " + ((Long.parseLong(points) / 1000) + 1) * 1000 + "   points");
             }
 
             @Override
@@ -161,44 +163,47 @@ public class ProfileFragment extends Fragment {
         final DecoView arcMinutes = (DecoView) view.findViewById(R.id.circle_minutes);
         final DecoView arcSeconds = (DecoView) view.findViewById(R.id.circle_seconds);
 
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, dm);
+
         // Create background track
         arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .build());
 
         arcMinutes.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .build());
 
         arcSeconds.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
                 .setRange(0, 100, 100)
                 .setInitialVisibility(true)
                 .setSpinDuration(500)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .build());
 
         //Create data series track
         SeriesItem hourSeries = new SeriesItem.Builder(Color.parseColor("#039BE5"))
                 .setRange(0, 100, 0)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .setSpinDuration(1000)
                 .build();
 
         SeriesItem minuteSeries = new SeriesItem.Builder(Color.parseColor("#00E676"))
                 .setRange(0, 100, 0)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .setSpinDuration(1000)
                 .build();
 
         final SeriesItem secondSeries = new SeriesItem.Builder(Color.parseColor("#FFC107"))
                 .setRange(0, 100, 0)
-                .setLineWidth(28)
+                .setLineWidth(dpInPx)
                 .setSpinDuration(1000)
                 .build();
 
