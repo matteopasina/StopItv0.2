@@ -1,5 +1,6 @@
 package it.polimi.stopit.adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,18 +11,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.fragments.AchievementFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.Achievement;
 
 
 public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<AchievementRecyclerViewAdapter.ViewHolder> {
 
     private final List<Achievement> mAchievements;
-    private final OnListFragmentInteractionListener mListener;
 
-    public AchievementRecyclerViewAdapter(List<Achievement> items, OnListFragmentInteractionListener listener) {
+    public AchievementRecyclerViewAdapter(List<Achievement> items) {
+
         mAchievements = items;
-        mListener = listener;
     }
 
     @Override
@@ -38,13 +37,19 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
         Achievement achievement=mAchievements.get(position);
 
         holder.setIsRecyclable(false);
-
         holder.achievPic.setImageResource(achievement.getImage());
 
         if(!achievement.isObtained()) {
 
-            holder.achievPic.setImageAlpha(50);
+            holder.achievPic.setImageAlpha(40);
+            //holder.achievPic.setImageResource(R.drawable.locked);
+            holder.achievDesc.setTextColor(Color.parseColor("#AAAAAA"));
+            holder.achievTitle.setTextColor(Color.parseColor("#999999"));
+            holder.achievPoints.setTextColor(Color.parseColor("#999999"));
+
         }
+
+
 
         holder.achievTitle.setText(achievement.getTitle());
         holder.achievDesc.setText(achievement.getDescription());

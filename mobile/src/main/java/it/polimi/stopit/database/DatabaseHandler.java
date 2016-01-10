@@ -593,7 +593,17 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
+
+        // return count
+        return cursor.getCount();
+
+    }
+
+    public int getAchievementsObtCount() {
+
+        String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE "+ ACHIEVEMENT_OBTAINED +" = '1'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
 
         // return count
         return cursor.getCount();

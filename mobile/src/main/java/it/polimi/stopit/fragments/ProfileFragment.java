@@ -107,21 +107,21 @@ public class ProfileFragment extends Fragment {
         TextView usernameText = (TextView) view.findViewById(R.id.username);
         usernameText.setText("" + name + " " + surname);
 
-        TextView level=(TextView) view.findViewById(R.id.level);
+        final TextView level=(TextView) view.findViewById(R.id.level);
 
-        Controller control=new Controller(getActivity());
+        final Controller control=new Controller(getActivity());
 
         level.setText(control.getLevel(Long.parseLong(points)));
 
         final TextView showPoints = (TextView) view.findViewById(R.id.points);
-        showPoints.setText(points + " / "+((Long.parseLong(points)/1000)+1)*1000+"   points");
+        showPoints.setText(control.getLevelPointsString(Long.parseLong(points)));
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
 
-        ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
-        levelProgress.setMax((int)((Long.parseLong(points)/1000)+1)*1000);
+        final ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
+        levelProgress.setMax(100);
 
-        levelProgress.setProgress(Integer.parseInt(points));
+        levelProgress.setProgress((int) (100*Long.parseLong(points) / control.getLevelPoints(Long.parseLong(points))));
 
         smokeOrDont();
 
@@ -143,7 +143,9 @@ public class ProfileFragment extends Fragment {
                     losePoints.startAnimation(up);
                 }
                 points = snapshot.getValue().toString();
-                showPoints.setText(points + " / " + ((Long.parseLong(points) / 1000) + 1) * 1000 + "   points");
+                showPoints.setText(control.getLevelPointsString(Long.parseLong(points)));
+                levelProgress.setProgress((int) (100*Long.parseLong(points) / control.getLevelPoints(Long.parseLong(points))));
+                level.setText(control.getLevel(Long.parseLong(points)));
             }
 
             @Override
@@ -390,8 +392,8 @@ public class ProfileFragment extends Fragment {
                         case DialogInterface.BUTTON_NEGATIVE:
 
                             editor.putLong("points", points+gain);
-                            editor.putLong("dayPoints",daypoints+gain);
-                            editor.putLong("weekPoints",weekpoints+gain);
+                            editor.putLong("dayPoints", daypoints + gain);
+                            editor.putLong("weekPoints", weekpoints + gain);
                             editor.commit();
 
                             controller.updatePoints(gain);

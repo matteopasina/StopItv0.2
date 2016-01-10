@@ -524,7 +524,7 @@ public class Controller {
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
 
-        resultIntent.putExtra("IDopponent",ID);
+        resultIntent.putExtra("IDopponent", ID);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -617,10 +617,46 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
+    public long[] getLevelXPs(){
+
+        long[] levelsXP=new long[99];
+
+        long difference=500;
+        long xp=500;
+
+        for(int i=0;i<99;i++){
+
+            xp+=difference;
+            levelsXP[i]=xp;
+            difference+=10;
+        }
+
+        return levelsXP;
+    }
+
     public String getLevel(long points){
 
-        String levelText="";
-        int level=(int)(points/1000)+1;
+        String levelText;
+
+        long[] levelsXP=getLevelXPs();
+
+        int level=1;
+
+        for(int i=0;i<98;i++){
+
+            if(levelsXP[i]<points && levelsXP[i+1]>points){
+                level=i+2;
+            }else if(levelsXP[i]==points){
+
+                level=i+2;
+                if(level==10 || level==25 || level==50){
+                    updateLevelAchievement(level);
+                }
+            }else if(levelsXP[i+1]<points){
+                level=100;
+                updateLevelAchievement(level);
+            }
+        }
 
         if(level < 10){
 
@@ -668,5 +704,101 @@ public class Controller {
         }
 
         return levelText;
+    }
+
+    public void updateLevelAchievement(int level){
+
+        Achievement achievement;
+        if(level==10){
+
+            if(!db.getAchievement(6).isObtained()){
+                achievement=new Achievement(6, "Novice", "Reach level 10", 200, R.drawable.five_challenge, true);
+                db.updateAchievement(achievement);
+                updatePoints(200);
+            }
+
+        }else if(level==25){
+
+            if(!db.getAchievement(7).isObtained()){
+                achievement=new Achievement(7, "Apprendice", "Reach level 25", 500, R.drawable.five_challenge, true);
+                db.updateAchievement(achievement);
+                updatePoints(500);
+            }
+
+        }else if(level==50){
+
+            if(!db.getAchievement(8).isObtained()){
+                achievement=new Achievement(8, "Master", "Reach level 50", 2000, R.drawable.five_challenge, true);
+                db.updateAchievement(achievement);
+                updatePoints(2000);
+            }
+
+        }else if(level==100){
+
+            if(!db.getAchievement(9).isObtained()){
+                achievement=new Achievement(9, "Legend", "Reach level 100", 5000, R.drawable.five_challenge, true);
+                db.updateAchievement(achievement);
+                updatePoints(5000);
+            }
+        }
+
+    }
+
+    public String getLevelPointsString(long points){
+
+        long[] levelsXP=getLevelXPs();
+        String pointsLevelPoints="";
+
+        for(int i=0;i<98;i++){
+
+            if(levelsXP[i]<points && levelsXP[i+1]>points){
+
+                return (points+"/"+levelsXP[i+1]+"  points");
+
+            }else if(levelsXP[i]==points){
+
+                return (points+"/"+levelsXP[i]+"  points");
+
+            }else if(levelsXP[98]<points){
+
+                return points+" points";
+
+            }else if(levelsXP[0]>points){
+
+                return points+"/"+levelsXP[0]+"  points";
+            }
+
+        }
+
+        return pointsLevelPoints;
+
+    }
+
+    public long getLevelPoints(long points){
+
+        long[] levelsXP=getLevelXPs();
+        long levelpoints=1000;
+
+        for(int i=0;i<98;i++){
+
+            if(levelsXP[i]<points && levelsXP[i+1]>points){
+
+                return levelsXP[i+1];
+
+            }else if(levelsXP[i]==points){
+
+                return levelsXP[i];
+
+            }else if(levelsXP[98]<points){
+
+                levelpoints=levelsXP[98];
+
+            }else if(levelsXP[0]>points){
+
+                levelpoints=levelsXP[0];
+            }
+        }
+
+        return levelpoints;
     }
 }
