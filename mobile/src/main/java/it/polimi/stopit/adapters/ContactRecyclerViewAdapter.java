@@ -139,7 +139,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                             dbh.addChallenge(new Challenge(challenge.getKey()
                                     , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
-                                    (long) days.getProgress() * 86400000, "false", "true"));
+                                    (long) days.getProgress() * 86400000, "false", "true","false","false"));
 
                             challenge.child("duration").setValue(days.getProgress());
                             challenge.child("opponent").setValue(settings.getString("ID", null));

@@ -73,6 +73,13 @@ public class ChallengeDetail extends AppCompatActivity {
         fireChallenge.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("over").toString().equals("true") && dataSnapshot.child("giveup").exists()){
+                        challenge.setOver(true);
+                        challenge.setWon(true);
+                        dbh.updateChallenge(challenge);
+                        Intent intent = new Intent(ChallengeDetail.this, NavigationActivity.class);
+                        startActivity(intent);
+                }
                 if(dataSnapshot.child("id").getValue().toString().equals(p.getString("ID",null))){
                     yourPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
                     opponentPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
@@ -114,8 +121,10 @@ public class ChallengeDetail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
-                fireChallenge.removeValue();
-                dbh.deleteChallenge(challenge.getID());
+                fireChallenge.child("giveup").setValue(true);
+                challenge.setOver(true);
+                challenge.setWon(false);
+                dbh.updateChallenge(challenge);
                 Intent intent=new Intent(ChallengeDetail.this,NavigationActivity.class);
                 startActivity(intent);
             }

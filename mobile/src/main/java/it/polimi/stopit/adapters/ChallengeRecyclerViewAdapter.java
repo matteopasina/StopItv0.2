@@ -181,7 +181,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     mChallenges.remove(getLayoutPosition());
                                     notifyDataSetChanged();
 
-                                    final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID());
+                                    final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID() );
                                     decline.setValue("0");
 
                                     break;

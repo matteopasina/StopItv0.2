@@ -59,8 +59,8 @@ public class ProfileFragment extends Fragment {
     private String imageURL;
     private BroadcastReceiver uiUpdated;
     private static int gain=0;
-    static String IDopponent=null;
-
+    Controller controller;
+    SharedPreferences settings;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -81,6 +81,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        controller=new Controller(getActivity());
+        settings=PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (getArguments() != null) {
             ID = getArguments().getString(ARG_ID);
             name = getArguments().getString(ARG_NAME);
@@ -109,19 +111,17 @@ public class ProfileFragment extends Fragment {
 
         final TextView level=(TextView) view.findViewById(R.id.level);
 
-        final Controller control=new Controller(getActivity());
-
-        level.setText(control.getLevel(Long.parseLong(points)));
+        level.setText(controller.getLevel(Long.parseLong(points)));
 
         final TextView showPoints = (TextView) view.findViewById(R.id.points);
-        showPoints.setText(control.getLevelPointsString(Long.parseLong(points)));
+        showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
 
         final ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
         levelProgress.setMax(100);
 
-        levelProgress.setProgress((int) (100*Long.parseLong(points) / control.getLevelPoints(Long.parseLong(points))));
+        levelProgress.setProgress((int) (100*Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
 
         smokeOrDont();
 
@@ -143,9 +143,9 @@ public class ProfileFragment extends Fragment {
                     losePoints.startAnimation(up);
                 }
                 points = snapshot.getValue().toString();
-                showPoints.setText(control.getLevelPointsString(Long.parseLong(points)));
-                levelProgress.setProgress((int) (100*Long.parseLong(points) / control.getLevelPoints(Long.parseLong(points))));
-                level.setText(control.getLevel(Long.parseLong(points)));
+                showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
+                levelProgress.setProgress((int) (100*Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
+                level.setText(controller.getLevel(Long.parseLong(points)));
             }
 
             @Override
@@ -236,7 +236,9 @@ public class ProfileFragment extends Fragment {
         getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
 
         Button smoke=(Button) view.findViewById(R.id.smoke);
-        smoke.setOnClickListener(new View.OnClickListener() {
+        /*if((settings.getString("firstStart",null)==null)) {
+
+            smoke.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -247,22 +249,9 @@ public class ProfileFragment extends Fragment {
 
                             case DialogInterface.BUTTON_POSITIVE:
 
-                                DatabaseHandler dbh=new DatabaseHandler(getActivity());
-                                SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(getActivity());
-                                Controller controller=new Controller(getActivity());
-                                controller.updatePoints(-50);
-
-                                p.edit().putLong("points", Long.parseLong(points) - 50).apply();
-                                p.edit().putLong("weekPoints", p.getLong("weekPoints",0) - 50).apply();
-                                p.edit().putLong("dayPoints", p.getLong("dayPoints", 0) - 50).apply();
-
-                                MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
-                                DateTime date=new DateTime(new Instant());
-                                dbh.addCigarette(new Cigarette(1, date, "smoke"));
-
-                                Intent i = new Intent("SMOKE_OUTOFTIME");
-                                i.putExtra("time", dt);
-                                getActivity().sendBroadcast(i);
+                                controller.firstStartv2();
+                                settings.edit().putString("firstStart","false");
+                                settings.edit().commit();
 
                                 break;
 
@@ -274,10 +263,51 @@ public class ProfileFragment extends Fragment {
                 };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("First cigarette of the day").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
             }
         });
+        }else {*/
+            smoke.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            switch (which) {
+
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    DatabaseHandler dbh = new DatabaseHandler(getActivity());
+                                    controller.updatePoints(-50);
+
+                                    settings.edit().putLong("points", Long.parseLong(points) - 50).apply();
+                                    settings.edit().putLong("weekPoints", settings.getLong("weekPoints", 0) - 50).apply();
+                                    settings.edit().putLong("dayPoints", settings.getLong("dayPoints", 0) - 50).apply();
+
+                                    MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
+                                    DateTime date = new DateTime(new Instant());
+                                    dbh.addCigarette(new Cigarette(1, date, "smoke"));
+
+                                    Intent i = new Intent("SMOKE_OUTOFTIME");
+                                    i.putExtra("time", dt);
+                                    getActivity().sendBroadcast(i);
+
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+                }
+            });
+        //}
 
         return view;
     }
@@ -365,12 +395,10 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    SharedPreferences p=PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    Controller controller=new Controller(getActivity());
-                    long points=p.getLong("points", 0);
-                    long daypoints=p.getLong("dayPoints", 0);
-                    long weekpoints=p.getLong("weekPoints", 0);
-                    SharedPreferences.Editor editor = p.edit();
+                    long points=settings.getLong("points", 0);
+                    long daypoints=settings.getLong("dayPoints", 0);
+                    long weekpoints=settings.getLong("weekPoints", 0);
+                    SharedPreferences.Editor editor = settings.edit();
                     DatabaseHandler dbh=new DatabaseHandler(getActivity());
                     DateTime date;
 

@@ -18,7 +18,13 @@ import com.firebase.client.ValueEventListener;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
+import org.joda.time.MutableInterval;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -298,8 +304,8 @@ public class Controller {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ChallengeReceiver.class);
-        intent.putExtra("challengekey",challengeKey);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
+        intent.putExtra("challengekey", challengeKey);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime,
                 duration , pi);
@@ -346,8 +352,8 @@ public class Controller {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 user.child("points").setValue((long) snapshot.child("points").getValue() + points);
-                user.child("weekPoints").setValue((long)snapshot.child("weekPoints").getValue() + points);
-                user.child("dayPoints").setValue((long)snapshot.child("dayPoints").getValue() + points);
+                user.child("weekPoints").setValue((long) snapshot.child("weekPoints").getValue() + points);
+                user.child("dayPoints").setValue((long) snapshot.child("dayPoints").getValue() + points);
             }
 
             @Override
@@ -414,7 +420,7 @@ public class Controller {
                 final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
 
                 //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
-                if(accepted.exists()) {
+                if (accepted.exists()) {
                     if (accepted.getValue().toString() != "0") {
 
                         final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
@@ -432,15 +438,17 @@ public class Controller {
                                         (long) C.child("startTime").getValue(),
                                         (long) C.child("endTime").getValue(),
                                         C.child("accepted").getValue().toString(),
-                                        C.child("challenger").getValue().toString());
+                                        C.child("challenger").getValue().toString(),
+                                        C.child("over").getValue().toString(),
+                                        C.child("won").getValue().toString());
 
                                 db.updateChallenge(chall);
 
-                                Controller controller=new Controller(context);
+                                Controller controller = new Controller(context);
                                 controller.setChallengeAlarm(chall.getStartTime(),
-                                        chall.getEndTime()-chall.getStartTime(),
+                                        chall.getEndTime() - chall.getStartTime(),
                                         chall.getID());
-                                controller.sendCustomNotification("Challenge accepted","Don't smoke if you want to win!");
+                                controller.sendCustomNotification("Challenge accepted", "Don't smoke if you want to win!");
                             }
 
                             @Override
@@ -453,6 +461,7 @@ public class Controller {
                     }
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
             }
@@ -495,7 +504,7 @@ public class Controller {
                                 //aggiungi challenge al DB
                                 db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
                                         , children.child("opponent").getValue().toString(), 0, 0, 0,
-                                        (long) children.child("duration").getValue() * 86400000, "false", "false"));
+                                        (long) children.child("duration").getValue() * 86400000, "false", "false","false","false"));
                             }
 
                             @Override
@@ -555,21 +564,21 @@ public class Controller {
     public boolean sendAlternative(){
 
         List<AlternativeActivity> alternativeActivityList=db.getAllAlternative();
+        List<AlternativeActivity> alternativeActivityListCandidate=new ArrayList<AlternativeActivity>();
         AlternativeActivity alternativeChoosen;
-        System.out.println(alternativeActivityList);
+        int j=0;
+
         for(AlternativeActivity activity: alternativeActivityList){
-            System.out.println(activity);
-            System.out.println(settings.getBoolean("food",false));
+
             if(!settings.getBoolean(activity.getCategory(),false)){
-                alternativeActivityList.remove(activity);
+                alternativeActivityListCandidate.add(activity);
             }
+
         }
 
         ArrayList listWeight=new ArrayList();
         for(AlternativeActivity activitySelected: alternativeActivityList){
-            int j=0;
-            for(int i=0;i < activitySelected.getFrequency(); i++)
-            {
+            for(int i=0;i < activitySelected.getFrequency(); i++) {
                 listWeight.add(j);
             }
             j++;
@@ -578,6 +587,7 @@ public class Controller {
         if(alternativeActivityList.isEmpty()){
             return false;
         }
+
         alternativeChoosen=alternativeActivityList.get((int)listWeight.get(new Random().nextInt(listWeight.size())));
 
         sendAlternativeNotification(alternativeChoosen);
@@ -801,4 +811,61 @@ public class Controller {
 
         return levelpoints;
     }
+
+  /*  public void firstStartv2(){
+        List<MutableInterval> list=loadSchedule();
+
+        MutableDateTime start=new MutableDateTime();
+        MutableDateTime end=new MutableDateTime();
+
+        end.setHourOfDay(23);
+        end.setMinuteOfHour(59);
+
+        list = splitDuration(start, end, Long.valueOf(settings.getString("CPD", null)));
+        saveSchedule(list);
+    }
+
+    static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
+
+        long millis = start.getMillis();
+        long endMillis=end.getMillis();
+        long chunkSize=(endMillis-millis)/chunkAmount;
+
+        List<MutableInterval> list = new ArrayList<MutableInterval>();
+
+        for(int i = 0; i < chunkAmount; ++i) {
+            list.add(new MutableInterval(millis, millis += chunkSize));
+        }
+
+        return list;
+    }
+
+    public void saveSchedule(List<MutableInterval> list){
+        String filename = "schedule";
+
+        try {
+            FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream( fos );
+            oos.writeObject ( list );
+            oos.close ();
+        } catch ( Exception ex ) {
+            ex.printStackTrace ();
+        }
+    }
+
+    public List<MutableInterval> loadSchedule(){
+        String filename = "schedule";
+        List<MutableInterval> lista;
+
+        try {
+            FileInputStream fis = context.openFileInput(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            lista=(List<MutableInterval>) ois.readObject();
+            ois.close ();
+            return lista;
+        } catch ( Exception ex ) {
+            ex.printStackTrace ();
+        }
+        return null;
+    }*/
 }

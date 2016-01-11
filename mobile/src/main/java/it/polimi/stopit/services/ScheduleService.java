@@ -118,27 +118,16 @@ public class ScheduleService extends Service {
                     beginOfDay=false;
                 }
 
-               /* if(new Random().nextInt(100) > 1) {
+                SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
+
+                if(new Random().nextInt(Integer.valueOf(userdata.getString("CPD",null))) < Integer.valueOf(userdata.getString("CPD",null))/10) {
                     if(!controller.sendAlternative()) sendNotification(calcPoints());
                 }
-                else {*/
+                else {
                     sendNotification(calcPoints());
-               // }
+                }
 
                 nextCiga(list, start, end);
-
-                Handler h = new Handler();
-                long delayInMilliseconds = 300000;
-                h.postDelayed(new Runnable() {
-
-                    public void run() {
-
-                        mNM.cancel(notificationID);
-                        controller.updatePoints(calcPoints());
-
-                    }
-
-                }, delayInMilliseconds);
 
                 this.cancel();
                 Count=null;
@@ -166,7 +155,6 @@ public class ScheduleService extends Service {
 
         }
     }
-
 
     public void nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end) {
 
@@ -303,6 +291,18 @@ public class ScheduleService extends Service {
         // Builds the notification and issues it.
         notificationID=NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
+        Handler h = new Handler();
+        long delayInMilliseconds = 300000;
+        h.postDelayed(new Runnable() {
+
+            public void run() {
+
+                mNM.cancel(notificationID);
+                controller.updatePoints(calcPoints());
+
+            }
+
+        }, delayInMilliseconds);
     }
 
 

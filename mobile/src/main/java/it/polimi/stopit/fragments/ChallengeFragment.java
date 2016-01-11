@@ -50,7 +50,7 @@ public class ChallengeFragment extends Fragment {
 
         mChallenges=new ArrayList<>();
         db=new DatabaseHandler(getActivity());
-        mChallenges=db.getAllChallenges();
+        mChallenges=db.getAllChallengesNotOver();
 
         fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
 

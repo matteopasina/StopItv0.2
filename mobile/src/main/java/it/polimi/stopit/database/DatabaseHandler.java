@@ -84,6 +84,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     private static final String CHALLENGE_END_TIME = "endtime";
     private static final String CHALLENGE_ACCEPTED = "challengeaccepted";
     private static final String CHALLENGE_CHALLENGER = "challengechallenger";
+    private static final String CHALLENGE_OVER = "challengeover";
+    private static final String CHALLENGE_WON = "challengewon";
 
     //TABLE ALTERNATIVEACTIVITIES
     private static final String TABLE_ALTERNATIVE_ACTIVITIES = "alternativeactivities";
@@ -137,7 +139,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         String CREATE_CHALLENGES_TABLE = "CREATE TABLE " + TABLE_CHALLENGES + "("
                 + CHALLENGE_ID + " TEXT," + CHALLENGE_OPPONENTID + " TEXT," + CHALLENGE_POINTS + " INTEGER,"+
                 CHALLENGE_OPPONENT_POINTS + " INTEGER,"+ CHALLENGE_START_TIME + " TEXT," + CHALLENGE_END_TIME + " TEXT,"
-                + CHALLENGE_ACCEPTED + " TEXT,"+ CHALLENGE_CHALLENGER + " TEXT" + ")";
+                + CHALLENGE_ACCEPTED + " TEXT,"+ CHALLENGE_CHALLENGER + " TEXT," +
+                "" + CHALLENGE_OVER + " TEXT," + CHALLENGE_WON + " TEXT"+ ")";
         db.execSQL(CREATE_CHALLENGES_TABLE);
 
         // Create Challenges table
@@ -277,6 +280,10 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CHALLENGE_ACCEPTED, accepted);
         String challenger= (challenge.isChallenger()) ? "true" : "false";
         values.put(CHALLENGE_CHALLENGER, challenger);
+        String over= (challenge.isOver()) ? "true" : "false";
+        values.put(CHALLENGE_OVER, over);
+        String won= (challenge.isWon()) ? "true" : "false";
+        values.put(CHALLENGE_WON, won);
 
         // Inserting Row
         db.insert(TABLE_CHALLENGES, null, values);
@@ -367,13 +374,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
                         CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
-                CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER}, CHALLENGE_ID + "=?",
+                CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER,CHALLENGE_OVER,CHALLENGE_WON}, CHALLENGE_ID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                cursor.getLong(5),cursor.getString(6),cursor.getString(7));
+                cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
 
         return challenge;
 
@@ -400,13 +407,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
                         CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
-                        CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER}, CHALLENGE_OPPONENTID + "=?",
+                        CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER,CHALLENGE_OVER,CHALLENGE_WON}, CHALLENGE_OPPONENTID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                cursor.getLong(5),cursor.getString(6),cursor.getString(7));
+                cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
 
         return challenge;
 
@@ -466,7 +473,28 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         if (cursor.moveToFirst()) {
             do {
                 Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
-                        cursor.getLong(5),cursor.getString(6),cursor.getString(7));
+                        cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
+                challengeList.add(challenge);
+
+            } while (cursor.moveToNext());
+        }
+
+        return challengeList;
+    }
+
+    public List<Challenge> getAllChallengesNotOver() {
+
+        List<Challenge> challengeList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CHALLENGES + " WHERE " + CHALLENGE_OVER + " = 'false' ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                        cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
                 challengeList.add(challenge);
 
             } while (cursor.moveToNext());
@@ -627,10 +655,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CHALLENGE_ACCEPTED, accepted);
         String challenger= (challenge.isChallenger()) ? "true" : "false";
         values.put(CHALLENGE_CHALLENGER, challenger);
+        String over= (challenge.isOver()) ? "true" : "false";
+        values.put(CHALLENGE_OVER, over);
+        String won= (challenge.isWon()) ? "true" : "false";
+        values.put(CHALLENGE_WON, won);
 
         // updating row
-        return db.update(TABLE_CHALLENGES, values, CHALLENGE_OPPONENTID + " = ?",
-                new String[] { challenge.getOpponentID() });
+        return db.update(TABLE_CHALLENGES, values, CHALLENGE_ID + " = ?",
+                new String[] { challenge.getID() });
     }
 
     public int updateAchievement(Achievement achievement) {
