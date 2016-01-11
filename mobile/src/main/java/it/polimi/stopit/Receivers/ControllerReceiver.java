@@ -18,18 +18,20 @@ public class ControllerReceiver extends BroadcastReceiver {
         Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        Controller controller = new Controller(context);
 
         if(intent.getExtras().getString("type").equals("day")){
 
             myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
             settings.edit().putLong("dayPoints", 0);
-            Controller controller = new Controller(context);
             controller.dailyMoneyControl();
+            controller.setDailyAlarm();
 
         }else if(intent.getExtras().getString("type").equals("week")){
 
             myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
             settings.edit().putLong("weekPoints", 0);
+            controller.setWeeklyAlarm();
 
         }
 

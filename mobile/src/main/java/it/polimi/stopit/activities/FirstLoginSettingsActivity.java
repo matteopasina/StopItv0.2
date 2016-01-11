@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,12 +29,10 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        setTitle("Welcome, " + settings.getString("name", null));
+        setTitle("");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        TextView setCiga=(TextView) findViewById(R.id.SetCiga);
+        TextView welcomeUser=(TextView) findViewById(R.id.welcome);
+        welcomeUser.setText("Welcome, " + settings.getString("name", null));
 
         DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
         dbSeed.loadContacts();

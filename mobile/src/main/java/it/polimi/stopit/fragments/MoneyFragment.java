@@ -60,6 +60,7 @@ public class MoneyFragment extends Fragment {
                 }else{
 
                     Toast.makeText(getActivity(), "Complete your current targets before adding a new one", Toast.LENGTH_SHORT).show();
+
                 }
 
             }

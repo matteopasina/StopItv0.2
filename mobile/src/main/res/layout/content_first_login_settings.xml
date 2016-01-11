@@ -13,21 +13,30 @@
     tools:showIn="@layout/activity_first_login_settings">
 
     <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textColor="@color/textColorSecondary"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"/>
+
+    <TextView
         android:id="@+id/SetCiga"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="How many cigarettes per day do you usually smoke?"
         android:textSize="18dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
+        android:textColor="@color/textColorTertiary"
+        android:layout_marginTop="35dp"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/welcome"
         android:textAlignment="center"/>
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:padding="0dp"
         android:layout_below="@+id/SetCiga"
@@ -38,12 +47,14 @@
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:textSize="18dp"
         android:layout_below="@+id/seekBar" />
 
     <LinearLayout
+        android:id="@+id/linlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -56,6 +67,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
+            android:textColor="@color/textColorTertiary"
             android:text="Set the price of a cigarette (in € cents):"
             android:textSize="18dp" />
 
@@ -72,14 +84,13 @@
     <Button
         android:id="@+id/done"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
-        android:layout_marginRight="20dp"
-        android:textColor="#07A"
-        android:text="DONE"
-        style="?android:attr/borderlessButtonStyle"
+        android:layout_height="40dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:text="DONE"
+        android:textColor="@color/white"
+        android:background="@drawable/buttonsquare" />
 
 
 

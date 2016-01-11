@@ -46,10 +46,10 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(3, "One Week Stop", "Don't smoke for one week", 600, R.drawable.stop_one_week, obtained));
         db.addAchievement(new Achievement(4, "Two Weeks Stop", "Don't smoke for two weeks", 800, R.drawable.stop_two_weeks, obtained));
         db.addAchievement(new Achievement(5, "One Month Stop", "Don't smoke for one month", 1000, R.drawable.stop_one_month, obtained));
-        db.addAchievement(new Achievement(6, "Novice", "Reach level 10", 200, R.drawable.five_challenge, obtained));
+        db.addAchievement(new Achievement(6, "Novice", "Reach level 10", 200, R.drawable.novice, obtained));
         db.addAchievement(new Achievement(7, "Apprendice", "Reach level 25", 500, R.drawable.five_challenge, obtained));
-        db.addAchievement(new Achievement(8, "Master", "Reach level 50", 2000, R.drawable.five_challenge, obtained));
-        db.addAchievement(new Achievement(9, "Legend", "Reach level 100", 5000, R.drawable.five_challenge, obtained));
+        db.addAchievement(new Achievement(8, "Master", "Reach level 50", 2000, R.drawable.master, obtained));
+        db.addAchievement(new Achievement(9, "Legend", "Reach level 100", 5000, R.drawable.legend, obtained));
         db.addAchievement(new Achievement(10, "Sportsman", "Do 10 sport activities", 500, R.drawable.sportsman, obtained));
         db.addAchievement(new Achievement(11, "Social", "Do 10 social activities", 500, R.drawable.social, obtained));
         db.addAchievement(new Achievement(12, "Artist", "Do 10 art activities", 500, R.drawable.artist, obtained));

@@ -231,7 +231,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         // Inserting Row
 
-        System.out.println("New Cigarette Inserted : "+ values.toString());
         db.insert(TABLE_CIGARETTES, null, values);
         db.close();
     }
