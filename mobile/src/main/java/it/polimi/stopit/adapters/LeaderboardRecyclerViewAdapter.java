@@ -46,7 +46,7 @@ public class LeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<Leaderb
 
         if(mLeaderboard.get(position).getID().equals(Profile.getCurrentProfile().getId())){
 
-            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#4293D4"));
+            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#039BE5"));
         }
 
     }
