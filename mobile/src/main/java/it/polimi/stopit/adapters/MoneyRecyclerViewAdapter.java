@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,41 +47,21 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         holder.targetPic.setTag(target.getImageResource());
         holder.targetName.setText(target.getName());
 
-        holder.mView.setSelected(selectedPos == position);
-
-        if(holder.mView.isSelected()){
-
-            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
-
-        }else{
-
-            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#FFFFFF"));
-            holder.mView.clearAnimation();
-        }
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                notifyItemChanged(selectedPos);
-
                 if (v.isSelected()) {
 
-                    v.setSelected(false);
-                    System.out.println("ALREADY SELECTED: selected Pos: " + selectedPos);
+                    notifyItemChanged(selectedPos);
                     selectedPos = 1000;
-                    holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
-                    holder.mView.clearAnimation();
 
                 } else {
 
-                    System.out.println("SELECTED: selected Pos: " + selectedPos);
-
-                    selectedPos = position;
                     notifyItemChanged(selectedPos);
-                    holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
-                    Animation animationPop = AnimationUtils.loadAnimation(v.getContext(), R.anim.popup);
-                    v.findViewById(R.id.target_image).setAnimation(animationPop);
+                    selectedPos = position;
+
+                    notifyItemChanged(position);
 
                     ImageView img = (ImageView) v.findViewById(R.id.target_image);
                     TextView name = (TextView) v.findViewById(R.id.target_name);
@@ -91,6 +69,17 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
                 }
             }
         });
+
+        holder.mView.setSelected(selectedPos == position);
+
+        if(holder.mView.isSelected()){
+
+            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#DDDDDD"));
+
+        }else{
+
+            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
+        }
 
 
     }
