@@ -33,6 +33,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
         TextView healthSaved=(TextView) findViewById(R.id.health_saved);
         healthSaved.setText("-"+control.getCigAvoided()/100 + "% risk of cancer ");
+
+        TextView challengeWon=(TextView) findViewById(R.id.challenge_won);
+        challengeWon.setText(" 0/0 challenge won ");
     }
 
     @Override

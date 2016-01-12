@@ -105,7 +105,6 @@ public class NavigationActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Challenges");
             }
 
-            redirect="";
         }
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

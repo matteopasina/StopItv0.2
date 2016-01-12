@@ -288,6 +288,44 @@ public class Controller {
         }
     }
 
+    public void updateLevelAchievement(int level) {
+
+        Achievement achievement;
+        if (level == 10) {
+
+            if (!db.getAchievement(19).isObtained()) {
+                achievement = new Achievement(19, "Novice", "Reach level 10", 200, R.drawable.novice, true);
+                db.updateAchievement(achievement);
+                updatePoints(200);
+            }
+
+        } else if (level == 25) {
+
+            if (!db.getAchievement(20).isObtained()) {
+                achievement = new Achievement(20, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, true);
+                db.updateAchievement(achievement);
+                updatePoints(500);
+            }
+
+        } else if (level == 50) {
+
+            if (!db.getAchievement(21).isObtained()) {
+                achievement = new Achievement(21, "Master", "Reach level 50", 2000, R.drawable.master, true);
+                db.updateAchievement(achievement);
+                updatePoints(2000);
+            }
+
+        } else if (level == 100) {
+
+            if (!db.getAchievement(22).isObtained()) {
+                achievement = new Achievement(22, "Legend", "Reach level 100", 5000, R.drawable.shield, true);
+                db.updateAchievement(achievement);
+                updatePoints(5000);
+            }
+        }
+
+    }
+
     public void setDailyAlarm() {
 
         Calendar calendar = Calendar.getInstance();
@@ -447,7 +485,7 @@ public class Controller {
                 final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
 
                 //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
-                if (accepted.getChildrenCount()==1) {
+                if (accepted.getChildrenCount() == 1) {
                     try {
                         if (accepted.child("accepted").exists()) {
 
@@ -515,43 +553,43 @@ public class Controller {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
-                    if (dataSnapshot.getChildrenCount() != 0) {
+                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
+                if (dataSnapshot.getChildrenCount() != 0) {
 
-                        for (final DataSnapshot children : dataSnapshot.getChildren()) {
+                    for (final DataSnapshot children : dataSnapshot.getChildren()) {
 
-                            if(children.getChildrenCount() == 2) {
-                                final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
-
-
-                                fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot snapshot) {
-
-                                        //costruisci testo notifica
-                                        String opponent = snapshot.child("name").getValue().toString() + " " +
-                                                snapshot.child("surname").getValue().toString();
+                        if (children.getChildrenCount() == 2) {
+                            final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
 
-                                        //manda notifica
-                                        sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
+                            fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+
+                                    //costruisci testo notifica
+                                    String opponent = snapshot.child("name").getValue().toString() + " " +
+                                            snapshot.child("surname").getValue().toString();
 
 
-                                        //aggiungi challenge al DB dello sfidato
-                                        db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
-                                                , children.child("opponent").getValue().toString(), 0, 0, 0,
-                                                (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));
-                                    }
+                                    //manda notifica
+                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
 
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-                                    }
-                                });
-                                fire.child(children.getKey()).removeValue();
-                            }
 
+                                    //aggiungi challenge al DB dello sfidato
+                                    db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
+                                            , children.child("opponent").getValue().toString(), 0, 0, 0,
+                                            (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
+                            });
+                            fire.child(children.getKey()).removeValue();
                         }
+
                     }
+                }
             }
 
             @Override
@@ -572,7 +610,7 @@ public class Controller {
                     challenge.setWon(true);
                     db.updateChallenge(challenge);
                     System.out.println(db.getChallenge(challenge.getID()).isOver());
-                    System.out.println("opponentID: "+db.getChallengeByOpponentID(challenge.getOpponentID()).isOver());
+                    System.out.println("opponentID: " + db.getChallengeByOpponentID(challenge.getOpponentID()).isOver());
                     sendCustomNotification(dataSnapshot.child("name").getValue().toString() + " resigned!", "You won the challenge");
                     fireChallenge.removeValue();
                 }
@@ -787,44 +825,6 @@ public class Controller {
         }
 
         return levelText;
-    }
-
-    public void updateLevelAchievement(int level) {
-
-        Achievement achievement;
-        if (level == 10) {
-
-            if (!db.getAchievement(19).isObtained()) {
-                achievement = new Achievement(19, "Novice", "Reach level 10", 200, R.drawable.novice, true);
-                db.updateAchievement(achievement);
-                updatePoints(200);
-            }
-
-        } else if (level == 25) {
-
-            if (!db.getAchievement(20).isObtained()) {
-                achievement = new Achievement(20, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, true);
-                db.updateAchievement(achievement);
-                updatePoints(500);
-            }
-
-        } else if (level == 50) {
-
-            if (!db.getAchievement(21).isObtained()) {
-                achievement = new Achievement(21, "Master", "Reach level 50", 2000, R.drawable.master, true);
-                db.updateAchievement(achievement);
-                updatePoints(2000);
-            }
-
-        } else if (level == 100) {
-
-            if (!db.getAchievement(22).isObtained()) {
-                achievement = new Achievement(22, "Legend", "Reach level 100", 5000, R.drawable.legend, true);
-                db.updateAchievement(achievement);
-                updatePoints(5000);
-            }
-        }
-
     }
 
     public String getLevelPointsString(long points) {

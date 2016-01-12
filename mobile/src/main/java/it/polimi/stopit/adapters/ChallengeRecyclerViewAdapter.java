@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,24 +19,17 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
-import java.net.URI;
 import java.util.List;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.ChallengeDetail;
-import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
-import it.polimi.stopit.fragments.ChallengeFragment;
-import it.polimi.stopit.fragments.ChallengeFragment.OnListFragmentInteractionListener;
-import it.polimi.stopit.fragments.ContactFragment;
 import it.polimi.stopit.model.Challenge;
 
 public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<ChallengeRecyclerViewAdapter.ViewHolder> {
@@ -61,7 +52,9 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+
         final Challenge challenge=mChallenges.get(position);
+
         Firebase.setAndroidContext(context);
         final Firebase fireRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
         fireRef.addListenerForSingleValueEvent(new ValueEventListener() {

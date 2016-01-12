@@ -1,79 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="it.polimi.stopit.activities.StatisticsActivity"
-    tools:showIn="@layout/activity_statistics"
     android:paddingTop="80dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    tools:context="it.polimi.stopit.activities.StatisticsActivity"
+    tools:showIn="@layout/activity_statistics">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:layout_marginBottom="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/cig_avoided_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="50dp"
-            android:background="@drawable/cig_avoided"/>
+            <ImageView
+                android:id="@+id/cig_avoided_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="50dp"
+                android:background="@drawable/cig_avoided" />
 
-        <TextView
-            android:id="@+id/cig_avoided"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="13dp"
-            android:layout_toEndOf="@id/cig_avoided_img"
-            android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/cig_avoided"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="13dp"
+                android:layout_toEndOf="@id/cig_avoided_img"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/health_saved_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_below="@id/cig_avoided_img"
-            android:background="@drawable/health"/>
+            <ImageView
+                android:id="@+id/health_saved_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/cig_avoided_img"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/health" />
 
-        <TextView
-            android:id="@+id/health_saved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="39dp"
-            android:layout_toEndOf="@id/health_saved_img"
-            android:layout_below="@id/cig_avoided"
-            android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/health_saved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cig_avoided"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="39dp"
+                android:layout_toEndOf="@id/health_saved_img"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/money_saved_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="15dp"
-            android:layout_below="@id/health_saved_img"
-            android:background="@drawable/saved_money"/>
+            <ImageView
+                android:id="@+id/money_saved_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/health_saved_img"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/saved_money" />
 
-        <TextView
-            android:id="@+id/money_saved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="39dp"
-            android:layout_toEndOf="@id/money_saved_img"
-            android:layout_below="@id/health_saved"
-            android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/money_saved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/health_saved"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="39dp"
+                android:layout_toEndOf="@id/money_saved_img"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/challenge_won_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/money_saved_img"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/legend" />
+
+            <TextView
+                android:id="@+id/challenge_won"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/money_saved"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="39dp"
+                android:layout_toEndOf="@id/challenge_won_img"
+                android:textSize="18sp" />
 
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
-    </FrameLayout>
+</FrameLayout>
 

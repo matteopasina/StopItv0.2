@@ -62,7 +62,7 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(19, "Novice", "Reach level 10", 200, R.drawable.novice, obtained));
         db.addAchievement(new Achievement(20, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, obtained));
         db.addAchievement(new Achievement(21, "Master", "Reach level 50", 2000, R.drawable.master, obtained));
-        db.addAchievement(new Achievement(22, "Legend", "Reach level 100", 5000, R.drawable.legend, obtained));
+        db.addAchievement(new Achievement(22, "Legend", "Reach level 100", 5000, R.drawable.shield, obtained));
         db.addAchievement(new Achievement(23, "Challenger", "Win a challenge", 250, R.drawable.challenge, obtained));
         db.addAchievement(new Achievement(24, "Super Challenger", "Win 5 challenges", 1300, R.drawable.five_challenge, obtained));
 
