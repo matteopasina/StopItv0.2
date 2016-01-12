@@ -242,18 +242,18 @@ public class Controller {
 
         if(type.equals("first")){
 
-            if(!db.getAchievement(18).isObtained()){
+            if(!db.getAchievement(10).isObtained()){
 
-                achievement=new Achievement(18, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true);
+                achievement=new Achievement(10, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true);
                 db.updateAchievement(achievement);
                 updatePoints(500);
             }
 
         }else if(type.equals("top10")){
 
-            if(!db.getAchievement(16).isObtained()) {
+            if(!db.getAchievement(8).isObtained()) {
 
-                achievement = new Achievement(16, "Top10", "In all time leaderboard", 100, R.drawable.top10, true);
+                achievement = new Achievement(8, "Top10", "In all time leaderboard", 100, R.drawable.top10, true);
                 db.updateAchievement(achievement);
                 updatePoints(100);
 
@@ -261,9 +261,9 @@ public class Controller {
 
         }else if(type.equals("top3")){
 
-            if(!db.getAchievement(17).isObtained()) {
+            if(!db.getAchievement(9).isObtained()) {
 
-                achievement = new Achievement(17, "Top3", "In all time leaderboard", 250, R.drawable.top3, true);
+                achievement = new Achievement(9, "Top3", "In all time leaderboard", 250, R.drawable.top3, true);
                 db.updateAchievement(achievement);
                 updatePoints(250);
             }
@@ -274,15 +274,15 @@ public class Controller {
 
         Achievement achievement;
 
-        if(num==1 && !db.getAchievement(14).isObtained()){
+        if(num==1 && !db.getAchievement(6).isObtained()){
 
-            achievement = new Achievement(14, "Saver", "Complete a money target", 300, R.drawable.saver, true);
+            achievement = new Achievement(6, "Saver", "Complete a money target", 300, R.drawable.saver, true);
             db.updateAchievement(achievement);
             updatePoints(300);
 
-        }else if(num==3 && !db.getAchievement(15).isObtained()){
+        }else if(num==3 && !db.getAchievement(7).isObtained()){
 
-            achievement = new Achievement(15, "Super Saver", "Complete 3 money targets", 800, R.drawable.super_saver, true);
+            achievement = new Achievement(7, "Super Saver", "Complete 3 money targets", 800, R.drawable.super_saver, true);
             db.updateAchievement(achievement);
             updatePoints(800);
         }
@@ -756,32 +756,32 @@ public class Controller {
         Achievement achievement;
         if(level==10){
 
-            if(!db.getAchievement(6).isObtained()){
-                achievement=new Achievement(6, "Novice", "Reach level 10", 200, R.drawable.novice, true);
+            if(!db.getAchievement(19).isObtained()){
+                achievement=new Achievement(19, "Novice", "Reach level 10", 200, R.drawable.novice, true);
                 db.updateAchievement(achievement);
                 updatePoints(200);
             }
 
         }else if(level==25){
 
-            if(!db.getAchievement(7).isObtained()){
-                achievement=new Achievement(7, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, true);
+            if(!db.getAchievement(20).isObtained()){
+                achievement=new Achievement(20, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, true);
                 db.updateAchievement(achievement);
                 updatePoints(500);
             }
 
         }else if(level==50){
 
-            if(!db.getAchievement(8).isObtained()){
-                achievement=new Achievement(8, "Master", "Reach level 50", 2000, R.drawable.master, true);
+            if(!db.getAchievement(21).isObtained()){
+                achievement=new Achievement(21, "Master", "Reach level 50", 2000, R.drawable.master, true);
                 db.updateAchievement(achievement);
                 updatePoints(2000);
             }
 
         }else if(level==100){
 
-            if(!db.getAchievement(9).isObtained()){
-                achievement=new Achievement(9, "Legend", "Reach level 100", 5000, R.drawable.legend, true);
+            if(!db.getAchievement(22).isObtained()){
+                achievement=new Achievement(22, "Legend", "Reach level 100", 5000, R.drawable.legend, true);
                 db.updateAchievement(achievement);
                 updatePoints(5000);
             }
