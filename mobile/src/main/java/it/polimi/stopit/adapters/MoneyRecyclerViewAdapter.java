@@ -23,7 +23,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
 
     private final List<MoneyTarget> mTargets;
     private final OnPassingData myListener;
-    private int selectedPos;
+    private int selectedPos=1000;
 
     public MoneyRecyclerViewAdapter(List<MoneyTarget> items, OnPassingData myListener) {
         mTargets = items;
@@ -35,31 +35,6 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_moneygallery, parent, false);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                notifyItemChanged(selectedPos);
-
-                if (v.isSelected()) {
-
-                    v.setSelected(false);
-                    selectedPos=1000;
-
-                } else {
-
-                    selectedPos = new ViewHolder(view).getLayoutPosition();
-                    System.out.println("Selected Pos: "+selectedPos);
-                    v.setSelected(true);
-                    Animation animationPop = AnimationUtils.loadAnimation(v.getContext(), R.anim.popup);
-                    v.findViewById(R.id.target_image).setAnimation(animationPop);
-
-                    ImageView img = (ImageView) v.findViewById(R.id.target_image);
-                    TextView name = (TextView) v.findViewById(R.id.target_name);
-                    myListener.callBack(name.getText().toString(), Integer.parseInt(img.getTag().toString()));
-                }
-            }
-        });
 
         return new ViewHolder(view);
     }
@@ -74,7 +49,6 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         holder.targetPic.setTag(target.getImageResource());
         holder.targetName.setText(target.getName());
         holder.setIsRecyclable(false);
-
         holder.mView.setSelected(selectedPos == position);
 
         if(holder.mView.isSelected()){
@@ -86,6 +60,38 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
             holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
             holder.mView.clearAnimation();
         }
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                notifyItemChanged(selectedPos);
+
+                if (v.isSelected()) {
+
+                    v.setSelected(false);
+                    System.out.println("ALREADY SELECTED: selected Pos: " + selectedPos);
+                    selectedPos = 1000;
+                    holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
+                    holder.mView.clearAnimation();
+
+                } else {
+
+                    System.out.println("SELECTED: selected Pos: " + selectedPos);
+
+                    selectedPos = position;
+                    notifyItemChanged(selectedPos);
+                    holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
+                    Animation animationPop = AnimationUtils.loadAnimation(v.getContext(), R.anim.popup);
+                    v.findViewById(R.id.target_image).setAnimation(animationPop);
+
+                    ImageView img = (ImageView) v.findViewById(R.id.target_image);
+                    TextView name = (TextView) v.findViewById(R.id.target_name);
+                    myListener.callBack(name.getText().toString(), Integer.parseInt(img.getTag().toString()));
+                }
+            }
+        });
+
 
     }
 
@@ -99,6 +105,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         public final View mView;
         public final ImageView targetPic;
         public final TextView targetName;
+        public final int pos;
 
         public ViewHolder(View view) {
             super(view);
@@ -106,6 +113,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
             mView = view;
             targetPic=(ImageView) view.findViewById(R.id.target_image);
             targetName= (TextView) view.findViewById(R.id.target_name);
+            pos=getLayoutPosition();
         }
     }
 
