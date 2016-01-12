@@ -519,14 +519,15 @@ public class Controller {
                     if (dataSnapshot.getChildrenCount() != 0) {
 
                         for (final DataSnapshot children : dataSnapshot.getChildren()) {
+
                             if(children.getChildrenCount() == 2) {
                                 final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
+
 
                                 fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot snapshot) {
 
-                                        System.out.println("challenged");
                                         //costruisci testo notifica
                                         String opponent = snapshot.child("name").getValue().toString() + " " +
                                                 snapshot.child("surname").getValue().toString();
@@ -546,11 +547,10 @@ public class Controller {
                                     public void onCancelled(FirebaseError firebaseError) {
                                     }
                                 });
+                                fire.child(children.getKey()).removeValue();
                             }
 
                         }
-
-                        fire.removeValue();
                     }
             }
 
@@ -571,6 +571,8 @@ public class Controller {
                     challenge.setOver(true);
                     challenge.setWon(true);
                     db.updateChallenge(challenge);
+                    System.out.println(db.getChallenge(challenge.getID()).isOver());
+                    System.out.println("opponentID: "+db.getChallengeByOpponentID(challenge.getOpponentID()).isOver());
                     sendCustomNotification(dataSnapshot.child("name").getValue().toString() + " resigned!", "You won the challenge");
                     fireChallenge.removeValue();
                 }

@@ -64,14 +64,14 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        redirect="";
-
         try {
 
-            redirect = getIntent().getExtras().getString("redirect");
+            if(getIntent().hasExtra("redirect")) {
+                redirect = getIntent().getExtras().getString("redirect");
+            }
 
-        } catch (NullPointerException e) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!redirect.equals("")) {
@@ -105,6 +105,7 @@ public class NavigationActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Challenges");
             }
 
+            redirect="";
         }
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

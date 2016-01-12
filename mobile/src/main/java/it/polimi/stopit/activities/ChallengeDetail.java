@@ -140,6 +140,8 @@ public class ChallengeDetail extends AppCompatActivity {
                                 challenge.setOver(true);
                                 challenge.setWon(false);
                                 dbh.updateChallenge(challenge);
+                                final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
+                                fireChallenge.child("over").setValue(true);
                                 Intent intent = new Intent(ChallengeDetail.this, NavigationActivity.class);
                                 startActivity(intent);
 
