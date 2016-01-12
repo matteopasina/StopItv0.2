@@ -717,6 +717,14 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void deleteChallengeByOpponentId(String id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CHALLENGES, CHALLENGE_OPPONENTID + " = ?",
+                new String[]{ id });
+        db.close();
+    }
+
     public void deleteAchievement(Achievement achievement) {
 
         SQLiteDatabase db = this.getWritableDatabase();

@@ -139,7 +139,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                                 Firebase challenge = fire.push();
 
-                                dbh.addChallenge(new Challenge(challenge.getKey()
+                                dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
                                         , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
                                         (long) days.getProgress() * 86400000, "false", "true", "false", "false"));
 

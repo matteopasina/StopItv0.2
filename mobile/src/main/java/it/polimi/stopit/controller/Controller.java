@@ -447,46 +447,51 @@ public class Controller {
 
                 //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
                 if (accepted.exists()) {
-                    if (accepted.getValue().toString() != "0") {
+                    try {
+                        if (accepted.child("accepted").exists()) {
 
-                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+accepted.getValue().toString());
+                            final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + accepted.child("accepted").getValue().toString());
 
-                        fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
+                            fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
 
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
 
-                                Challenge chall = new Challenge(accepted.getValue().toString(),
-                                        snapshot.child("id").getValue().toString(),
-                                        (long) snapshot.child("myPoints").getValue(),
-                                        (long) snapshot.child("opponentPoints").getValue(),
-                                        (long) snapshot.child("startTime").getValue(),
-                                        (long) snapshot.child("endTime").getValue(),
-                                        snapshot.child("accepted").getValue().toString(),
-                                        "true",
-                                        snapshot.child("over").getValue().toString(),
-                                        snapshot.child("won").getValue().toString());
+                                    Challenge chall = new Challenge(accepted.child("accepted").getValue().toString(),
+                                            snapshot.child("id").getValue().toString(),
+                                            (long) snapshot.child("myPoints").getValue(),
+                                            (long) snapshot.child("opponentPoints").getValue(),
+                                            (long) snapshot.child("startTime").getValue(),
+                                            (long) snapshot.child("endTime").getValue(),
+                                            snapshot.child("accepted").getValue().toString(),
+                                            "true",
+                                            snapshot.child("over").getValue().toString(),
+                                            snapshot.child("won").getValue().toString());
 
-                                db.updateChallenge(chall);
+                                    db.updateChallenge(chall);
 
-                                Controller controller = new Controller(context);
-                                controller.setChallengeAlarm(chall.getStartTime(),
-                                        chall.getEndTime() - chall.getStartTime(),
-                                        chall.getID());
-                                controller.sendCustomNotification("Challenge accepted", "Don't smoke if you want to win!");
-                            }
+                                    Controller controller = new Controller(context);
+                                    controller.setChallengeAlarm(chall.getStartTime(),
+                                            chall.getEndTime() - chall.getStartTime(),
+                                            chall.getID());
+                                    controller.sendCustomNotification("Challenge accepted", "Don't smoke if you want to win!");
+                                }
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
 
-                        });
+                            });
 
-                        fire.child(settings.getString("ID", null)).removeValue();
-                    }else{
-                       // db.deleteChallenge();
-                        Controller controller = new Controller(context);
-                        controller.sendCustomNotification("Challenge declined", ":(");
+                            fire.child(settings.getString("ID", null)).removeValue();
+                        }else if(accepted.child("declined").exists()){
+                            System.out.println(accepted.child("declined").getValue());
+                            //db.deleteChallengeByOpponentId(accepted.getKey());
+                            Controller controller = new Controller(context);
+                            controller.sendCustomNotification("Challenge declined", ":(");
+                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
                 }
             }
@@ -501,19 +506,17 @@ public class Controller {
     public void checkChallenges(){
 
         Firebase.setAndroidContext(context);
-        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications");
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/"+settings.getString("ID", null));
 
         fire.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                final DataSnapshot notification = snapshot.child(settings.getString("ID", null));
-
                 //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
-                if (notification.getChildrenCount() != 0) {
+                if (snapshot.getChildrenCount() != 0) {
 
-                    for(final DataSnapshot children : notification.getChildren()) {
+                    for(final DataSnapshot children : snapshot.getChildren()) {
                         try {
                             final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
@@ -530,7 +533,7 @@ public class Controller {
                                     sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
 
 
-                                    //aggiungi challenge al DB
+                                    //aggiungi challenge al DB dello sfidato
                                     db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
                                             , children.child("opponent").getValue().toString(), 0, 0, 0,
                                             (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));

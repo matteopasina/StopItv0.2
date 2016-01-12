@@ -164,7 +164,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     notifyDataSetChanged();
 
                                     final Firebase accept = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID());
-                                    accept.setValue(newChallenge.getKey());
+                                    accept.child("accepted").setValue(newChallenge.getKey());
 
                                     Controller controller = new Controller(context);
                                     controller.setChallengeAlarm(challenge.getStartTime(),
@@ -181,7 +181,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     notifyDataSetChanged();
 
                                     final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID() );
-                                    decline.setValue("0");
+                                    decline.child("declined").setValue(p.getString("ID",null));
 
                                     break;
                             }

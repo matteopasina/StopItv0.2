@@ -75,31 +75,34 @@ public class ChallengeDetail extends AppCompatActivity {
         final Firebase fireOpponent = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+opponentID);
         final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challenge.getID());
 
-        fireChallenge.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("over").toString().equals("true") && dataSnapshot.child("giveup").exists()){
+        try {
+            fireChallenge.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child("over").toString().equals("true") && dataSnapshot.child("giveup").exists()) {
                         challenge.setOver(true);
                         challenge.setWon(true);
                         dbh.updateChallenge(challenge);
                         Intent intent = new Intent(ChallengeDetail.this, NavigationActivity.class);
                         startActivity(intent);
+                    }
+                    if (dataSnapshot.child("id").getValue().toString().equals(p.getString("ID", null))) {
+                        yourPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
+                        opponentPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
+                    } else if (dataSnapshot.child("opponentID").getValue().toString().equals(p.getString("ID", null))) {
+                        yourPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
+                        opponentPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
+                    }
                 }
-                if(dataSnapshot.child("id").getValue().toString().equals(p.getString("ID",null))){
-                    yourPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
-                    opponentPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
-                }
-                else if(dataSnapshot.child("opponentID").getValue().toString().equals(p.getString("ID",null))){
-                    yourPoints.setText(dataSnapshot.child("opponentPoints").getValue().toString());
-                    opponentPoints.setText(dataSnapshot.child("myPoints").getValue().toString());
-                }
-            }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
 
-            }
-        });
+                }
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
 
         CircularImageView yourPic=(CircularImageView) findViewById(R.id.yourPic);
