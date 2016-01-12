@@ -88,6 +88,20 @@ public class NavigationActivity extends AppCompatActivity
                 ft.commit();
 
                 getSupportActionBar().setTitle("Money Target");
+
+            }else if(redirect.equals("challenges")){
+
+                Fragment fragment = ChallengeFragment.newInstance();
+
+                FragmentManager fragmentManager = getFragmentManager();
+
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+
+                ft.replace(R.id.content_frame, fragment);
+
+                ft.commit();
+
+                getSupportActionBar().setTitle("Challenges");
             }
 
         }
