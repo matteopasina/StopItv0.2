@@ -41,15 +41,56 @@ import it.polimi.stopit.model.User;
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    User user=new User();
+    User user = new User();
     private long points;
     private long daypoints;
     private long weekpoints;
+    private String redirect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        try {
+
+            redirect = getIntent().getExtras().getString("redirect");
+
+        } catch (NullPointerException e) {
+
+            redirect = "";
+        }
+
+        if (!redirect.equals("")) {
+
+            if (redirect.equals("money")) {
+
+                Fragment fragment = MoneyFragment.newInstance();
+
+                FragmentManager fragmentManager = getFragmentManager();
+
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+
+                ft.replace(R.id.content_frame, fragment);
+
+                ft.commit();
+
+                getSupportActionBar().setTitle("Money Target");
+            }
+
+        }
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -63,46 +104,47 @@ public class NavigationActivity extends AppCompatActivity
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
-        if(isOnline()) {
+        if (isOnline()) {
 
+            myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
 
-                myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
+                    if (!snapshot.child(user.getID()).exists()) {
 
-                        if (!snapshot.child(user.getID()).exists()) {
+                        myFirebaseRef.child(user.getID()).setValue(user);
 
-                            myFirebaseRef.child(user.getID()).setValue(user);
+                    }
+                    if (snapshot.child(user.getID()).child("points").getValue() == null) {
 
-                        }
-                        if (snapshot.child(user.getID()).child("points").getValue() == null) {
+                        points = 0;
+                        daypoints = 0;
+                        weekpoints = 0;
 
-                            points = 0;
-                            daypoints = 0;
-                            weekpoints = 0;
+                    } else {
 
-                        } else {
+                        points = (long) snapshot.child(user.getID()).child("points").getValue();
+                        daypoints = (long) snapshot.child(user.getID()).child("dayPoints").getValue();
+                        weekpoints = (long) snapshot.child(user.getID()).child("weekPoints").getValue();
 
-                            points = (long) snapshot.child(user.getID()).child("points").getValue();
-                            daypoints = (long) snapshot.child(user.getID()).child("dayPoints").getValue();
-                            weekpoints = (long) snapshot.child(user.getID()).child("weekPoints").getValue();
+                    }
 
-                        }
+                    user.setPoints(points);
+                    user.setDayPoints(daypoints);
+                    user.setWeekPoints(weekpoints);
 
-                        user.setPoints(points);
-                        user.setDayPoints(daypoints);
-                        user.setWeekPoints(weekpoints);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("ID", user.getID());
+                    editor.putString("name", user.getName());
+                    editor.putString("surname", user.getSurname());
+                    editor.putLong("points", user.getPoints());
+                    editor.putString("image", user.getProfilePic());
+                    editor.putLong("dayPoints", user.getDayPoints());
+                    editor.putLong("weekPoints", user.getWeekPoints());
 
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("ID", user.getID());
-                        editor.putString("name", user.getName());
-                        editor.putString("surname", user.getSurname());
-                        editor.putLong("points", user.getPoints());
-                        editor.putString("image", user.getProfilePic());
-                        editor.putLong("dayPoints", user.getDayPoints());
-                        editor.putLong("weekPoints", user.getWeekPoints());
+                    editor.commit();
 
-                        editor.commit();
+                    if(redirect.equals("")){
 
                         try {
                             Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
@@ -118,17 +160,20 @@ public class NavigationActivity extends AppCompatActivity
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
 
-                    @Override
-                    public void onCancelled(FirebaseError error) {
-                    }
-                });
-        }
-        else{
+
+                }
+
+                @Override
+                public void onCancelled(FirebaseError error) {
+                }
+            });
+
+        } else if(redirect.equals("")){
+
             Toast.makeText(NavigationActivity.this, "Offline", Toast.LENGTH_SHORT).show();
-            Fragment fragment = ProfileFragment.newInstance(user.getID(),user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
+            Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
             FragmentManager fragmentManager = getFragmentManager();
 
@@ -138,18 +183,6 @@ public class NavigationActivity extends AppCompatActivity
 
             ft.commit();
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     @Override
@@ -171,13 +204,13 @@ public class NavigationActivity extends AppCompatActivity
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
         sidename.setText("" + user.getName() + " " + user.getSurname());
 
-        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(this);
-        long points=settings.getLong("points", 0);
-        Controller control=new Controller(this);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        long points = settings.getLong("points", 0);
+        Controller control = new Controller(this);
 
         sidelevel.setText(control.getLevel(points));
 
-        CircularImageView sidebarpic=(CircularImageView) findViewById(R.id.sidebarPic);
+        CircularImageView sidebarpic = (CircularImageView) findViewById(R.id.sidebarPic);
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
 
         return true;
@@ -204,24 +237,24 @@ public class NavigationActivity extends AppCompatActivity
         if (id == R.id.profile) {
 
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-            user.setPoints(settings.getLong("points",0));
+            user.setPoints(settings.getLong("points", 0));
 
-            Fragment fragment = ProfileFragment.newInstance(user.getID(),user.getName(),user.getSurname(),String.valueOf(user.getPoints()),user.getProfilePic());
+            Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(user.getPoints()), user.getProfilePic());
 
-            FragmentManager fragmentManager=getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
 
-            FragmentTransaction ft=fragmentManager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
 
             ft.replace(R.id.content_frame, fragment);
 
             ft.commit();
 
             getSupportActionBar().setTitle("Profile");
-            
+
 
         } else if (id == R.id.leaderboard) {
 
-            Intent intent = new Intent(this,LeaderboardActivity.class);
+            Intent intent = new Intent(this, LeaderboardActivity.class);
 
             startActivity(intent);
 
@@ -229,9 +262,9 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = AchievementFragment.newInstance();
 
-            FragmentManager fragmentManager=getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
 
-            FragmentTransaction ft=fragmentManager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
 
             ft.replace(R.id.content_frame, fragment);
 
@@ -243,9 +276,9 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = ChallengeFragment.newInstance();
 
-            FragmentManager fragmentManager=getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
 
-            FragmentTransaction ft=fragmentManager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
 
             ft.replace(R.id.content_frame, fragment);
 
@@ -255,7 +288,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.stats) {
 
-            Intent intent = new Intent(getApplicationContext(),StatisticsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), StatisticsActivity.class);
 
             startActivity(intent);
 
@@ -263,9 +296,9 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = MoneyFragment.newInstance();
 
-            FragmentManager fragmentManager=getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
 
-            FragmentTransaction ft=fragmentManager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
 
             ft.replace(R.id.content_frame, fragment);
 
@@ -275,13 +308,13 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.settings) {
 
-            Intent intent = new Intent(getApplicationContext(),SettingsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 
             startActivity(intent);
 
 
-        }else if (id == R.id.logout) {
-            Intent intent = new Intent(this,Login.class);
+        } else if (id == R.id.logout) {
+            Intent intent = new Intent(this, Login.class);
             AccessToken.setCurrentAccessToken(null);
             Profile.setCurrentProfile(null);
             startActivity(intent);

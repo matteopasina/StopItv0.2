@@ -43,7 +43,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final MoneyTarget target=mTargets.get(position);
 
@@ -89,6 +89,9 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
                                 }
 
                                 db.deleteMoneyTarget(target);
+
+                                mTargets.remove(position);
+                                notifyDataSetChanged();
 
                                 break;
 

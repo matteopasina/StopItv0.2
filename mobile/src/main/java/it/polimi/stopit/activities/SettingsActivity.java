@@ -14,15 +14,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
-import org.joda.time.MutableInterval;
-
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.util.List;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.controller.Controller;
-import it.polimi.stopit.services.ScheduleService;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
     /**
@@ -92,6 +86,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (id == android.R.id.home) {
 
             this.finish();
+            Intent intent=new Intent(this,NavigationActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

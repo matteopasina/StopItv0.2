@@ -1,5 +1,6 @@
 package it.polimi.stopit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -53,6 +54,9 @@ public class LeaderboardActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
 
             this.finish();
+
+            Intent intent=new Intent(this,NavigationActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

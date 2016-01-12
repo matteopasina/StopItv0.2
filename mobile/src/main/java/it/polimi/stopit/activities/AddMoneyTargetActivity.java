@@ -139,10 +139,11 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
                         settings.edit().putString("CPD",String.valueOf(CPD)).commit();
 
-                        Intent intent=new Intent(getApplicationContext(),NavigationActivity.class);
-                        startActivity(intent);
+                        insertTarget(name, price, duration, imageResource, cigToReduce);
 
-                        insertTarget(name, price, duration, imageResource,cigToReduce);
+                        Intent intent=new Intent(getApplicationContext(),NavigationActivity.class);
+                        intent.putExtra("redirect","money");
+                        startActivity(intent);
 
                         break;
 
