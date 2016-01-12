@@ -46,7 +46,7 @@ public class DailyLeaderboardAdapter extends RecyclerView.Adapter<DailyLeaderboa
 
         if(mLeaderboard.get(position).getID().equals(Profile.getCurrentProfile().getId())){
 
-            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#64B5F6"));
+            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#039BE5"));
 
         }
 

@@ -765,7 +765,7 @@ public class Controller {
         }else if(level==25){
 
             if(!db.getAchievement(7).isObtained()){
-                achievement=new Achievement(7, "Apprendice", "Reach level 25", 500, R.drawable.five_challenge, true);
+                achievement=new Achievement(7, "Apprendice", "Reach level 25", 500, R.drawable.apprendice, true);
                 db.updateAchievement(achievement);
                 updatePoints(500);
             }
