@@ -147,6 +147,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                                 challenge.child("opponent").setValue(settings.getString("ID", null));
 
                                 Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
+                                createChallenge.putExtra("redirect","challenges");
                                 createChallenge.putExtra("ID", mContacts.get(getLayoutPosition()).getID());
                                 createChallenge.putExtra("length_days", days.getProgress());
                                 view.getContext().startActivity(createChallenge);

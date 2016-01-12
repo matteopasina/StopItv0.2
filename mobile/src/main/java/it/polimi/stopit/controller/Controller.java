@@ -346,7 +346,7 @@ public class Controller {
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("redirect","challenges");
+        resultIntent.putExtra("redirect", "challenges");
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -447,7 +447,7 @@ public class Controller {
                 final DataSnapshot accepted = snapshot.child(settings.getString("ID", null));
 
                 //se l'avversario ha accettato prende la challenge da firebase e la mette nel database
-                if (accepted.exists()) {
+                if (accepted.getChildrenCount()==1) {
                     try {
                         if (accepted.child("accepted").exists()) {
 
@@ -515,11 +515,11 @@ public class Controller {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
-                if (snapshot.getChildrenCount() != 0) {
+                    //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
+                    if (snapshot.getChildrenCount() == 2) {
 
-                    for (final DataSnapshot children : snapshot.getChildren()) {
-                        try {
+                        for (final DataSnapshot children : snapshot.getChildren()) {
+
                             final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
                             fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -545,12 +545,10 @@ public class Controller {
                                 public void onCancelled(FirebaseError firebaseError) {
                                 }
                             });
-                        } catch (Exception e) {
-                            e.printStackTrace();
+
                         }
+                        fire.child(settings.getString("ID", null)).removeValue();
                     }
-                    fire.child(settings.getString("ID", null)).removeValue();
-                }
             }
 
             @Override
@@ -565,12 +563,12 @@ public class Controller {
         fireChallenge.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.getChildrenCount() == 2) {
                     Challenge challenge = db.getChallenge(dataSnapshot.child("challenge").getValue().toString());
                     challenge.setOver(true);
                     challenge.setWon(true);
-                    sendCustomNotification(dataSnapshot.child("name").getValue().toString() + " resigned!", "You won the challenge");
                     db.updateChallenge(challenge);
+                    sendCustomNotification(dataSnapshot.child("name").getValue().toString() + " resigned!", "You won the challenge");
                 }
             }
 
