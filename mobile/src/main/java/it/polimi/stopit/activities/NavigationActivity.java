@@ -45,7 +45,7 @@ public class NavigationActivity extends AppCompatActivity
     private long points;
     private long daypoints;
     private long weekpoints;
-    private String redirect;
+    private String redirect="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,6 @@ public class NavigationActivity extends AppCompatActivity
 
         } catch (NullPointerException e) {
 
-            redirect = "";
         }
 
         if (!redirect.equals("")) {
@@ -104,6 +103,7 @@ public class NavigationActivity extends AppCompatActivity
                 getSupportActionBar().setTitle("Challenges");
             }
 
+            redirect="";
         }
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);

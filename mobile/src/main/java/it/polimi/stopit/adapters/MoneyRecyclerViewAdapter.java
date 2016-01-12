@@ -23,6 +23,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
 
     private final List<MoneyTarget> mTargets;
     private final OnPassingData myListener;
+    private int selectedPos;
 
     public MoneyRecyclerViewAdapter(List<MoneyTarget> items, OnPassingData myListener) {
         mTargets = items;
@@ -31,46 +32,60 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        final View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_moneygallery, parent, false);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                notifyItemChanged(selectedPos);
+
                 if (v.isSelected()) {
 
                     v.setSelected(false);
-                    v.clearAnimation();
-                    v.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
-
+                    selectedPos=1000;
 
                 } else {
 
+                    selectedPos = new ViewHolder(view).getLayoutPosition();
+                    System.out.println("Selected Pos: "+selectedPos);
                     v.setSelected(true);
                     Animation animationPop = AnimationUtils.loadAnimation(v.getContext(), R.anim.popup);
                     v.findViewById(R.id.target_image).setAnimation(animationPop);
-                    v.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
 
-                    ImageView img=(ImageView) v.findViewById(R.id.target_image);
-                    TextView name=(TextView) v.findViewById(R.id.target_name);
-                    myListener.callBack(name.getText().toString(),Integer.parseInt(img.getTag().toString()));
+                    ImageView img = (ImageView) v.findViewById(R.id.target_image);
+                    TextView name = (TextView) v.findViewById(R.id.target_name);
+                    myListener.callBack(name.getText().toString(), Integer.parseInt(img.getTag().toString()));
                 }
             }
         });
+
         return new ViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         MoneyTarget target=mTargets.get(position);
 
         holder.targetPic.setImageResource(target.getImageResource());
         holder.targetPic.setTag(target.getImageResource());
         holder.targetName.setText(target.getName());
-        //holder.setIsRecyclable(false);
+        holder.setIsRecyclable(false);
+
+        holder.mView.setSelected(selectedPos == position);
+
+        if(holder.mView.isSelected()){
+
+            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#CCCCCC"));
+
+        }else{
+
+            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
+            holder.mView.clearAnimation();
+        }
 
     }
 
