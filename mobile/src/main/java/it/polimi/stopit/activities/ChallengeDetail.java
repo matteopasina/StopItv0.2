@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -44,6 +45,8 @@ public class ChallengeDetail extends AppCompatActivity {
         final TextView timeLeft=(TextView) findViewById(R.id.timeLeft);
         final Button giveUp=(Button) findViewById(R.id.give_up);
         giveUp.setText("Give up");
+        final ProgressBar progressBar=(ProgressBar) findViewById(R.id.progress_challenge);
+        progressBar.setMax(100);
 
         final SharedPreferences p= PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -55,6 +58,8 @@ public class ChallengeDetail extends AppCompatActivity {
 
         MutableDateTime time=new MutableDateTime();
         time.setMillis(challenge.getEndTime() - time.getMillis());
+
+        progressBar.setProgress((int) (100 * ((challenge.getEndTime()-challenge.getStartTime())-time.getMillis()) / (challenge.getEndTime()-challenge.getStartTime())));
 
         int days=(int)(time.getMillis())/(1000*60*60*24);
         time.setMillis(time.getMillis()-days*1000*60*60*24);

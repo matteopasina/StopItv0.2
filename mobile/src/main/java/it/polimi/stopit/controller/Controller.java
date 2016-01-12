@@ -300,8 +300,8 @@ public class Controller {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ControllerReceiver.class);
-        intent.putExtra("type","day");
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent,0);
+        intent.putExtra("type", "day");
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pi);
@@ -449,24 +449,23 @@ public class Controller {
                 if (accepted.exists()) {
                     if (accepted.getValue().toString() != "0") {
 
-                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges");
+                        final Firebase fireChallenge = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+accepted.getValue().toString());
 
                         fireChallenge.addListenerForSingleValueEvent(new ValueEventListener() {
 
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
 
-                                DataSnapshot C = snapshot.child(accepted.getValue().toString());
                                 Challenge chall = new Challenge(accepted.getValue().toString(),
-                                        C.child("id").getValue().toString(),
-                                        (long) C.child("myPoints").getValue(),
-                                        (long) C.child("opponentPoints").getValue(),
-                                        (long) C.child("startTime").getValue(),
-                                        (long) C.child("endTime").getValue(),
-                                        C.child("accepted").getValue().toString(),
-                                        C.child("challenger").getValue().toString(),
-                                        C.child("over").getValue().toString(),
-                                        C.child("won").getValue().toString());
+                                        snapshot.child("id").getValue().toString(),
+                                        (long) snapshot.child("myPoints").getValue(),
+                                        (long) snapshot.child("opponentPoints").getValue(),
+                                        (long) snapshot.child("startTime").getValue(),
+                                        (long) snapshot.child("endTime").getValue(),
+                                        snapshot.child("accepted").getValue().toString(),
+                                        "true",
+                                        snapshot.child("over").getValue().toString(),
+                                        snapshot.child("won").getValue().toString());
 
                                 db.updateChallenge(chall);
 
@@ -484,6 +483,10 @@ public class Controller {
                         });
 
                         fire.child(settings.getString("ID", null)).removeValue();
+                    }else{
+                       // db.deleteChallenge();
+                        Controller controller = new Controller(context);
+                        controller.sendCustomNotification("Challenge declined", ":(");
                     }
                 }
             }
@@ -511,32 +514,35 @@ public class Controller {
                 if (notification.getChildrenCount() != 0) {
 
                     for(final DataSnapshot children : notification.getChildren()) {
+                        try {
+                            final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
-                        final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+children.child("opponent").getValue().toString());
+                            fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
 
-                        fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-
-                                //costruisci testo notifica
-                                String opponent = snapshot.child("name").getValue().toString() + " " +
-                                        snapshot.child("surname").getValue().toString();
-
-
-                                //manda notifica
-                                sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
+                                    //costruisci testo notifica
+                                    String opponent = snapshot.child("name").getValue().toString() + " " +
+                                            snapshot.child("surname").getValue().toString();
 
 
-                                //aggiungi challenge al DB
-                                db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
-                                        , children.child("opponent").getValue().toString(), 0, 0, 0,
-                                        (long) children.child("duration").getValue() * 86400000, "false", "false","false","false"));
-                            }
+                                    //manda notifica
+                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
 
-                            @Override
-                            public void onCancelled(FirebaseError firebaseError) {
-                            }
-                        });
+
+                                    //aggiungi challenge al DB
+                                    db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
+                                            , children.child("opponent").getValue().toString(), 0, 0, 0,
+                                            (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+                                }
+                            });
+                        } catch(Exception e){
+                            e.printStackTrace();
+                        }
                     }
                     fire.child(settings.getString("ID", null)).removeValue();
                 }
@@ -847,60 +853,4 @@ public class Controller {
         return levelpoints;
     }
 
-  /*  public void firstStartv2(){
-        List<MutableInterval> list=loadSchedule();
-
-        MutableDateTime start=new MutableDateTime();
-        MutableDateTime end=new MutableDateTime();
-
-        end.setHourOfDay(23);
-        end.setMinuteOfHour(59);
-
-        list = splitDuration(start, end, Long.valueOf(settings.getString("CPD", null)));
-        saveSchedule(list);
-    }
-
-    static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
-
-        long millis = start.getMillis();
-        long endMillis=end.getMillis();
-        long chunkSize=(endMillis-millis)/chunkAmount;
-
-        List<MutableInterval> list = new ArrayList<MutableInterval>();
-
-        for(int i = 0; i < chunkAmount; ++i) {
-            list.add(new MutableInterval(millis, millis += chunkSize));
-        }
-
-        return list;
-    }
-
-    public void saveSchedule(List<MutableInterval> list){
-        String filename = "schedule";
-
-        try {
-            FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream( fos );
-            oos.writeObject ( list );
-            oos.close ();
-        } catch ( Exception ex ) {
-            ex.printStackTrace ();
-        }
-    }
-
-    public List<MutableInterval> loadSchedule(){
-        String filename = "schedule";
-        List<MutableInterval> lista;
-
-        try {
-            FileInputStream fis = context.openFileInput(filename);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            lista=(List<MutableInterval>) ois.readObject();
-            ois.close ();
-            return lista;
-        } catch ( Exception ex ) {
-            ex.printStackTrace ();
-        }
-        return null;
-    }*/
 }

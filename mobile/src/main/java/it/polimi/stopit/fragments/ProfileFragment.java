@@ -236,40 +236,8 @@ public class ProfileFragment extends Fragment {
         getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
 
         Button smoke=(Button) view.findViewById(R.id.smoke);
-        /*if((settings.getString("firstStart",null)==null)) {
-
-            smoke.setOnClickListener(new View.OnClickListener() {
+        smoke.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        switch (which){
-
-                            case DialogInterface.BUTTON_POSITIVE:
-
-                                controller.firstStartv2();
-                                settings.edit().putString("firstStart","false");
-                                settings.edit().commit();
-
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-
-                                break;
-                        }
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("First cigarette of the day").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-            }
-        });
-        }else {*/
-            smoke.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
 
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
@@ -306,8 +274,7 @@ public class ProfileFragment extends Fragment {
                     builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
                 }
-            });
-        //}
+        });
 
         return view;
     }
@@ -434,9 +401,7 @@ public class ProfileFragment extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Choose")
                     .setCancelable(false)
-                    .setMessage("You take the blue pill—the story ends, you wake up in your " +
-                            "bed and believe whatever you want to believe. You take the red pill—you stay in " +
-                            "Wonderland, and I show you how deep the rabbit hole goes")
+                    .setMessage("Don't smoke and you will get double points!")
                     .setPositiveButton("Don't smoke", dialogClickListener)
                     .setNegativeButton("smoke", dialogClickListener)
                     .setIcon(R.drawable.stopitsymbol)

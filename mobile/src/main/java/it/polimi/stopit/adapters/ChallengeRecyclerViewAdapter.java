@@ -71,7 +71,6 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                 holder.opponentName.setText(snapshot.child(challenge.getOpponentID()).child("name").getValue().toString());
                 Picasso.with(context).load(snapshot.child(challenge.getOpponentID()).child("profilePic").getValue().toString())
                         .into(holder.opponentImg);
-                System.out.println("accepted: "+challenge.isAccepted());
                 if(!challenge.isAccepted()) {
 
                     holder.challengeDuration.setText("Pending");

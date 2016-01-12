@@ -73,6 +73,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="120dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
             <TextView
                 android:text="Points"
                 android:layout_below="@+id/VS"
@@ -137,6 +139,16 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/linear"
         android:layout_marginTop="30dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_challenge"
+        android:layout_width="200dp"
+        android:layout_height="5dp"
+        android:background="#E1F5FE"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_marginTop="5dp"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/timeLeft" />
 
     <Button
         android:id="@+id/give_up"

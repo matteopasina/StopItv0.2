@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -51,17 +52,6 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
         holder.mName.setText(mContacts.get(position).getName() + " " + mContacts.get(position).getSurname());
 
-        /*
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mUser);
-                }
-            }
-        });*/
     }
 
     @Override
@@ -92,79 +82,92 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
         @Override
         public void onClick(final View view) {
-            final View dialogView = View.inflate(view.getContext(), R.layout.dialog_challenge, null);
-            TextView messageDialog=(TextView) dialogView.findViewById(R.id.message_challenge);
-            messageDialog.setText("You are challenging " + mName.getText() + "!" + "\nSet the days of the challenge:");
-
-            CircularImageView opponent=(CircularImageView) dialogView.findViewById(R.id.opponent);
-            Picasso.with(view.getContext()).load(mContacts.get(getLayoutPosition()).getProfilePic()).into(opponent);
-
-            final SeekBar days=(SeekBar) dialogView.findViewById(R.id.days);
-            days.setProgress(1);
-
-            final TextView daysText=(TextView) dialogView.findViewById(R.id.days_challenge);
-            daysText.setText("1");
-
-            days.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    daysText.setText(String.valueOf(days.getProgress()));
+            DatabaseHandler dbh=new DatabaseHandler(mView.getContext());
+            dbh.getAllChallengesNotOver();
+            boolean singleChallenge=true;
+            for(Challenge challenge : dbh.getAllChallengesNotOver()){
+                if(challenge.getOpponentID().equals(mContacts.get(getLayoutPosition()).getID()))
+                {
+                    singleChallenge=false;
+                    Toast.makeText(mView.getContext(), "You already have an active challenge with this contact", Toast.LENGTH_SHORT).show();
+                    break;
                 }
+            }
+            if(singleChallenge) {
+                final View dialogView = View.inflate(view.getContext(), R.layout.dialog_challenge, null);
+                TextView messageDialog = (TextView) dialogView.findViewById(R.id.message_challenge);
+                messageDialog.setText("You are challenging " + mName.getText() + "!" + "\nSet the days of the challenge:");
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
+                CircularImageView opponent = (CircularImageView) dialogView.findViewById(R.id.opponent);
+                Picasso.with(view.getContext()).load(mContacts.get(getLayoutPosition()).getProfilePic()).into(opponent);
 
-                }
+                final SeekBar days = (SeekBar) dialogView.findViewById(R.id.days);
+                days.setProgress(1);
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
+                final TextView daysText = (TextView) dialogView.findViewById(R.id.days_challenge);
+                daysText.setText("1");
 
-                }
-            });
-
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                            //Yes button clicked
-                            DatabaseHandler dbh=new DatabaseHandler(view.getContext());
-
-                            final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-
-                            Firebase.setAndroidContext(view.getContext());
-                            final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/"+mContacts.get(getLayoutPosition()).getID());
-
-                            Firebase challenge=fire.push();
-
-                            dbh.addChallenge(new Challenge(challenge.getKey()
-                                    , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
-                                    (long) days.getProgress() * 86400000, "false", "true","false","false"));
-
-                            challenge.child("duration").setValue(days.getProgress());
-                            challenge.child("opponent").setValue(settings.getString("ID", null));
-
-                            Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
-                            createChallenge.putExtra("ID",mContacts.get(getLayoutPosition()).getID());
-                            createChallenge.putExtra("length_days", days.getProgress());
-                            view.getContext().startActivity(createChallenge);
-
-                            break;
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            //No button clicked
-
-                            break;
+                days.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        daysText.setText(String.valueOf(days.getProgress()));
                     }
-                }
-            };
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-            builder.setView(dialogView)
-                    .setTitle("Challenge!")
-                    .setPositiveButton("Challenge", dialogClickListener)
-                    .setNegativeButton("Cancel", dialogClickListener)
-                    .show();
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                DatabaseHandler dbh = new DatabaseHandler(view.getContext());
+
+                                final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+
+                                Firebase.setAndroidContext(view.getContext());
+                                final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Notifications/" + mContacts.get(getLayoutPosition()).getID());
+
+                                Firebase challenge = fire.push();
+
+                                dbh.addChallenge(new Challenge(challenge.getKey()
+                                        , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
+                                        (long) days.getProgress() * 86400000, "false", "true", "false", "false"));
+
+                                challenge.child("duration").setValue(days.getProgress());
+                                challenge.child("opponent").setValue(settings.getString("ID", null));
+
+                                Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
+                                createChallenge.putExtra("ID", mContacts.get(getLayoutPosition()).getID());
+                                createChallenge.putExtra("length_days", days.getProgress());
+                                view.getContext().startActivity(createChallenge);
+
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setView(dialogView)
+                        .setTitle("Challenge!")
+                        .setPositiveButton("Challenge", dialogClickListener)
+                        .setNegativeButton("Cancel", dialogClickListener)
+                        .show();
+            }
         }
     }
 }
