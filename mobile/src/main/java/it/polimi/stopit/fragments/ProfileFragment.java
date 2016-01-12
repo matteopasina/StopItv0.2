@@ -58,7 +58,7 @@ public class ProfileFragment extends Fragment {
     private String points;
     private String imageURL;
     private BroadcastReceiver uiUpdated;
-    private static int gain=0;
+    private static int gain = 0;
     Controller controller;
     SharedPreferences settings;
 
@@ -66,7 +66,7 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static Fragment newInstance(String ID,String name, String surname, String points,String imageURL) {
+    public static Fragment newInstance(String ID, String name, String surname, String points, String imageURL) {
         Fragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_ID, ID);
@@ -81,8 +81,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        controller=new Controller(getActivity());
-        settings=PreferenceManager.getDefaultSharedPreferences(getActivity());
+        controller = new Controller(getActivity());
+        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (getArguments() != null) {
             ID = getArguments().getString(ARG_ID);
             name = getArguments().getString(ARG_NAME);
@@ -90,10 +90,10 @@ public class ProfileFragment extends Fragment {
             points = getArguments().getString(ARG_POINTS);
             imageURL = getArguments().getString(ARG_IMAGE);
         }
-        DatabaseHandler db=new DatabaseHandler(getActivity());
+        DatabaseHandler db = new DatabaseHandler(getActivity());
         db.deleteAllContacts();
 
-        DatabaseSeeder dbs=new DatabaseSeeder(getActivity());
+        DatabaseSeeder dbs = new DatabaseSeeder(getActivity());
         dbs.loadContacts();
     }
 
@@ -101,15 +101,15 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final Animation down=AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-        final Animation up= AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+        final Animation down = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
+        final Animation up = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         TextView usernameText = (TextView) view.findViewById(R.id.username);
         usernameText.setText("" + name + " " + surname);
 
-        final TextView level=(TextView) view.findViewById(R.id.level);
+        final TextView level = (TextView) view.findViewById(R.id.level);
 
         level.setText(controller.getLevel(Long.parseLong(points)));
 
@@ -118,15 +118,15 @@ public class ProfileFragment extends Fragment {
 
         final TextView losePoints = (TextView) view.findViewById(R.id.pointsSecret);
 
-        final ProgressBar levelProgress=(ProgressBar) view.findViewById(R.id.level_progress);
+        final ProgressBar levelProgress = (ProgressBar) view.findViewById(R.id.level_progress);
         levelProgress.setMax(100);
 
-        levelProgress.setProgress((int) (100*Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
+        levelProgress.setProgress((int) (100 * Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
 
         smokeOrDont();
 
         Firebase.setAndroidContext(getActivity());
-        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+ID+"/points");
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + ID + "/points");
         fire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -144,7 +144,7 @@ public class ProfileFragment extends Fragment {
                 }
                 points = snapshot.getValue().toString();
                 showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
-                levelProgress.setProgress((int) (100*Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
+                levelProgress.setProgress((int) (100 * Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
                 level.setText(controller.getLevel(Long.parseLong(points)));
             }
 
@@ -153,10 +153,10 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        CircularImageView profilepic=(CircularImageView) view.findViewById(R.id.profilepic);
+        CircularImageView profilepic = (CircularImageView) view.findViewById(R.id.profilepic);
         Picasso.with(getActivity().getApplicationContext()).load(imageURL).into(profilepic);
 
-        final TextView timerText= (TextView) view.findViewById(R.id.timer);
+        final TextView timerText = (TextView) view.findViewById(R.id.timer);
 
         final DecoView arcHours = (DecoView) view.findViewById(R.id.circle_hours);
         final DecoView arcMinutes = (DecoView) view.findViewById(R.id.circle_minutes);
@@ -214,16 +214,16 @@ public class ProfileFragment extends Fragment {
         arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
         arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
 
-        uiUpdated= new BroadcastReceiver() {
+        uiUpdated = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //This is the part where I get the timer value from the service and I update it every second, because I send the data from the service every second. The coundtdownTimer is a MenuItem
-                long millisUntilFinished=intent.getExtras().getLong("countdown");
+                long millisUntilFinished = intent.getExtras().getLong("countdown");
                 setTimer(timerText, millisUntilFinished);
 
-                long hours= millisUntilFinished/3600000;
-                long minutes = (millisUntilFinished - (hours*3600000))/60000;
-                long seconds = (millisUntilFinished - (hours*3600000)-(minutes*60000))/1000;
+                long hours = millisUntilFinished / 3600000;
+                long minutes = (millisUntilFinished - (hours * 3600000)) / 60000;
+                long seconds = (millisUntilFinished - (hours * 3600000) - (minutes * 60000)) / 1000;
 
                 arcHours.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
                 arcMinutes.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
@@ -235,45 +235,45 @@ public class ProfileFragment extends Fragment {
         getActivity().startService(new Intent(getActivity(), ScheduleService.class));
         getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
 
-        Button smoke=(Button) view.findViewById(R.id.smoke);
+        Button smoke = (Button) view.findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                            switch (which) {
+                        switch (which) {
 
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    DatabaseHandler dbh = new DatabaseHandler(getActivity());
-                                    controller.updatePoints(-50);
+                            case DialogInterface.BUTTON_POSITIVE:
+                                DatabaseHandler dbh = new DatabaseHandler(getActivity());
+                                controller.updatePoints(-50);
 
-                                    settings.edit().putLong("points", Long.parseLong(points) - 50).apply();
-                                    settings.edit().putLong("weekPoints", settings.getLong("weekPoints", 0) - 50).apply();
-                                    settings.edit().putLong("dayPoints", settings.getLong("dayPoints", 0) - 50).apply();
+                                settings.edit().putLong("points", Long.parseLong(points) - 50).apply();
+                                settings.edit().putLong("weekPoints", settings.getLong("weekPoints", 0) - 50).apply();
+                                settings.edit().putLong("dayPoints", settings.getLong("dayPoints", 0) - 50).apply();
 
-                                    MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
-                                    DateTime date = new DateTime(new Instant());
-                                    dbh.addCigarette(new Cigarette(1, date, "smoke"));
+                                MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
+                                DateTime date = new DateTime(new Instant());
+                                dbh.addCigarette(new Cigarette(1, date, "smoke"));
 
-                                    Intent i = new Intent("SMOKE_OUTOFTIME");
-                                    i.putExtra("time", dt);
-                                    getActivity().sendBroadcast(i);
+                                Intent i = new Intent("SMOKE_OUTOFTIME");
+                                i.putExtra("time", dt);
+                                getActivity().sendBroadcast(i);
 
-                                    break;
+                                break;
 
-                                case DialogInterface.BUTTON_NEGATIVE:
+                            case DialogInterface.BUTTON_NEGATIVE:
 
-                                    break;
-                            }
+                                break;
                         }
-                    };
+                    }
+                };
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener).show();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure? You will lose 50 points!!").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+            }
         });
 
         return view;
@@ -282,7 +282,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
     @Override
@@ -291,102 +290,95 @@ public class ProfileFragment extends Fragment {
         getActivity().unregisterReceiver(uiUpdated);
     }
 
-    public void setTimer(TextView timerText,long millis){
+    public void setTimer(TextView timerText, long millis) {
 
-        long hours= millis/3600000;
-        long minutes = (millis - (hours*3600000))/60000;
-        long seconds = (millis - (hours*3600000)-(minutes*60000))/1000;
+        long hours = millis / 3600000;
+        long minutes = (millis - (hours * 3600000)) / 60000;
+        long seconds = (millis - (hours * 3600000) - (minutes * 60000)) / 1000;
 
-        if(hours>=10){
-            if(minutes>=10){
-                if(seconds>=10){
+        if (hours >= 10) {
+            if (minutes >= 10) {
+                if (seconds >= 10) {
 
-                    timerText.setText(hours+":"+minutes+":"+seconds);
+                    timerText.setText(hours + ":" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText(hours + ":" + minutes + ":0" + seconds);
                 }
-                else{
+            } else {
 
-                    timerText.setText(hours+":"+minutes+":0"+seconds);
-                }
-            }
-            else{
+                if (seconds >= 10) {
 
-                if(seconds>=10){
+                    timerText.setText(hours + ":0" + minutes + ":" + seconds);
+                } else {
 
-                    timerText.setText(hours+":0"+minutes+":"+seconds);
-                }
-                else{
-
-                    timerText.setText(hours+":0"+minutes+":0"+seconds);
+                    timerText.setText(hours + ":0" + minutes + ":0" + seconds);
                 }
             }
-        }
-        else{
+        } else {
 
-            if(minutes>=10){
-                if(seconds>=10){
+            if (minutes >= 10) {
+                if (seconds >= 10) {
 
-                    timerText.setText("0"+hours+":"+minutes+":"+seconds);
+                    timerText.setText("0" + hours + ":" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText("0" + hours + ":" + minutes + ":0" + seconds);
                 }
-                else{
+            } else {
 
-                    timerText.setText("0"+hours+":"+minutes+":0"+seconds);
-                }
-            }
-            else{
+                if (seconds >= 10) {
 
-                if(seconds>=10){
+                    timerText.setText("0" + hours + ":0" + minutes + ":" + seconds);
+                } else {
 
-                    timerText.setText("0"+hours+":0"+minutes+":"+seconds);
-                }
-                else{
-
-                    timerText.setText("0"+hours+":0"+minutes+":0"+seconds);
+                    timerText.setText("0" + hours + ":0" + minutes + ":0" + seconds);
                 }
             }
         }
     }
 
-    private void smokeOrDont(){
+    private void smokeOrDont() {
 
-        if(gain!=0) {
-            gain=0;
+        if (gain != 0) {
+            gain = 0;
         }
-        if(getActivity().getIntent().getExtras()!=null) {
+        if (getActivity().getIntent().getExtras() != null) {
 
             gain = getActivity().getIntent().getExtras().getInt("points", 0);
             getActivity().getIntent().removeExtra("points");
         }
 
-        if(gain!=0) {
+        if (gain != 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    long points=settings.getLong("points", 0);
-                    long daypoints=settings.getLong("dayPoints", 0);
-                    long weekpoints=settings.getLong("weekPoints", 0);
+                    long points = settings.getLong("points", 0);
+                    long daypoints = settings.getLong("dayPoints", 0);
+                    long weekpoints = settings.getLong("weekPoints", 0);
                     SharedPreferences.Editor editor = settings.edit();
-                    DatabaseHandler dbh=new DatabaseHandler(getActivity());
+                    DatabaseHandler dbh = new DatabaseHandler(getActivity());
                     DateTime date;
 
-                    switch (which){
+                    switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
 
-                            gain=gain*2;
-                            editor.putLong("dayPoints",daypoints+gain);
+                            gain = gain * 2;
+                            editor.putLong("dayPoints", daypoints + gain);
                             editor.putLong("weekPoints", weekpoints + gain);
                             editor.putLong("points", points + gain);
                             editor.commit();
 
                             controller.updatePoints(gain);
 
-                            date=new DateTime(new Instant());
+                            date = new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
 
-                            editor.putLong("points", points+gain);
+                            editor.putLong("points", points + gain);
                             editor.putLong("dayPoints", daypoints + gain);
                             editor.putLong("weekPoints", weekpoints + gain);
                             editor.commit();

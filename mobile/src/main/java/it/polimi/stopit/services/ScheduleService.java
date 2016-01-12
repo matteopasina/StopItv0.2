@@ -95,6 +95,7 @@ public class ScheduleService extends Service {
 
         controller.checkChallenges();
         controller.checkAccepted();
+        controller.checkGiveUp();
 
     }
 

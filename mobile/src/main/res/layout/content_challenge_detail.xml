@@ -44,6 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="#000"
+                android:shadowColor="@color/shadows"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_below="@+id/yourPic"
                 android:layout_marginTop="30dp" />
@@ -53,6 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="#000"
+                android:shadowColor="@color/shadows"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_below="@+id/you"
                 android:layout_marginTop="30dp" />
@@ -108,6 +112,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="#000"
+                android:shadowColor="@color/shadows"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_below="@+id/opponentPic"
                 android:layout_marginTop="30dp" />
@@ -117,6 +123,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="#000"
+                android:shadowColor="@color/shadows"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_below="@+id/vsName"
                 android:layout_marginTop="30dp" />
@@ -130,6 +138,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
+        android:textColor="#000"
+        android:shadowColor="@color/shadows"
         android:layout_marginTop="30dp" />
 
     <TextView
@@ -138,6 +148,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/linear"
+        android:textColor="#000"
+        android:shadowColor="@color/shadows"
         android:layout_marginTop="30dp" />
 
     <ProgressBar
@@ -152,8 +164,8 @@
 
     <Button
         android:id="@+id/give_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@+id/timeLeft"
         android:layout_centerInParent="true"
         android:textColor="#07A"
