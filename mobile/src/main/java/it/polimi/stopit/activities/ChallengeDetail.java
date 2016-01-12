@@ -79,7 +79,7 @@ public class ChallengeDetail extends AppCompatActivity {
             fireChallenge.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child("over").toString().equals("true") && dataSnapshot.child("giveup").exists()) {
+                    if (dataSnapshot.child("giveup").exists()) {
                         challenge.setOver(true);
                         challenge.setWon(true);
                         dbh.updateChallenge(challenge);

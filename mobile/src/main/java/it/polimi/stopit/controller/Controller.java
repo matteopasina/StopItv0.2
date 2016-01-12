@@ -485,8 +485,8 @@ public class Controller {
 
                             fire.child(settings.getString("ID", null)).removeValue();
                         }else if(accepted.child("declined").exists()){
-                            System.out.println(accepted.child("declined").getValue());
-                            //db.deleteChallengeByOpponentId(accepted.getKey());
+
+                            db.deleteChallengeByOpponentId(accepted.child("declined").getValue().toString());
                             Controller controller = new Controller(context);
                             controller.sendCustomNotification("Challenge declined", ":(");
                         }
