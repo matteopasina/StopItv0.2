@@ -513,41 +513,44 @@ public class Controller {
         fire.addValueEventListener(new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
                     //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
-                    if (snapshot.getChildrenCount() == 2) {
+                    if (dataSnapshot.getChildrenCount() != 0) {
 
-                        for (final DataSnapshot children : snapshot.getChildren()) {
+                        for (final DataSnapshot children : dataSnapshot.getChildren()) {
+                            if(children.getChildrenCount() == 2) {
+                                final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
-                            final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
+                                fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
 
-                            fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot snapshot) {
-
-                                    //costruisci testo notifica
-                                    String opponent = snapshot.child("name").getValue().toString() + " " +
-                                            snapshot.child("surname").getValue().toString();
-
-
-                                    //manda notifica
-                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
+                                        System.out.println("challenged");
+                                        //costruisci testo notifica
+                                        String opponent = snapshot.child("name").getValue().toString() + " " +
+                                                snapshot.child("surname").getValue().toString();
 
 
-                                    //aggiungi challenge al DB dello sfidato
-                                    db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
-                                            , children.child("opponent").getValue().toString(), 0, 0, 0,
-                                            (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));
-                                }
+                                        //manda notifica
+                                        sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
 
-                                @Override
-                                public void onCancelled(FirebaseError firebaseError) {
-                                }
-                            });
+
+                                        //aggiungi challenge al DB dello sfidato
+                                        db.addChallenge(new Challenge(children.child("opponent").getValue().toString()
+                                                , children.child("opponent").getValue().toString(), 0, 0, 0,
+                                                (long) children.child("duration").getValue() * 86400000, "false", "false", "false", "false"));
+                                    }
+
+                                    @Override
+                                    public void onCancelled(FirebaseError firebaseError) {
+                                    }
+                                });
+                            }
 
                         }
-                        fire.child(settings.getString("ID", null)).removeValue();
+
+                        fire.removeValue();
                     }
             }
 
@@ -569,6 +572,7 @@ public class Controller {
                     challenge.setWon(true);
                     db.updateChallenge(challenge);
                     sendCustomNotification(dataSnapshot.child("name").getValue().toString() + " resigned!", "You won the challenge");
+                    fireChallenge.removeValue();
                 }
             }
 
