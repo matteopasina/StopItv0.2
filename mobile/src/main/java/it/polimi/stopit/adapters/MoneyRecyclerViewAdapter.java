@@ -48,7 +48,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
         holder.targetPic.setImageResource(target.getImageResource());
         holder.targetPic.setTag(target.getImageResource());
         holder.targetName.setText(target.getName());
-        holder.setIsRecyclable(false);
+
         holder.mView.setSelected(selectedPos == position);
 
         if(holder.mView.isSelected()){
@@ -57,7 +57,7 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
 
         }else{
 
-            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.TRANSPARENT);
+            holder.mView.findViewById(R.id.target_image).setBackgroundColor(Color.parseColor("#FFFFFF"));
             holder.mView.clearAnimation();
         }
 
