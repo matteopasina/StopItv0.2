@@ -211,8 +211,6 @@ public class NavigationActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.profile, menu);
 
         TextView sidename = (TextView) findViewById(R.id.sideName);
         TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
@@ -228,18 +226,6 @@ public class NavigationActivity extends AppCompatActivity
         Picasso.with(getApplicationContext()).load(user.getProfilePic()).into(sidebarpic);
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
