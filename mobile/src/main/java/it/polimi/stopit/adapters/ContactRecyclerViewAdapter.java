@@ -83,9 +83,9 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         @Override
         public void onClick(final View view) {
             DatabaseHandler dbh=new DatabaseHandler(mView.getContext());
-            dbh.getAllChallengesNotOver();
+            dbh.getActiveChallenges();
             boolean singleChallenge=true;
-            for(Challenge challenge : dbh.getAllChallengesNotOver()){
+            for(Challenge challenge : dbh.getActiveChallenges()){
                 if(challenge.getOpponentID().equals(mContacts.get(getLayoutPosition()).getID()))
                 {
                     singleChallenge=false;

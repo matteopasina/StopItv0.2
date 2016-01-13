@@ -431,7 +431,7 @@ public class Controller {
 
 
         //per ogni challenge aggiorna i punti su firebase e in locale
-        List<Challenge> challengeList = db.getAllChallenges();
+        List<Challenge> challengeList = db.getActiveChallenges();
 
         for (Challenge challenge : challengeList) {
             if (challenge.isAccepted()) {

@@ -501,7 +501,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return challengeList;
     }
 
-    public List<Challenge> getAllChallengesNotOver() {
+    public List<Challenge> getActiveChallenges() {
 
         List<Challenge> challengeList = new ArrayList<>();
 
@@ -680,8 +680,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         values.put(CHALLENGE_WON, won);
 
         // updating row
-        return db.update(TABLE_CHALLENGES, values, CHALLENGE_OPPONENTID + " = ?",
-                new String[] { challenge.getOpponentID() });
+        return db.update(TABLE_CHALLENGES, values, CHALLENGE_OPPONENTID + " = ?" + " and " + CHALLENGE_OVER + " =?",
+                new String[] { challenge.getOpponentID(),"false" });
     }
 
     public int updateAchievement(Achievement achievement) {
