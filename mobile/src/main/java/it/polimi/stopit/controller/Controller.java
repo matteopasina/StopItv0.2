@@ -752,7 +752,7 @@ public class Controller {
 
         alternativeChoosen = alternativeActivityList.get((int) listWeight.get(new Random().nextInt(listWeight.size())));
 
-        sendAlternativeNotification(alternativeChoosen,points);
+        sendAlternativeNotification(alternativeChoosen, points);
         return true;
     }
 
@@ -760,14 +760,14 @@ public class Controller {
 
         long[] levelsXP = new long[99];
 
-        long difference = 500;
-        long xp = 500;
+        long difference = 1000;
+        long xp = 1000;
 
         for (int i = 0; i < 99; i++) {
 
-            xp += difference;
             levelsXP[i] = xp;
-            difference += 10;
+            xp += difference;
+            difference += 100;
         }
 
         return levelsXP;
@@ -863,11 +863,11 @@ public class Controller {
 
             if (levelsXP[i] < points && levelsXP[i + 1] > points) {
 
-                return (points + "/" + levelsXP[i + 1] + "  points");
+                return ((points-levelsXP[i]) + " / " + (levelsXP[i + 1]-levelsXP[i]) + "  points");
 
             } else if (levelsXP[i] == points) {
 
-                return (points + "/" + levelsXP[i] + "  points");
+                return ("0 / " + (levelsXP[i + 1]-levelsXP[i]) + "  points");
 
             } else if (levelsXP[98] < points) {
 
@@ -893,15 +893,15 @@ public class Controller {
 
             if (levelsXP[i] < points && levelsXP[i + 1] > points) {
 
-                return levelsXP[i + 1];
+                return levelsXP[i + 1]-levelsXP[i];
 
             } else if (levelsXP[i] == points) {
 
-                return levelsXP[i];
+                return levelsXP[i]-levelsXP[i+1];
 
             } else if (levelsXP[98] < points) {
 
-                levelpoints = levelsXP[98];
+                levelpoints = levelsXP[98]-levelsXP[97];
 
             } else if (levelsXP[0] > points) {
 
@@ -910,6 +910,34 @@ public class Controller {
         }
 
         return levelpoints;
+    }
+
+    public long getPointsLevel(long points) {
+
+        long[] levelsXP = getLevelXPs();
+        long pointslevel = 0;
+
+        for (int i = 0; i < 98; i++) {
+
+            if (levelsXP[i] < points && levelsXP[i + 1] > points) {
+
+                return points-levelsXP[i];
+
+            } else if (levelsXP[i] == points) {
+
+                return 0;
+
+            } else if (levelsXP[98] < points) {
+
+                pointslevel = points;
+
+            } else if (levelsXP[0] > points) {
+
+                pointslevel = points;
+            }
+        }
+
+        return pointslevel;
     }
 
     public ArrayList<User> addTestContacts(ArrayList<User> contacts){

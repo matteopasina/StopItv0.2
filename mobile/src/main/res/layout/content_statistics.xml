@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="100dp"
+    android:paddingTop="85dp"
     tools:context="it.polimi.stopit.activities.StatisticsActivity"
     tools:showIn="@layout/activity_statistics">
 
@@ -14,9 +14,9 @@
 
             <ImageView
                 android:id="@+id/total_points_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="35dp"
                 android:background="@drawable/redstar" />
 
             <TextView
@@ -24,16 +24,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="19dp"
                 android:layout_toEndOf="@id/total_points_img"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/cig_avoided_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="15dp"
                 android:layout_below="@id/total_points_img"
                 android:background="@drawable/cig_avoided" />
 
@@ -42,18 +42,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="50dp"
                 android:layout_below="@id/total_points"
                 android:layout_toEndOf="@id/cig_avoided_img"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/money_saved_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_below="@id/cig_avoided_img"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/coins" />
 
             <TextView
@@ -62,17 +62,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cig_avoided"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="46dp"
+                android:layout_marginTop="51dp"
                 android:layout_toEndOf="@id/money_saved_img"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/challenge_won_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_below="@id/money_saved_img"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/challengewon" />
 
             <TextView
@@ -81,17 +81,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/money_saved"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="46dp"
+                android:layout_marginTop="50dp"
                 android:layout_toEndOf="@id/challenge_won_img"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/moneytarget_completed_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_below="@id/challenge_won_img"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/moneybox" />
 
             <TextView
@@ -100,17 +100,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/challenge_won"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="46dp"
+                android:layout_marginTop="50dp"
                 android:layout_toEndOf="@id/moneytarget_completed_img"
                 android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/health_saved_img"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_below="@id/moneytarget_completed_img"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/health" />
 
             <TextView
@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/moneytarget_completed"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="50dp"
                 android:layout_toEndOf="@id/health_saved_img"
                 android:textSize="18sp" />
 

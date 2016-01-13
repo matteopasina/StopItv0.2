@@ -30,7 +30,7 @@
                     app:shadow="true"
                     app:shadow_radius="5"
                     app:shadow_color="@color/shadows"
-                    android:layout_marginTop="30dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"/>
 
                 <TextView
@@ -81,9 +81,9 @@
 
                 <ProgressBar
                     android:id="@+id/level_progress"
-                    android:layout_width="120dp"
-                    android:layout_height="5dp"
-                    android:background="#E1F5FE"
+                    android:layout_width="150dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_marginTop="5dp"
                     android:layout_toEndOf="@id/profilepic"

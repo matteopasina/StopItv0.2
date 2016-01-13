@@ -121,7 +121,8 @@ public class ProfileFragment extends Fragment {
         final ProgressBar levelProgress = (ProgressBar) view.findViewById(R.id.level_progress);
         levelProgress.setMax(100);
 
-        levelProgress.setProgress((int) (100 * Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
+        int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+        levelProgress.setProgress(progress);
 
         smokeOrDont();
 
@@ -144,7 +145,8 @@ public class ProfileFragment extends Fragment {
                 }
                 points = snapshot.getValue().toString();
                 showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
-                levelProgress.setProgress((int) (100 * Long.parseLong(points) / controller.getLevelPoints(Long.parseLong(points))));
+                int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+                levelProgress.setProgress(progress);
                 level.setText(controller.getLevel(Long.parseLong(points)));
             }
 
