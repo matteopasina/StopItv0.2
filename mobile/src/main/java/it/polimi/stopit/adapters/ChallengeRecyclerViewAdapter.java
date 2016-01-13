@@ -123,7 +123,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         public void onClick(final View view) {
 
             final DatabaseHandler dbh = new DatabaseHandler(view.getContext());
-            final Challenge challenge = dbh.getChallengeByOpponentID(mChallenges.get(getLayoutPosition()).getOpponentID());
+            final Challenge challenge = dbh.getActiveChallengeByOpponentID(mChallenges.get(getLayoutPosition()).getOpponentID());
             final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
 
             if (!challenge.isAccepted()) {

@@ -418,6 +418,26 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
+    public Challenge getActiveChallengeByOpponentID(String id){
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CHALLENGES, new String[] { CHALLENGE_ID,
+                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS,CHALLENGE_OPPONENT_POINTS,CHALLENGE_START_TIME,CHALLENGE_END_TIME,
+                        CHALLENGE_ACCEPTED,CHALLENGE_CHALLENGER,CHALLENGE_OVER,CHALLENGE_WON}, CHALLENGE_OPPONENTID + "=?"+
+                        " and " + CHALLENGE_OVER + "=?",
+                new String[] { id, "false" }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
+
+        return challenge;
+
+    }
+
     // GET ALL ROWS
 
     public List<Achievement> getAllAchievements() {
