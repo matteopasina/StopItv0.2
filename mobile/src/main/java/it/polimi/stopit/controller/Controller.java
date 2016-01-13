@@ -226,9 +226,11 @@ public class Controller {
         } else {
             currentTarget.setMoneySaved(newMoney);
 
-            if (moneySaved > 0) {
-                currentTarget.setDuration(currentTarget.getDuration() - 1);
-            }
+            int cigcost=Integer.parseInt(settings.getString("cigcost",null));
+
+            int duration=(int)(currentTarget.getMoneyAmount()-currentTarget.getMoneySaved())/(currentTarget.getCigReduced()*cigcost);
+
+            currentTarget.setDuration(duration);
 
         }
 
