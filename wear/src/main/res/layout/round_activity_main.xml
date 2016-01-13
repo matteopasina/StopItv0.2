@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polimi.stopit.activities.MainActivity"
+    tools:deviceIds="wear_round">
+
+    <ImageView
+        android:id="@+id/leaderboard_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_above="@id/challenge_img"
+        android:background="@drawable/icon_challenges"/>
+    <TextView
+        android:id="@+id/leaderboard_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/leaderboard_img"
+        android:layout_above="@id/challenge_text"
+        android:layout_marginBottom="30dp"
+        android:text="Leaderboard" />
+
+    <ImageView
+        android:id="@+id/challenge_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/icon_challenges"/>
+    <TextView
+        android:id="@+id/challenge_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/challenge_img"
+        android:layout_centerVertical="true"
+        android:text="Challenges" />
+
+    <ImageView
+        android:id="@+id/achievements_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@id/challenge_img"
+        android:background="@drawable/icon_challenges"/>
+    <TextView
+        android:id="@+id/achivements_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_toEndOf="@id/achievements_img"
+        android:layout_below="@id/challenge_text"
+        android:text="Achievements" />
+
+</RelativeLayout>
