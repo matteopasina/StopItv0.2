@@ -385,13 +385,13 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
-    public AlternativeActivity getAlternative(int id) {
+    public AlternativeActivity getAlternative(String title) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ALTERNATIVE_ACTIVITIES, new String[] { ALTERNATIVE_ID,
-                        ALTERNATIVE_TITLE, ALTERNATIVE_DESCRIPTION, ALTERNATIVE_CATEGORY,ALTERNATIVE_BONUSPOINTS,ALTERNATIVE_FREQUENCY,ALTERNATIVE_IMAGE }, ALTERNATIVE_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+                        ALTERNATIVE_TITLE, ALTERNATIVE_DESCRIPTION, ALTERNATIVE_CATEGORY,ALTERNATIVE_BONUSPOINTS,ALTERNATIVE_FREQUENCY,ALTERNATIVE_IMAGE }, ALTERNATIVE_TITLE + "=?",
+                new String[] { title }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 

@@ -555,7 +555,7 @@ public class Controller {
 
                                     //manda notifica
                                     sendNotificationChallenge(opponent, children.child("opponent").getValue().toString()
-                                            ,snapshot.child("profilePic").getValue().toString());
+                                            , snapshot.child("profilePic").getValue().toString());
 
 
                                     //aggiungi challenge al DB dello sfidato
@@ -609,7 +609,7 @@ public class Controller {
     public void sendNotificationChallenge(String opponent, String ID, String urlImage) {
 
         Bitmap largeIcon = getBitmapFromURL(urlImage);
-        largeIcon=getCircleBitmap(largeIcon);
+        largeIcon = getCircleBitmap(largeIcon);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -685,7 +685,7 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
-    public void sendAlternativeNotification(AlternativeActivity alternativeActivity) {
+    public void sendAlternativeNotification(AlternativeActivity alternativeActivity,int points) {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), alternativeActivity.getImage());
 
@@ -697,7 +697,8 @@ public class Controller {
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("points", alternativeActivity.getBonusPoints());
+        resultIntent.putExtra("alternative",alternativeActivity.getTitle());
+        resultIntent.putExtra("points", points);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -721,7 +722,7 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
-    public boolean sendAlternative() {
+    public boolean sendAlternative(int points) {
 
         List<AlternativeActivity> alternativeActivityList = db.getAllAlternative();
         List<AlternativeActivity> alternativeActivityListCandidate = new ArrayList<AlternativeActivity>();
@@ -750,7 +751,7 @@ public class Controller {
 
         alternativeChoosen = alternativeActivityList.get((int) listWeight.get(new Random().nextInt(listWeight.size())));
 
-        sendAlternativeNotification(alternativeChoosen);
+        sendAlternativeNotification(alternativeChoosen,points);
         return true;
     }
 
