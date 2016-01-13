@@ -349,7 +349,59 @@ public class ProfileFragment extends Fragment {
             getActivity().getIntent().removeExtra("points");
         }
 
-        if (gain != 0) {
+        if(getActivity().getIntent().hasExtra("alternative")){
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    long points = settings.getLong("points", 0);
+                    long daypoints = settings.getLong("dayPoints", 0);
+                    long weekpoints = settings.getLong("weekPoints", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    DatabaseHandler dbh = new DatabaseHandler(getActivity());
+                    DateTime date;
+
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+
+                            int bonus=dbh.getAlternative(getActivity().getIntent().getExtras().getString("alternative")).getBonusPoints();
+                            editor.putLong("dayPoints", daypoints + bonus);
+                            editor.putLong("weekPoints", weekpoints + bonus);
+                            editor.putLong("points", points + bonus);
+                            editor.commit();
+
+                            controller.updatePoints(bonus);
+
+                            date = new DateTime(new Instant());
+                            dbh.addCigarette(new Cigarette(1, date, "smoke"));
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            editor.putLong("points", points + gain);
+                            editor.putLong("dayPoints", daypoints + gain);
+                            editor.putLong("weekPoints", weekpoints + gain);
+                            editor.commit();
+
+                            controller.updatePoints(gain);
+
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Choose")
+                    .setCancelable(false)
+                    .setMessage("Do the activity and you will get bonus points!")
+                    .setPositiveButton("Alternative!", dialogClickListener)
+                    .setNegativeButton("smoke", dialogClickListener)
+                    .setIcon(R.drawable.stopitsymbol)
+                    .show();
+        }
+
+        else if (gain != 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

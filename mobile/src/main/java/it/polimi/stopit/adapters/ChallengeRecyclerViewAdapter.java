@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.MutableDateTime;
@@ -62,21 +62,20 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             public void onDataChange(DataSnapshot snapshot) {
 
                 holder.opponentName.setText(snapshot.child(challenge.getOpponentID()).child("name").getValue().toString());
-                Picasso.with(context).load(snapshot.child(challenge.getOpponentID()).child("profilePic").getValue().toString())
-                        .into(holder.opponentImg);
+                Picasso.with(context).load(snapshot.child(challenge.getOpponentID()).child("profilePic").getValue().toString()).into(holder.opponentImg);
                 if(!challenge.isAccepted()) {
 
                     holder.challengeDuration.setText("Pending");
+                    holder.challengeProgress.setProgress(0);
 
                 }else{
 
                     MutableInterval duration=new MutableInterval();
                     duration.setInterval(challenge.getStartTime(), challenge.getEndTime());
                     holder.challengeDuration.setText(String.valueOf(duration.toDuration().getStandardDays()));
-
+                    MutableDateTime time=new MutableDateTime();
+                    holder.challengeProgress.setProgress((int)(100 * ((challenge.getStartTime()-time.getMillis()) / (challenge.getEndTime()-challenge.getStartTime()))));
                 }
-                holder.challengeProgress.setProgress(0);
-
             }
 
             @Override
@@ -97,7 +96,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
         public final TextView opponentName;
         public final TextView challengeDuration;
         public final TextView daysRemaining;
-        public final ImageView opponentImg;
+        public final CircularImageView opponentImg;
         public final ProgressBar challengeProgress;
 
 
@@ -107,7 +106,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             opponentName = (TextView) view.findViewById(R.id.opponent_name);
             challengeDuration = (TextView) view.findViewById(R.id.challenge_duration);
             daysRemaining = (TextView) view.findViewById(R.id.challenge_days_remaining);
-            opponentImg = (ImageView) view.findViewById(R.id.opponent_image);
+            opponentImg = (CircularImageView) view.findViewById(R.id.opponent_image);
             challengeProgress=(ProgressBar)view.findViewById(R.id.challenge_progress);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);

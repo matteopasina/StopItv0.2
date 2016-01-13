@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     android:orientation="vertical">
 
@@ -19,10 +20,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/opponent_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                app:border_color="#EEEEEE"
+                app:border_width="0dp"
+                app:shadow="true"
+                app:shadow_radius="5"
+                app:shadow_color="@color/shadows"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
@@ -47,10 +53,11 @@
                 <ProgressBar
                     android:id="@+id/challenge_progress"
                     android:layout_width="100dp"
-                    android:layout_height="5dp"
-                    android:background="#E1F5FE"
+                    android:layout_height="10dp"
+                    android:backgroundTint="@color/colorAccent"
+                    android:progressBackgroundTint="#999"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="20dp"
                     android:layout_below="@+id/opponent_name" />
 
             </LinearLayout>
