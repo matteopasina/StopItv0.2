@@ -8,6 +8,21 @@
     tools:deviceIds="wear_square">
 
     <ImageView
+        android:id="@+id/challenge_img"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/icon_challenges"/>
+    <TextView
+        android:id="@+id/challenge_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/challenge_img"
+        android:layout_centerVertical="true"
+        android:text="Challenges" />
+
+    <ImageView
         android:id="@+id/leaderboard_img"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -22,21 +37,6 @@
         android:layout_above="@id/challenge_text"
         android:layout_marginBottom="30dp"
         android:text="Leaderboard" />
-
-    <ImageView
-        android:id="@+id/challenge_img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="30dp"
-        android:layout_centerVertical="true"
-        android:background="@drawable/icon_challenges"/>
-    <TextView
-        android:id="@+id/challenge_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/challenge_img"
-        android:layout_centerVertical="true"
-        android:text="Challenges" />
 
     <ImageView
         android:id="@+id/achievements_img"

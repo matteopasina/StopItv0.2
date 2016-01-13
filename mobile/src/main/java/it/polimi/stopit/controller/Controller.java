@@ -6,6 +6,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -19,6 +28,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -226,9 +239,9 @@ public class Controller {
         } else {
             currentTarget.setMoneySaved(newMoney);
 
-            int cigcost=Integer.parseInt(settings.getString("cigcost",null));
+            int cigcost = Integer.parseInt(settings.getString("cigcost", null));
 
-            int duration=(int)(currentTarget.getMoneyAmount()-currentTarget.getMoneySaved())/(currentTarget.getCigReduced()*cigcost);
+            int duration = (int) (currentTarget.getMoneyAmount() - currentTarget.getMoneySaved()) / (currentTarget.getCigReduced() * cigcost);
 
             currentTarget.setDuration(duration);
 
@@ -375,39 +388,6 @@ public class Controller {
 
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime,
                 duration, pi);
-    }
-
-    public void sendCustomNotification(String title, String text) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.stopitsymbol)
-                        .setContentTitle(title)
-                        .setContentText(text)
-                        .setAutoCancel(true);
-
-        Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("redirect", "challenges");
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        int notificationID = NotificationID.getID();
-        mNM.notify(notificationID, mBuilder.build());
     }
 
     public void updatePoints(final long points) {
@@ -574,7 +554,8 @@ public class Controller {
 
 
                                     //manda notifica
-                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString());
+                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString()
+                                            ,snapshot.child("profilePic").getValue().toString());
 
 
                                     //aggiungi challenge al DB dello sfidato
@@ -625,18 +606,20 @@ public class Controller {
         });
     }
 
-    public void sendNotificationChallenge(String opponent, String ID) {
+    public void sendNotificationChallenge(String opponent, String ID, String urlImage) {
+
+        Bitmap largeIcon = getBitmapFromURL(urlImage);
+        largeIcon=getCircleBitmap(largeIcon);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle(opponent + " challenged you!")
-                        .setContentText("Smash his ass!")
+                        .setContentText("Begin the challenge!")
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-
-        resultIntent.putExtra("IDopponent", ID);
         resultIntent.putExtra("redirect", "challenges");
 
         // The stack builder object will contain an artificial back stack for the
@@ -663,6 +646,79 @@ public class Controller {
         // Builds the notification and issues it.
         mNM.notify(NotificationID.getID(), mBuilder.build());
 
+    }
+
+    public void sendCustomNotification(String title, String text) {
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.stopitsymbol);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.stopitsymbollollipop)
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+        resultIntent.putExtra("redirect", "challenges");
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        int notificationID = NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
+    }
+
+    public void sendAlternativeNotification(AlternativeActivity alternativeActivity) {
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), alternativeActivity.getImage());
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setLargeIcon(largeIcon)
+                        .setContentTitle(alternativeActivity.getTitle())
+                        .setContentText(alternativeActivity.getDescription())
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+        resultIntent.putExtra("points", alternativeActivity.getBonusPoints());
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(NavigationActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        int notificationID = NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
     }
 
     public boolean sendAlternative() {
@@ -696,39 +752,6 @@ public class Controller {
 
         sendAlternativeNotification(alternativeChoosen);
         return true;
-    }
-
-    public void sendAlternativeNotification(AlternativeActivity alternativeActivity) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(alternativeActivity.getImage())
-                        .setContentTitle(alternativeActivity.getTitle())
-                        .setContentText(alternativeActivity.getDescription())
-                        .setAutoCancel(true);
-
-        Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("points", alternativeActivity.getBonusPoints());
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        int notificationID = NotificationID.getID();
-        mNM.notify(notificationID, mBuilder.build());
     }
 
     public long[] getLevelXPs() {
@@ -885,6 +908,48 @@ public class Controller {
         }
 
         return levelpoints;
+    }
+
+    public String challengeWonLost() {
+        return (db.getAllWonChallenges().size() + "/" + db.getAllChallenges().size());
+    }
+
+    public Bitmap getBitmapFromURL(String strURL) {
+        try {
+            URL url = new URL(strURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Bitmap getCircleBitmap(Bitmap bitmap) {
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
     }
 
 }

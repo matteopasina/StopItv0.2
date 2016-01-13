@@ -501,6 +501,27 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         return challengeList;
     }
 
+    public List<Challenge> getAllWonChallenges() {
+
+        List<Challenge> challengeList = new ArrayList<>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CHALLENGES + " WHERE " + CHALLENGE_WON + " = 'true' ";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Challenge challenge = new Challenge(cursor.getString(0),cursor.getString(1),cursor.getLong(2),cursor.getLong(3),cursor.getLong(4),
+                        cursor.getLong(5),cursor.getString(6),cursor.getString(7),cursor.getString(8),cursor.getString(9));
+                challengeList.add(challenge);
+
+            } while (cursor.moveToNext());
+        }
+
+        return challengeList;
+    }
+
     public List<Challenge> getActiveChallenges() {
 
         List<Challenge> challengeList = new ArrayList<>();
