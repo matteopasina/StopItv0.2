@@ -34,8 +34,6 @@ public class LeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<Leaderb
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.setIsRecyclable(false);
-
         holder.mPosition.setText("" + (position + 1));
 
         Picasso.with(holder.mProfilePic.getContext()).load(mLeaderboard.get(position).getProfilePic()).into(holder.mProfilePic);
@@ -47,6 +45,10 @@ public class LeaderboardRecyclerViewAdapter extends RecyclerView.Adapter<Leaderb
         if(mLeaderboard.get(position).getID().equals(Profile.getCurrentProfile().getId())){
 
             holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#039BE5"));
+
+        }else{
+
+            holder.mView.findViewById(R.id.card_view).setBackgroundColor(Color.parseColor("#EEEEEE"));
         }
 
     }

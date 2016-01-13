@@ -1,9 +1,9 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
-
     <header
         android:fragment="it.polimi.stopit.activities.SettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_setting_light"
-        android:title="@string/pref_header_general" />
+        android:title="@string/pref_header_general"
+        android:layout_marginTop="10dp"/>
 
     <header
         android:fragment="it.polimi.stopit.activities.SettingsActivity$AltActivitiesPreferenceFragment"

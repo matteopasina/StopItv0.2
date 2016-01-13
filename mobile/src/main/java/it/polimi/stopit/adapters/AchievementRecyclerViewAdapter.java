@@ -49,8 +49,6 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
 
         }
 
-
-
         holder.achievTitle.setText(achievement.getTitle());
         holder.achievDesc.setText(achievement.getDescription());
         holder.achievPoints.setText(""+achievement.getPoints());

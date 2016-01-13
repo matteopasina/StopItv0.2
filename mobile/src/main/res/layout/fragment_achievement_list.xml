@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="#EEEEEE">
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:layout_marginBottom="1dp"
-                card_view:cardBackgroundColor="#F64A46"
+                card_view:cardBackgroundColor="#F04439"
                 card_view:cardCornerRadius="0dp">
 
                 <RelativeLayout

@@ -51,50 +51,50 @@ public class AchievementFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_achievement_list, container, false);
 
-        mAchievements=new ArrayList<>();
-        db=new DatabaseHandler(getActivity().getApplicationContext());
+        mAchievements = new ArrayList<>();
+        db = new DatabaseHandler(getActivity().getApplicationContext());
 
-        mAchievements=db.getAllAchievements();
+        mAchievements = db.getAllAchievements();
 
-            Context context = view.getContext();
+        Context context = view.getContext();
 
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
-            RecyclerViewHeader header = (RecyclerViewHeader) view.findViewById(R.id.header);
+        RecyclerViewHeader header = (RecyclerViewHeader) view.findViewById(R.id.header);
 
-            AchievementRecyclerViewAdapter adapter=new AchievementRecyclerViewAdapter(mAchievements);
+        AchievementRecyclerViewAdapter adapter = new AchievementRecyclerViewAdapter(mAchievements);
 
-            DecoView achProgress = (DecoView) view.findViewById(R.id.achievem_progress);
+        DecoView achProgress = (DecoView) view.findViewById(R.id.achievem_progress);
 
-            DisplayMetrics dm = getResources().getDisplayMetrics();
-            float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, dm);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, dm);
 
-            achProgress.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
-                    .setRange(0, adapter.getItemCount(), adapter.getItemCount())
-                    .setInitialVisibility(true)
-                    .setSpinDuration(3000)
-                    .setLineWidth(dpInPx)
-                    .build());
+        achProgress.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
+                .setRange(0, adapter.getItemCount(), adapter.getItemCount())
+                .setInitialVisibility(true)
+                .setSpinDuration(3000)
+                .setLineWidth(dpInPx)
+                .build());
 
-            SeriesItem progress = new SeriesItem.Builder(Color.parseColor("#039BE5"))
-                    .setRange(0, adapter.getItemCount(), 0)
-                    .setLineWidth(dpInPx)
-                    .setSpinDuration(3000)
-                    .build();
+        SeriesItem progress = new SeriesItem.Builder(Color.parseColor("#039BE5"))
+                .setRange(0, adapter.getItemCount(), 0)
+                .setLineWidth(dpInPx)
+                .setSpinDuration(3000)
+                .build();
 
-            int seriesIndex = achProgress.addSeries(progress);
+        int seriesIndex = achProgress.addSeries(progress);
 
-            achProgress.addEvent(new DecoEvent.Builder(db.getAchievementsObtCount()).setIndex(seriesIndex).setDelay(500).build());
+        achProgress.addEvent(new DecoEvent.Builder(db.getAchievementsObtCount()).setIndex(seriesIndex).setDelay(500).build());
 
-            TextView unlockedDesc=(TextView) view.findViewById(R.id.unlocked);
+        TextView unlockedDesc = (TextView) view.findViewById(R.id.unlocked);
 
-            unlockedDesc.setText(db.getAchievementsObtCount()+"/"+adapter.getItemCount()+"  unlocked");
+        unlockedDesc.setText(db.getAchievementsObtCount() + "/" + adapter.getItemCount() + "  unlocked");
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            header.attachTo(recyclerView, true);
+        header.attachTo(recyclerView, true);
 
-            recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
 
         return view;
