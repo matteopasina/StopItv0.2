@@ -944,7 +944,7 @@ public class Controller {
 
         contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575")));
         contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480")));
-        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("7920"), Long.parseLong("17923"), Long.parseLong("3280")));
+        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920")));
         contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800")));
         contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340")));
         contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700")));

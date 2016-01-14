@@ -10,4 +10,5 @@
     <color name="shadows">#222</color>
     <color name="buttonBackground">#039BE5</color>
     <color name="cardHighlight">#64B5F6</color>
+    <color name="facebookColor">#3b5998</color>
 </resources>

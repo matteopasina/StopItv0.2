@@ -7,39 +7,50 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:id="@+id/imageView"
+        android:id="@+id/stopLogo"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:src="@drawable/stopitsymbol"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true" />
 
-    <TextView android:text="StopIt!" android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/stopTitle"
+        android:text="@string/title_activity_profile"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40dp"
-        android:id="@+id/textView"
-        android:layout_marginTop="170dp"
-        android:layout_marginBottom="20dp"
+        android:layout_below="@id/stopLogo"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
-        android:fontFamily="sans-serif-light"
-        android:textColor="#000000" />
+        android:textColor="@color/textColorSecondary" />
+
+    <TextView
+        android:id="@+id/slogan"
+        android:text="@string/slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:layout_below="@+id/stopTitle"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/textColorTertiary" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
         android:id="@+id/view"
-        android:layout_centerVertical="true"/>
+        android:layout_below="@+id/slogan"
+        android:layout_marginTop="35dp"/>
 
     <fragment android:name="it.polimi.stopit.fragments.FacebookLogin"
         android:id="@+id/article_fragment"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         tools:layout="@layout/fb"
         android:layout_below="@+id/view"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="75dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp" />
 
 </RelativeLayout>

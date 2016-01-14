@@ -4,6 +4,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title">StopIt</string>
     <string name="title_activity_profile">StopIt!</string>
+    <string name="slogan">stop smoking and have fun</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
