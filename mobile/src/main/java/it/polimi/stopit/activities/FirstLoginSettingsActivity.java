@@ -18,10 +18,6 @@ import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
 
-    // TODO mettere a posto i commenti ettutto
-   // private static boolean first=false,last=false;
-   // private static int hourOfDayFirst,hourOfDayLast=24,minuteFirst,minuteLast=60;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,15 +29,6 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
 
         TextView welcomeUser=(TextView) findViewById(R.id.welcome);
         welcomeUser.setText("Welcome, " + settings.getString("name", null));
-
-        DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
-        dbSeed.loadContacts();
-        dbSeed.seedMoneyCategories();
-        dbSeed.seedAlternatives();
-
-        Controller cont=new Controller(this);
-        cont.setDailyAlarm();
-        cont.setWeeklyAlarm();
 
         final TextView progressText=(TextView) findViewById(R.id.progress);
         progressText.setText("25/50");
@@ -64,7 +51,6 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
             }
         });
 
-        TextView cigCost=(TextView) findViewById(R.id.cig_cost);
         final EditText cigCostVal=(EditText) findViewById(R.id.cigcost_text);
 
         Button done=(Button) findViewById(R.id.done);
@@ -94,6 +80,15 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             editor.putString("cigcost", String.valueOf(cigCostVal.getText()));
 
                             editor.commit();
+
+                            DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
+                            dbSeed.loadContacts();
+                            dbSeed.seedMoneyCategories();
+                            dbSeed.seedAlternatives();
+
+                            Controller cont=new Controller(getBaseContext());
+                            cont.setDailyAlarm();
+                            cont.setWeeklyAlarm();
 
                             startActivity(intent);
                             finish();

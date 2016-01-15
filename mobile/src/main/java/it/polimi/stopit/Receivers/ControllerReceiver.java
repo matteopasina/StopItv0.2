@@ -22,16 +22,17 @@ public class ControllerReceiver extends BroadcastReceiver {
 
         if(intent.getExtras().getString("type").equals("day")){
 
+            System.out.println("DAILY ALARM WAKED UP");
+            System.out.println("Current milliseconds: " + System.currentTimeMillis());
             myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
             settings.edit().putLong("dayPoints", 0);
             controller.dailyMoneyControl();
-            controller.setDailyAlarm();
 
         }else if(intent.getExtras().getString("type").equals("week")){
 
+            System.out.println("WEEKLY ALARM WAKED UP");
             myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
             settings.edit().putLong("weekPoints", 0);
-            controller.setWeeklyAlarm();
 
         }
 

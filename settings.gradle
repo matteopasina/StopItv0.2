@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':java'
+include ':mobile', ':wear'
