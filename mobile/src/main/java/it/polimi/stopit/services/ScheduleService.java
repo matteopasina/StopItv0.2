@@ -16,11 +16,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
@@ -31,14 +26,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
-import it.polimi.stopit.database.DatabaseHandler;
-import it.polimi.stopit.model.Challenge;
 
 /**
  * Created by matteo on 13/12/15.
@@ -50,20 +42,20 @@ public class ScheduleService extends Service {
     private static long nextCiga;
     private static MutableDateTime start;
     private static MutableDateTime end;
-    private boolean beginOfDay=false;
+    private boolean beginOfDay = false;
     CountDownTimer Count;
-    int notificationID=0;
+    int notificationID = 0;
     Controller controller;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
     * timer with time shifted
     * */
-    private BroadcastReceiver uiUpdated=new BroadcastReceiver() {
+    private BroadcastReceiver uiUpdated = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Count.cancel();
-            if(intent.getSerializableExtra("time")!=null){
+            if (intent.getSerializableExtra("time") != null) {
 
                 list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
 
@@ -72,18 +64,16 @@ public class ScheduleService extends Service {
 
             }
 
-            Count=null;
+            Count = null;
             setCount(nextCiga);
 
         }
     };
 
-
-
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
-        controller=new Controller(this);
+        controller = new Controller(this);
 
         deleteFile("schedule");
 
@@ -100,8 +90,8 @@ public class ScheduleService extends Service {
     }
 
 
-    public void setCount(long next){
-        Count=new CountDownTimer(next, 1000) {
+    public void setCount(long next) {
+        Count = new CountDownTimer(next, 1000) {
             public void onTick(long millisUntilFinished) {
 
                 Intent i = new Intent("COUNTDOWN_UPDATED");
@@ -113,38 +103,37 @@ public class ScheduleService extends Service {
 
             public void onFinish() {
 
-                if(beginOfDay){
+                if (beginOfDay) {
                     deleteFile("schedule");
                     firstStart();
-                    beginOfDay=false;
+                    beginOfDay = false;
                 }
 
                 SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
-                if(new Random().nextInt(Integer.valueOf(userdata.getString("CPD",null))) < Integer.valueOf(userdata.getString("CPD",null))/10) {
-                    if(!controller.sendAlternative(calcPoints())) sendNotification(calcPoints());
-                }
-                else {
+                if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) < Integer.valueOf(userdata.getString("CPD", null)) / 10) {
+                    if (!controller.sendAlternative(calcPoints())) sendNotification(calcPoints());
+                } else {
                     sendNotification(calcPoints());
                 }
 
                 nextCiga(list, start, end);
 
                 this.cancel();
-                Count=null;
+                Count = null;
                 setCount(nextCiga);
             }
         }.start();
     }
 
-    public void firstStart(){
-        list=loadSchedule();
-        if(list==null) {
+    public void firstStart() {
+        list = loadSchedule();
+        if (list == null) {
 
             SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
-            start=new MutableDateTime();
-            end=new MutableDateTime();
+            start = new MutableDateTime();
+            end = new MutableDateTime();
 
             start.setHourOfDay(9);
             start.setMinuteOfHour(0);
@@ -157,18 +146,18 @@ public class ScheduleService extends Service {
         }
     }
 
-    public void nextCiga(List<MutableInterval> list,MutableDateTime start,MutableDateTime end) {
+    public void nextCiga(List<MutableInterval> list, MutableDateTime start, MutableDateTime end) {
 
         MutableDateTime now = new MutableDateTime();
 
         if (end.isBeforeNow()) {
 
-            beginOfDay=true;
+            beginOfDay = true;
             nextCiga = (start.getMillis() + 86400000) - now.getMillis();
             System.out.println("endbefore" + end);
 
         } else if (start.isAfterNow()) {
-            beginOfDay=true;
+            beginOfDay = true;
             nextCiga = start.getMillis() - now.getMillis();
             System.out.println("startafter");
 
@@ -186,58 +175,58 @@ public class ScheduleService extends Service {
         }
     }
 
-    public void saveSchedule(List<MutableInterval> list){
+    public void saveSchedule(List<MutableInterval> list) {
         String filename = "schedule";
 
         try {
             FileOutputStream fos = this.openFileOutput(filename, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream( fos );
-            oos.writeObject ( list );
-            oos.close ();
-        } catch ( Exception ex ) {
-            ex.printStackTrace ();
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(list);
+            oos.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
-    public List<MutableInterval> loadSchedule(){
+    public List<MutableInterval> loadSchedule() {
         String filename = "schedule";
         List<MutableInterval> lista;
 
         try {
             FileInputStream fis = this.openFileInput(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            lista=(List<MutableInterval>) ois.readObject();
-            ois.close ();
+            lista = (List<MutableInterval>) ois.readObject();
+            ois.close();
             return lista;
-        } catch ( Exception ex ) {
-            ex.printStackTrace ();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return null;
     }
 
-    public int calcPoints(){
-        long points=0;
-        MutableDateTime now=new MutableDateTime();
+    public int calcPoints() {
+        long points = 0;
+        MutableDateTime now = new MutableDateTime();
         now.setSecondOfDay(now.getSecondOfDay() - 5);
-        for(MutableInterval i : list){
-            if(i.contains(now)){
-                points=(i.getEndMillis()-i.getStartMillis())/60000;
-                points+=0.5;
+        for (MutableInterval i : list) {
+            if (i.contains(now)) {
+                points = (i.getEndMillis() - i.getStartMillis()) / 60000;
+                points += 0.5;
                 break;
             }
         }
-        return (int)points;
+        return (int) points;
     }
 
     static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
 
         long millis = start.getMillis();
-        long endMillis=end.getMillis();
-        long chunkSize=(endMillis-millis)/chunkAmount;
+        long endMillis = end.getMillis();
+        long chunkSize = (endMillis - millis) / chunkAmount;
 
         List<MutableInterval> list = new ArrayList<MutableInterval>();
 
-        for(int i = 0; i < chunkAmount; ++i) {
+        for (int i = 0; i < chunkAmount; ++i) {
             list.add(new MutableInterval(millis, millis += chunkSize));
         }
 
@@ -245,14 +234,14 @@ public class ScheduleService extends Service {
     }
 
     static List<MutableInterval> shiftIntervals(MutableDateTime time, List<MutableInterval> list) {
-        long shift=0;
-        for(MutableInterval i : list){
-            if(i.contains(time)){
-                shift=time.getMillis()-i.getStartMillis();
-                i.setInterval(time.getMillis(),i.getEndMillis()+shift);
+        long shift = 0;
+        for (MutableInterval i : list) {
+            if (i.contains(time)) {
+                shift = time.getMillis() - i.getStartMillis();
+                i.setInterval(time.getMillis(), i.getEndMillis() + shift);
                 continue;
             }
-            i.setInterval(i.getStartMillis()+shift,i.getEndMillis()+shift);
+            i.setInterval(i.getStartMillis() + shift, i.getEndMillis() + shift);
         }
 
         return list;
@@ -270,7 +259,7 @@ public class ScheduleService extends Service {
 
         Intent resultIntent = new Intent(this, NavigationActivity.class);
 
-        resultIntent.putExtra("points",points);
+        resultIntent.putExtra("points", points);
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -288,9 +277,9 @@ public class ScheduleService extends Service {
                 );
         mBuilder.setContentIntent(resultPendingIntent);
         // Gets an instance of the NotificationManager service
-        mNM =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        notificationID=NotificationID.getID();
+        notificationID = NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
         Handler h = new Handler();
         long delayInMilliseconds = 300000;

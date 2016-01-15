@@ -378,7 +378,7 @@ public class Controller {
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY*7, pi);
+                AlarmManager.INTERVAL_DAY * 7, pi);
 
         System.out.println("Alarm setted everyweek at milliseconds: " + calendar.getTimeInMillis());
     }
@@ -689,7 +689,7 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
-    public void sendAlternativeNotification(AlternativeActivity alternativeActivity,int points) {
+    public void sendAlternativeNotification(AlternativeActivity alternativeActivity, int points) {
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), alternativeActivity.getImage());
 
@@ -701,7 +701,7 @@ public class Controller {
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("alternative",alternativeActivity.getTitle());
+        resultIntent.putExtra("alternative", alternativeActivity.getTitle());
         resultIntent.putExtra("points", points);
 
         // The stack builder object will contain an artificial back stack for the
@@ -866,11 +866,11 @@ public class Controller {
 
             if (levelsXP[i] < points && levelsXP[i + 1] > points) {
 
-                return ((points-levelsXP[i]) + " / " + (levelsXP[i + 1]-levelsXP[i]) + "  points");
+                return ((points - levelsXP[i]) + " / " + (levelsXP[i + 1] - levelsXP[i]) + "  points");
 
             } else if (levelsXP[i] == points) {
 
-                return ("0 / " + (levelsXP[i + 1]-levelsXP[i]) + "  points");
+                return ("0 / " + (levelsXP[i + 1] - levelsXP[i]) + "  points");
 
             } else if (levelsXP[98] < points) {
 
@@ -896,15 +896,15 @@ public class Controller {
 
             if (levelsXP[i] < points && levelsXP[i + 1] > points) {
 
-                return levelsXP[i + 1]-levelsXP[i];
+                return levelsXP[i + 1] - levelsXP[i];
 
             } else if (levelsXP[i] == points) {
 
-                return levelsXP[i]-levelsXP[i+1];
+                return levelsXP[i] - levelsXP[i + 1];
 
             } else if (levelsXP[98] < points) {
 
-                levelpoints = levelsXP[98]-levelsXP[97];
+                levelpoints = levelsXP[98] - levelsXP[97];
 
             } else if (levelsXP[0] > points) {
 
@@ -924,7 +924,7 @@ public class Controller {
 
             if (levelsXP[i] < points && levelsXP[i + 1] > points) {
 
-                return points-levelsXP[i];
+                return points - levelsXP[i];
 
             } else if (levelsXP[i] == points) {
 
@@ -943,7 +943,7 @@ public class Controller {
         return pointslevel;
     }
 
-    public ArrayList<User> addTestContacts(ArrayList<User> contacts){
+    public ArrayList<User> addTestContacts(ArrayList<User> contacts) {
 
         contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575")));
         contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480")));
@@ -952,9 +952,9 @@ public class Controller {
         contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340")));
         contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700")));
         contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180")));
-        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"),Long.parseLong("1000"),Long.parseLong("3200")));
-        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"),Long.parseLong("100"),Long.parseLong("2950")));
-        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"),Long.parseLong("-250"),Long.parseLong("1200")));
+        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200")));
+        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950")));
+        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200")));
 
         return contacts;
     }

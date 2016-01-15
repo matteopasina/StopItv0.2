@@ -27,13 +27,13 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
 
         setTitle("");
 
-        TextView welcomeUser=(TextView) findViewById(R.id.welcome);
+        TextView welcomeUser = (TextView) findViewById(R.id.welcome);
         welcomeUser.setText("Welcome, " + settings.getString("name", null));
 
-        final TextView progressText=(TextView) findViewById(R.id.progress);
+        final TextView progressText = (TextView) findViewById(R.id.progress);
         progressText.setText("25/50");
 
-        final SeekBar cigaPerDay=(SeekBar) findViewById(R.id.seekBar);
+        final SeekBar cigaPerDay = (SeekBar) findViewById(R.id.seekBar);
         cigaPerDay.setProgress(50);
         cigaPerDay.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -51,59 +51,59 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
             }
         });
 
-        final EditText cigCostVal=(EditText) findViewById(R.id.cigcost_text);
+        final EditText cigCostVal = (EditText) findViewById(R.id.cigcost_text);
 
-        Button done=(Button) findViewById(R.id.done);
+        Button done = (Button) findViewById(R.id.done);
 
         done.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(cigaPerDay.getProgress()!=0) {
+                if (cigaPerDay.getProgress() != 0) {
 
-                    int cost=0;
-                    try{
+                    int cost = 0;
+                    try {
 
-                        cost=Integer.parseInt(cigCostVal.getText().toString());
+                        cost = Integer.parseInt(cigCostVal.getText().toString());
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                         Toast.makeText(FirstLoginSettingsActivity.this, "Please insert a valid cost", Toast.LENGTH_SHORT).show();
                     }
 
-                    if(cost>0){
+                    if (cost > 0) {
 
-                        if(cost<=50){
+                        if (cost <= 50) {
                             Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
 
                             SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("CPD",String.valueOf(cigaPerDay.getProgress() / 2));
+                            editor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
 
                             editor.putString("cigcost", String.valueOf(cigCostVal.getText()));
 
                             editor.commit();
 
-                            DatabaseSeeder dbSeed=new DatabaseSeeder(getApplicationContext());
+                            DatabaseSeeder dbSeed = new DatabaseSeeder(getApplicationContext());
                             dbSeed.loadContacts();
                             dbSeed.seedMoneyCategories();
                             dbSeed.seedAlternatives();
 
-                            Controller cont=new Controller(getBaseContext());
+                            Controller cont = new Controller(getBaseContext());
                             cont.setDailyAlarm();
                             cont.setWeeklyAlarm();
 
                             startActivity(intent);
                             finish();
 
-                        }else{
+                        } else {
 
                             Toast.makeText(FirstLoginSettingsActivity.this, "Are you sure? Insert a realistic price", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else{
+                    } else {
 
                         Toast.makeText(FirstLoginSettingsActivity.this, "Please insert a valid cost", Toast.LENGTH_SHORT).show();
                     }
 
-                }else{
+                } else {
                     Toast.makeText(FirstLoginSettingsActivity.this, "So you don't smoke? :)", Toast.LENGTH_SHORT).show();
                 }
             }
