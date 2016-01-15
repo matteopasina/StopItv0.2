@@ -66,6 +66,8 @@ public class DatabaseSeeder {
         db.addAchievement(new Achievement(23, "Challenger", "Win a challenge", 250, R.drawable.challenge, obtained));
         db.addAchievement(new Achievement(24, "Super Challenger", "Win 5 challenges", 1300, R.drawable.five_challenge, obtained));
 
+        /*db.addMoneyTarget(new MoneyTarget(50, "Phone", (long) 600, (long) 600, 0, R.drawable.phone, 0));
+        db.addMoneyTarget(new MoneyTarget(60,"Travel",(long)350,(long)350,0,R.drawable.travel,0));*/
     }
 
     public void loadContacts(){

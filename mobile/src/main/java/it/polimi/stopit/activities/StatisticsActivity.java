@@ -38,7 +38,7 @@ public class StatisticsActivity extends AppCompatActivity {
         cigAvoided.setText(control.getCigAvoided()+" cigarettes avoided");
 
         TextView healthSaved=(TextView) findViewById(R.id.health_saved);
-        healthSaved.setText("-"+control.getCigAvoided()/100+"."+control.getCigAvoided()%100 + "% risk of cancer ");
+        healthSaved.setText(control.getCigAvoided()/100 + " health points ");
 
         TextView challengeWon=(TextView) findViewById(R.id.challenge_won);
         challengeWon.setText(control.challengeWonLost()+" challenge won ");
