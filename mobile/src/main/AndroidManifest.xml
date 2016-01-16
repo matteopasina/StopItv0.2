@@ -68,19 +68,23 @@
             android:name=".activities.ChallengeDetail"
             android:label="@string/title_activity_challenge_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Leaderboard"
-            />
+            android:theme="@style/Leaderboard" />
 
         <receiver
             android:name=".Receivers.ControllerReceiver"
             android:enabled="true"
-            android:permission="android.permission.WAKE_LOCK"></receiver>
+            android:permission="android.permission.WAKE_LOCK" />
 
         <activity
             android:name=".activities.StatisticsActivity"
             android:label="@string/title_activity_statistics"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".services.SendDataService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

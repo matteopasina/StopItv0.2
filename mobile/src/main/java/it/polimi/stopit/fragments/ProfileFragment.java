@@ -121,7 +121,7 @@ public class ProfileFragment extends Fragment {
         final ProgressBar levelProgress = (ProgressBar) view.findViewById(R.id.level_progress);
         levelProgress.setMax(100);
 
-        int progress = (int) (100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+        int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
         levelProgress.setProgress(progress);
 
         smokeOrDont();
@@ -145,7 +145,7 @@ public class ProfileFragment extends Fragment {
                 }
                 points = snapshot.getValue().toString();
                 showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
-                int progress = (int) (100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+                int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
                 levelProgress.setProgress(progress);
                 level.setText(controller.getLevel(Long.parseLong(points)));
             }
@@ -351,7 +351,8 @@ public class ProfileFragment extends Fragment {
             getActivity().getIntent().removeExtra("points");
         }
 
-        if (getActivity().getIntent().hasExtra("alternative")) {
+        if(getActivity().getIntent().hasExtra("alternative")){
+            getActivity().getIntent().removeExtra("alternative");
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
@@ -401,7 +402,9 @@ public class ProfileFragment extends Fragment {
                     .setNegativeButton("smoke", dialogClickListener)
                     .setIcon(R.drawable.stopitsymbol)
                     .show();
-        } else if (gain != 0) {
+        }
+
+        else if (gain != 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

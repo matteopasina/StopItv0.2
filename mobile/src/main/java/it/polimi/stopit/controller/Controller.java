@@ -15,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -55,6 +56,7 @@ public class Controller {
     DatabaseHandler db;
     Context context;
     SharedPreferences settings;
+    Bitmap largeicon;
 
     public Controller(Context context) {
 
@@ -612,12 +614,13 @@ public class Controller {
 
     public void sendNotificationChallenge(String opponent, String ID, String urlImage) {
 
-        Bitmap largeIcon = getBitmapFromURL(urlImage);
-        largeIcon = getCircleBitmap(largeIcon);
+        //Bitmap largeIcon = getBitmapFromURL(urlImage);
+        //largeIcon = getCircleBitmap(largeIcon);
+        new DownloadImgTask().execute(urlImage);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setLargeIcon(largeIcon)
+                        .setLargeIcon(largeicon)
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle(opponent + " challenged you!")
                         .setContentText("Begin the challenge!")
@@ -696,6 +699,7 @@ public class Controller {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle(alternativeActivity.getTitle())
                         .setContentText(alternativeActivity.getDescription())
                         .setAutoCancel(true);
@@ -961,6 +965,21 @@ public class Controller {
 
     public String challengeWonLost() {
         return (db.getAllWonChallenges().size() + "/" + db.getAllChallenges().size());
+    }
+
+    private class DownloadImgTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            for (String url : urls) {
+                return getCircleBitmap(getBitmapFromURL(url));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            largeicon=result;
+        }
     }
 
     public Bitmap getBitmapFromURL(String strURL) {
