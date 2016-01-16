@@ -153,7 +153,7 @@
         android:progressBackgroundTint="#999"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_marginTop="20dp"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_above="@+id/timeLeft" />
 
     <Button
@@ -161,7 +161,7 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_below="@+id/timeLeft"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:textColor="#07A"
         style="?android:attr/borderlessButtonStyle"
         android:layout_alignParentBottom="true" />
