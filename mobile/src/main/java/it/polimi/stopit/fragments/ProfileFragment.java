@@ -90,8 +90,6 @@ public class ProfileFragment extends Fragment {
             points = getArguments().getString(ARG_POINTS);
             imageURL = getArguments().getString(ARG_IMAGE);
         }
-        DatabaseHandler db = new DatabaseHandler(getActivity());
-        db.deleteAllContacts();
 
         DatabaseSeeder dbs = new DatabaseSeeder(getActivity());
         dbs.loadContacts();

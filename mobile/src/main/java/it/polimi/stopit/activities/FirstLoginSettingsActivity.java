@@ -85,6 +85,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             dbSeed.loadContacts();
                             dbSeed.seedMoneyCategories();
                             dbSeed.seedAlternatives();
+                            dbSeed.seedAchievements();
 
                             Controller cont = new Controller(getBaseContext());
                             cont.setDailyAlarm();

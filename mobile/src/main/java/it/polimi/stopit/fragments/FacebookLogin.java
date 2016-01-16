@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -24,9 +23,6 @@ import com.facebook.login.widget.LoginButton;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.FirstLoginSettingsActivity;
 import it.polimi.stopit.activities.NavigationActivity;
-import it.polimi.stopit.database.DatabaseHandler;
-import it.polimi.stopit.database.DatabaseSeeder;
-import it.polimi.stopit.model.Achievement;
 
 public class FacebookLogin extends Fragment {
 
@@ -60,9 +56,6 @@ public class FacebookLogin extends Fragment {
                 editor.putLong("points", 0);
                 editor.putString("image", "https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?type=large");
                 editor.commit();
-
-                DatabaseSeeder dbSeed=new DatabaseSeeder(getActivity());
-                dbSeed.seedAchievements();
 
                 Intent intent = new Intent(getContext(),FirstLoginSettingsActivity.class);
                 getActivity().startActivity(intent);
