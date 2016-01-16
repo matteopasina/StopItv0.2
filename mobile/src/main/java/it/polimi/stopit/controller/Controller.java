@@ -344,6 +344,23 @@ public class Controller {
 
     }
 
+    public void updateChallengeAchievement(){
+
+        Achievement achievement;
+
+        if (!db.getAchievement(23).isObtained() && db.getAllWonChallenges().size()>=1) {
+            achievement = new Achievement(23, "Challenger", "Win a challenge", 250, R.drawable.challenge, true);
+            db.updateAchievement(achievement);
+            updatePoints(250);
+        }
+
+        if (!db.getAchievement(24).isObtained() && db.getAllWonChallenges().size()>=3) {
+            achievement = new Achievement(24, "Super Challenger", "Win 5 challenges", 1300, R.drawable.five_challenge, true);
+            db.updateAchievement(achievement);
+            updatePoints(1300);
+        }
+    }
+
     public void setDailyAlarm() {
 
         Calendar calendar = Calendar.getInstance();

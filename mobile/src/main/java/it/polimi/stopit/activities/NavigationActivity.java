@@ -64,6 +64,11 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Controller control=new Controller(this);
+        TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
+        sidelevel.setText(control.getLevel(points));
+        control.updateChallengeAchievement();
+
         try {
 
             if(getIntent().hasExtra("redirect")) {

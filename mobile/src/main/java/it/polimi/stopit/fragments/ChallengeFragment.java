@@ -23,7 +23,6 @@ import it.polimi.stopit.model.Challenge;
 public class ChallengeFragment extends Fragment {
 
     private List<Challenge> mChallenges;
-    private OnListFragmentInteractionListener mListener;
     private DatabaseHandler db;
     private FloatingActionButton fab;
 
@@ -47,9 +46,9 @@ public class ChallengeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_challenge_list, container, false);
 
-        mChallenges=new ArrayList<>();
-        db=new DatabaseHandler(getActivity());
-        mChallenges=db.getActiveChallenges();
+        mChallenges = new ArrayList<>();
+        db = new DatabaseHandler(getActivity());
+        mChallenges = db.getActiveChallenges();
 
         fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
 
@@ -62,8 +61,6 @@ public class ChallengeFragment extends Fragment {
 
             }
         });
-
-        // Set the adapter
 
         Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listChallenge);
@@ -79,18 +76,13 @@ public class ChallengeFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
 
     }
+
 }
