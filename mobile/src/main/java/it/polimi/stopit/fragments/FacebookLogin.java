@@ -23,6 +23,7 @@ import com.facebook.login.widget.LoginButton;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.FirstLoginSettingsActivity;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.database.DatabaseHandler;
 
 public class FacebookLogin extends Fragment {
 
@@ -33,8 +34,17 @@ public class FacebookLogin extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fb, container, false);
 
-        if(Profile.getCurrentProfile()!=null){
+        DatabaseHandler db=new DatabaseHandler(getActivity());
+
+        if(db.getAllAchievements().size()!=0){
+
             Intent intent = new Intent(getContext(),NavigationActivity.class);
+            getActivity().startActivity(intent);
+            getActivity().finish();
+
+        }else if(Profile.getCurrentProfile()!=null){
+
+            Intent intent = new Intent(getContext(),FirstLoginSettingsActivity.class);
             getActivity().startActivity(intent);
             getActivity().finish();
         }
