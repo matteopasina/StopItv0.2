@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/title_activity_main">
+            android:name=".activities.ClockActivity"
+            android:label="@string/title_activity_clock">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,20 +22,19 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.MenuActivity"
+            android:label="@string/title_activity_main">
+        </activity>
+        <activity
             android:name=".activities.LeaderboardActivity"
             android:label="@string/title_activity_leaderboard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.AchievementsActivity"
             android:label="@string/title_activity_achievements" />
         <activity
             android:name=".activities.ChallengesActivity"
-            android:label="@string/title_activity_challenges"></activity>
+            android:label="@string/title_activity_challenges" />
     </application>
 
 </manifest>

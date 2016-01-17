@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import it.polimi.stopit.R;
 
-public class MainActivity extends Activity {
+public class MenuActivity extends Activity {
 
     private ImageView leaderboard;
     private ImageView achievements;
@@ -35,25 +32,23 @@ public class MainActivity extends Activity {
                 leaderboard.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent launchLead = new Intent(MainActivity.this, LeaderboardActivity.class);
+                        Intent launchLead = new Intent(MenuActivity.this, LeaderboardActivity.class);
                         startActivity(launchLead);
-                        finish();
                     }
                 });
 
                 achievements.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent launchAch = new Intent(MainActivity.this, AchievementsActivity.class);
+                        Intent launchAch = new Intent(MenuActivity.this, AchievementsActivity.class);
                         startActivity(launchAch);
-                        finish();
                     }
                 });
 
                 challenges.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent launchCall = new Intent(MainActivity.this, ChallengesActivity.class);
+                        Intent launchCall = new Intent(MenuActivity.this, ChallengesActivity.class);
                         startActivity(launchCall);
                     }
                 });
