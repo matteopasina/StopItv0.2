@@ -44,8 +44,8 @@ public class MainActivity extends Activity {
                 achievements.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent launchLead = new Intent(MainActivity.this, LeaderboardActivity.class);
-                        startActivity(launchLead);
+                        Intent launchAch = new Intent(MainActivity.this, AchievementsActivity.class);
+                        startActivity(launchAch);
                         finish();
                     }
                 });
@@ -53,9 +53,8 @@ public class MainActivity extends Activity {
                 challenges.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent launchLead = new Intent(MainActivity.this, LeaderboardActivity.class);
-                        startActivity(launchLead);
-                        finish();
+                        Intent launchCall = new Intent(MainActivity.this, ChallengesActivity.class);
+                        startActivity(launchCall);
                     }
                 });
             }

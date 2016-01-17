@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.polimi.stopit">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
@@ -28,6 +30,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.AchievementsActivity"
+            android:label="@string/title_activity_achievements" />
+        <activity
+            android:name=".activities.ChallengesActivity"
+            android:label="@string/title_activity_challenges"></activity>
     </application>
 
 </manifest>

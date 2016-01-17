@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -111,10 +113,26 @@ public class ScheduleService extends Service {
 
                 SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
-                if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) < Integer.valueOf(userdata.getString("CPD", null)) / 10) {
+                if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) <
+                        Integer.valueOf(userdata.getString("CPD", null)) / 10) {
+
                     if (!controller.sendAlternative(calcPoints())) sendNotification(calcPoints());
+
                 } else {
+
                     sendNotification(calcPoints());
+                    Handler h = new Handler();
+                    long delayInMilliseconds = 300000;
+                    h.postDelayed(new Runnable() {
+
+                        public void run() {
+
+                            mNM.cancel(notificationID);
+                            controller.updatePoints(calcPoints());
+
+                        }
+
+                    }, delayInMilliseconds);
                 }
 
                 nextCiga(list, start, end);
@@ -248,9 +266,13 @@ public class ScheduleService extends Service {
     }
 
     public void sendNotification(int points) {
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.stopitsymbol);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.stopitsymbol)
+                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle("You can smoke")
                         .setContentText("You earned it")
                         .setAutoCancel(true);
@@ -281,18 +303,6 @@ public class ScheduleService extends Service {
         // Builds the notification and issues it.
         notificationID = NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
-        Handler h = new Handler();
-        long delayInMilliseconds = 300000;
-        h.postDelayed(new Runnable() {
-
-            public void run() {
-
-                mNM.cancel(notificationID);
-                controller.updatePoints(calcPoints());
-
-            }
-
-        }, delayInMilliseconds);
     }
 
 

@@ -8,4 +8,6 @@
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
     <string name="title_activity_leaderboard">LeaderboardActivity</string>
+    <string name="title_activity_achievements">AchievementsActivity</string>
+    <string name="title_activity_challenges">ChallengesActivity</string>
 </resources>
