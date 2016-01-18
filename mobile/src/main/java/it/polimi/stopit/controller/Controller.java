@@ -815,7 +815,7 @@ public class Controller {
 
                 level = i + 2;
 
-            } else if (levelsXP[i + 1] < points) {
+            } else if (levelsXP[98] < points) {
 
                 level = 100;
             }

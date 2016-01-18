@@ -65,8 +65,7 @@ public class NavigationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Controller control=new Controller(this);
-        TextView sidelevel = (TextView) findViewById(R.id.sideLevel);
-        sidelevel.setText(control.getLevel(points));
+
         control.updateChallengeAchievement();
 
         try {
