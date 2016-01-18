@@ -11,10 +11,12 @@ public class User {
     private Long points;
     private Long weekPoints;
     private Long dayPoints;
+    private String lastDayCheck;
+    private String lastWeekCheck;
 
     public User(){}
 
-    public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints){
+    public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints,String lastDayCheck,String lastWeekCheck){
 
         this.ID=id;
         this.name=name;
@@ -23,6 +25,9 @@ public class User {
         this.points=points;
         this.dayPoints=dayPoints;
         this.weekPoints = weekPoints;
+        this.lastDayCheck=lastDayCheck;
+        this.lastWeekCheck=lastWeekCheck;
+
     }
     public String getID() {
         return ID;
@@ -76,6 +81,22 @@ public class User {
 
     public void setDayPoints(long dayPoints) {
         this.dayPoints = dayPoints;
+    }
+
+    public String getLastDayCheck() {
+        return lastDayCheck;
+    }
+
+    public void setLastDayCheck(String lastDayCheck) {
+        this.lastDayCheck = lastDayCheck;
+    }
+
+    public String getLastWeekCheck() {
+        return lastWeekCheck;
+    }
+
+    public void setLastWeekCheck(String lastWeekCheck) {
+        this.lastWeekCheck = lastWeekCheck;
     }
 }
 

@@ -56,7 +56,7 @@ public class DailyLeaderboardFragment extends Fragment{
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         mLeaderboard=db.getAllContacts();
-        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0));
+        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0),"","");
         mLeaderboard.add(me);
 
         Controller controller=new Controller(getActivity());

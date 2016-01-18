@@ -28,6 +28,7 @@ import com.firebase.client.ValueEventListener;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,6 @@ import java.util.Random;
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.Receivers.ChallengeReceiver;
-import it.polimi.stopit.Receivers.ControllerReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Achievement;
@@ -359,47 +359,6 @@ public class Controller {
             db.updateAchievement(achievement);
             updatePoints(1300);
         }
-    }
-
-    public void setDailyAlarm() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 24);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, ControllerReceiver.class);
-        intent.putExtra("type", "day");
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pi);
-
-        System.out.println("Alarm setted everyday at milliseconds: " + calendar.getTimeInMillis());
-
-    }
-
-    public void setWeeklyAlarm() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 24);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, ControllerReceiver.class);
-        intent.putExtra("type", "week");
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY * 7, pi);
-
-        System.out.println("Alarm setted everyweek at milliseconds: " + calendar.getTimeInMillis());
     }
 
     public void setChallengeAlarm(long startTime, long duration, String challengeKey) {
@@ -966,16 +925,16 @@ public class Controller {
 
     public ArrayList<User> addTestContacts(ArrayList<User> contacts) {
 
-        contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575")));
-        contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480")));
-        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920")));
-        contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800")));
-        contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340")));
-        contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700")));
-        contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180")));
-        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200")));
-        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950")));
-        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200")));
+        contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575"),"",""));
+        contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480"),"",""));
+        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920"),"",""));
+        contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"),"",""));
+        contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"),"",""));
+        contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"),"",""));
+        contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"),"",""));
+        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"),"",""));
+        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"),"",""));
+        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));
 
         return contacts;
     }
@@ -1035,6 +994,94 @@ public class Controller {
         bitmap.recycle();
 
         return output;
+    }
+
+    public void dailyUpdate(){
+
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(context);
+
+        MutableDateTime now=new MutableDateTime();
+        MutableDateTime lastDayCheck=getConvertedTime(settings.getString("lastDayCheck",null));
+
+        Calendar calendar = Calendar.getInstance();
+        now.setDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH));
+
+        if(lastDayCheck.getYear()<=now.getYear()){
+
+            if(lastDayCheck.getMonthOfYear()<=now.getMonthOfYear()){
+
+                if(lastDayCheck.getDayOfMonth()<now.getDayOfMonth()){
+
+                    Firebase.setAndroidContext(context);
+                    Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
+                    myFirebaseRef.child(settings.getString("ID", null)).child("lastDayCheck").setValue(getStringTime(now));
+                    myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
+
+                    settings.edit().putLong("dayPoints", 0).apply();
+                    settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
+
+                    dailyMoneyControl();
+
+                }
+            }
+        }
+    }
+
+    public void weeklyUpdate(){
+
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(context);
+
+        MutableDateTime now=new MutableDateTime();
+        MutableDateTime lastWeekCheck=getConvertedTime(settings.getString("lastWeekCheck",null));
+
+        Calendar calendar = Calendar.getInstance();
+        now.setDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH));
+
+        if(lastWeekCheck.getYear()<=now.getYear()){
+
+            if(lastWeekCheck.getMonthOfYear()<=now.getMonthOfYear()){
+
+                if(lastWeekCheck.getDayOfMonth()+7<now.getDayOfMonth()){
+
+                    Firebase.setAndroidContext(context);
+                    Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
+                    myFirebaseRef.child(settings.getString("ID", null)).child("lastWeekCheck").setValue(getStringTime(now));
+                    myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
+
+                    settings.edit().putString("lastWeekCheck", getStringTime(now)).apply();
+                    settings.edit().putLong("weekPoints", 0).apply();
+
+                }
+            }
+        }
+    }
+
+
+    public MutableDateTime getConvertedTime(String dateString){
+
+        MutableDateTime date=new MutableDateTime();
+
+        try {
+
+            String[] columns = dateString.split("/");
+
+            date.setDate(Integer.parseInt(columns[2]), Integer.parseInt(columns[1]), Integer.parseInt(columns[0]));
+            return date;
+
+        }catch (Exception e){
+
+            System.out.println("date cannot be splitted !");
+        }
+
+        return null;
+    }
+
+    public String getStringTime(MutableDateTime date){
+
+
+        return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
     }
 
 }

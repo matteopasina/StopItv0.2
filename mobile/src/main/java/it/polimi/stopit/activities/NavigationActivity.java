@@ -67,6 +67,8 @@ public class NavigationActivity extends AppCompatActivity
         Controller control=new Controller(this);
 
         control.updateChallengeAchievement();
+        control.weeklyUpdate();
+        control.dailyUpdate();
 
         try {
 
@@ -120,6 +122,8 @@ public class NavigationActivity extends AppCompatActivity
         user.setProfilePic(settings.getString("image", null));
         user.setDayPoints(settings.getLong("dayPoints", 0));
         user.setWeekPoints(settings.getLong("weekPoints", 0));
+        user.setLastDayCheck(settings.getString("lastDayCheck",null));
+        user.setLastWeekCheck(settings.getString("lastWeekCheck",null));
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -160,6 +164,8 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("image", user.getProfilePic());
                     editor.putLong("dayPoints", user.getDayPoints());
                     editor.putLong("weekPoints", user.getWeekPoints());
+                    editor.putString("lastDayCheck",user.getLastDayCheck());
+                    editor.putString("lastWeekCheck",user.getLastWeekCheck());
 
                     editor.commit();
 

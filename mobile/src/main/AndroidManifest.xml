@@ -70,11 +70,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Leaderboard" />
 
-        <receiver
-            android:name=".Receivers.ControllerReceiver"
-            android:enabled="true"
-            android:permission="android.permission.WAKE_LOCK" />
-
         <activity
             android:name=".activities.StatisticsActivity"
             android:label="@string/title_activity_statistics"

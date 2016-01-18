@@ -3,6 +3,7 @@ package it.polimi.stopit.fragments;
 /**
  * Created by matteo on 05/12/15.
  */
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,9 +21,14 @@ import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.joda.time.MutableDateTime;
+
+import java.util.Calendar;
+
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.FirstLoginSettingsActivity;
 import it.polimi.stopit.activities.NavigationActivity;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 
 public class FacebookLogin extends Fragment {
@@ -57,6 +63,11 @@ public class FacebookLogin extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
+
+                MutableDateTime now=new MutableDateTime();
+                Calendar calendar = Calendar.getInstance();
+                Controller controller=new Controller(getActivity());
+                now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 settings.edit().clear();
                 SharedPreferences.Editor editor = settings.edit();
@@ -65,6 +76,10 @@ public class FacebookLogin extends Fragment {
                 editor.putString("surname", Profile.getCurrentProfile().getLastName());
                 editor.putLong("points", 0);
                 editor.putString("image", "https://graph.facebook.com/" + Profile.getCurrentProfile().getId() + "/picture?type=large");
+                editor.putLong("dayPoints", 0);
+                editor.putLong("weekPoints", 0);
+                editor.putString("lastDayCheck", controller.getStringTime(now));
+                editor.putString("lastWeekCheck",controller.getStringTime(now));
                 editor.commit();
 
                 Intent intent = new Intent(getContext(),FirstLoginSettingsActivity.class);
