@@ -1,4 +1,4 @@
-package adapters;
+package it.polimi.stopit.adapters;
 
 import android.content.Context;
 import android.support.wearable.view.WearableListView;
@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
-import model.User;
+import it.polimi.stopit.model.User;
 
 /**
  * Created by matteo on 15/01/16.
