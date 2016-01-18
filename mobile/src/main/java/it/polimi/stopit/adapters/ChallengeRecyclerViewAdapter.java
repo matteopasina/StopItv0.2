@@ -75,7 +75,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                     duration.setInterval(challenge.getStartTime(), challenge.getEndTime());
                     holder.challengeDuration.setText(String.valueOf(duration.toDuration().getStandardDays()));
                     MutableDateTime time=new MutableDateTime();
-                    holder.challengeProgress.setProgress((int)(100 * ((challenge.getStartTime()-time.getMillis()) / (challenge.getEndTime()-challenge.getStartTime()))));
+                    holder.challengeProgress.setProgress((int)(100 * (Float.valueOf(time.getMillis()-challenge.getStartTime()) / (challenge.getEndTime()-challenge.getStartTime()))));
                     holder.daysRemaining.setText("days left");
                 }
             }

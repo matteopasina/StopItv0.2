@@ -51,7 +51,6 @@ public class ChallengeReceiver extends BroadcastReceiver {
 
                     Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" +
                             challengeSnapshot.child("id").getValue().toString());
-                    System.out.println(challengeSnapshot.child("id").getValue().toString());
                     users.addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override
@@ -81,7 +80,6 @@ public class ChallengeReceiver extends BroadcastReceiver {
 
                     Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" +
                             challengeSnapshot.child("opponentID").getValue().toString());
-                    System.out.println(challengeSnapshot.child("opponentID").getValue().toString());
                     users.addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override

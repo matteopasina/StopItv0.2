@@ -17,7 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:gravity="center_vertical" >
+        android:gravity="center">
 
         <RelativeLayout
             android:id="@+id/uno"
@@ -133,17 +133,6 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/timeLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/linear"
-        android:textColor="#000"
-        android:layout_centerInParent="true"
-        android:shadowColor="@color/shadows"
-        android:layout_marginTop="20dp" />
-
     <ProgressBar
         android:id="@+id/progress_challenge"
         android:max="100"
@@ -152,9 +141,20 @@
         android:backgroundTint="@color/colorAccent"
         android:progressBackgroundTint="#999"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/timeLeft" />
+        android:layout_below="@+id/linear" />
+
+    <TextView
+        android:id="@+id/timeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/progress_challenge"
+        android:textColor="#000"
+        android:layout_centerInParent="true"
+        android:shadowColor="@color/shadows"
+        android:layout_marginTop="20dp" />
 
     <Button
         android:id="@+id/give_up"

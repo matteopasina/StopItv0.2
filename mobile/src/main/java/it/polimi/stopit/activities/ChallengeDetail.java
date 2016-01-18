@@ -58,12 +58,13 @@ public class ChallengeDetail extends AppCompatActivity {
 
         String opponentID = getIntent().getStringExtra("opponentID");
         final DatabaseHandler dbh = new DatabaseHandler(this);
-        final Challenge challenge = dbh.getChallengeByOpponentID(opponentID);
+        final Challenge challenge = dbh.getActiveChallengeByOpponentID(opponentID);
         yourPoints.setText(String.valueOf(challenge.getOpponentPoints()));
         opponentPoints.setText(String.valueOf(challenge.getMyPoints()));
 
         MutableDateTime time = new MutableDateTime();
-        progressBar.setProgress((int) (100 * ((challenge.getStartTime()-time.getMillis()) / (challenge.getEndTime()-challenge.getStartTime()))));
+        progressBar.setProgress((int) (100 * (Float.valueOf(time.getMillis()-challenge.getStartTime()) /
+                (challenge.getEndTime() - challenge.getStartTime()))));
         time.setMillis(challenge.getEndTime() - time.getMillis());
 
         int days = (int) (time.getMillis()) / (1000 * 60 * 60 * 24);
@@ -74,7 +75,7 @@ public class ChallengeDetail extends AppCompatActivity {
         time.setMillis(time.getMillis() - hours * 1000 * 60 * 60);
 
         int minutes = (int) (time.getMillis()) / (1000 * 60);
-        timeLeft.setText("Time left: "+days + " days " + hours + " hours " + minutes + " minutes");
+        timeLeft.setText("Time left: " + days + " days " + hours + " hours " + minutes + " minutes");
 
 
         Firebase.setAndroidContext(this);
