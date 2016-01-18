@@ -1,4 +1,4 @@
-package layoutImplementations;
+package it.polimi.stopit.layoutImplementations;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;

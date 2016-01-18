@@ -1,4 +1,4 @@
-package model;
+package it.polimi.stopit.model;
 
 /**
  * Created by matteo on 05/12/15.
