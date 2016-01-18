@@ -350,6 +350,8 @@ public class ProfileFragment extends Fragment {
         }
 
         if(getActivity().getIntent().hasExtra("alternative")){
+            final String category=getActivity().getIntent().getExtras().getString("alternativeCategory", null);
+            final String title=getActivity().getIntent().getExtras().getString("alternative", null);
             getActivity().getIntent().removeExtra("alternative");
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -366,10 +368,12 @@ public class ProfileFragment extends Fragment {
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
 
-                            int bonus = dbh.getAlternative(getActivity().getIntent().getExtras().getString("alternative")).getBonusPoints();
+                            int bonus = dbh.getAlternative(title).getBonusPoints();
                             editor.putLong("dayPoints", daypoints + bonus);
                             editor.putLong("weekPoints", weekpoints + bonus);
                             editor.putLong("points", points + bonus);
+                            editor.putInt("numAlternative", settings.getInt("numAlternative", 0) + 1);
+                            editor.putInt("num"+category,settings.getInt("num"+category,0)+1);
                             editor.commit();
 
                             controller.updatePoints(bonus);

@@ -112,7 +112,6 @@ public class ScheduleService extends Service {
                 }
 
                 SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-
                 if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) <
                         Integer.valueOf(userdata.getString("CPD", null)) / 10) {
 
