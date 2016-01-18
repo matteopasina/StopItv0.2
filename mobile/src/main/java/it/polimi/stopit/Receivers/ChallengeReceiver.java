@@ -23,34 +23,51 @@ import it.polimi.stopit.model.Challenge;
 public class ChallengeReceiver extends BroadcastReceiver {
 
     String name;
+    Challenge challenge;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
         final Controller controller=new Controller(context);
+        final DatabaseHandler db=new DatabaseHandler(context);
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         final String challengeKey=intent.getExtras().getString("challengekey");
 
         Firebase.setAndroidContext(context);
-        Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challengeKey);
+        final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/"+challengeKey);
 
         fire.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
-            public void onDataChange(DataSnapshot challengeSnapshot) {
+            public void onDataChange(final DataSnapshot challengeSnapshot) {
+
+                challenge = db.getChallenge(challengeKey);
+                challenge.setOver(true);
 
                 //se tu sei opponent
-                if (challengeSnapshot.child("opponentID").getValue().toString() == settings.getString("ID", null)) {
+                if (challengeSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
 
-                    Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+
+                    Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" +
                             challengeSnapshot.child("id").getValue().toString());
+                    System.out.println(challengeSnapshot.child("id").getValue().toString());
                     users.addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            name=snapshot.child("name").getValue().toString();
+                            name = snapshot.child("name").getValue().toString();
+
+                            //se ha vinto/perso/pareggiato l'opponent e tu sei l'opponent
+                            if ((long) challengeSnapshot.child("opponentPoints").getValue() > (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. You won!");
+                                challenge.setWon(true);
+                            } else if ((long) challengeSnapshot.child("opponentPoints").getValue() < (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. You lose");
+                            } else if ((long) challengeSnapshot.child("opponentPoints").getValue() == (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. Tie game!");
+                            }
+
                         }
 
                         @Override
@@ -58,29 +75,28 @@ public class ChallengeReceiver extends BroadcastReceiver {
                         }
 
                     });
-
-                    //se ha vinto/perso/pareggiato l'opponent e tu sei l'opponent
-                    if ((long) challengeSnapshot.child("opponentPoints").getValue() > (long) challengeSnapshot.child("myPoints").getValue()) {
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs "+ name + "is over. You won!");
-                    }
-                    else if((long) challengeSnapshot.child("opponentPoints").getValue() < (long) challengeSnapshot.child("myPoints").getValue()){
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + "is over. You lose");
-                    }
-                    else if((long) challengeSnapshot.child("opponentPoints").getValue() == (long) challengeSnapshot.child("myPoints").getValue()){
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + "is over. Tie game!");
-                    }
-
                 }
                 //se sei il lanciatore della sfida
-                else if(challengeSnapshot.child("id").getValue().toString() == settings.getString("ID", null)){
+                else if (challengeSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
 
-                    Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/"+
+                    Firebase users = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" +
                             challengeSnapshot.child("opponentID").getValue().toString());
+                    System.out.println(challengeSnapshot.child("opponentID").getValue().toString());
                     users.addListenerForSingleValueEvent(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            name=snapshot.child("name").getValue().toString();
+                            name = snapshot.child("name").getValue().toString();
+
+                            //se ha vinto/perso/pareggiato
+                            if ((long) challengeSnapshot.child("opponentPoints").getValue() < (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. You won!");
+                                challenge.setWon(true);
+                            } else if ((long) challengeSnapshot.child("opponentPoints").getValue() > (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. You lose");
+                            } else if ((long) challengeSnapshot.child("opponentPoints").getValue() == (long) challengeSnapshot.child("myPoints").getValue()) {
+                                controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + " is over. Tie game!");
+                            }
                         }
 
                         @Override
@@ -88,19 +104,9 @@ public class ChallengeReceiver extends BroadcastReceiver {
                         }
 
                     });
-
-                    //se ha vinto/perso/pareggiato
-                    if ((long) challengeSnapshot.child("opponentPoints").getValue() < (long) challengeSnapshot.child("myPoints").getValue()) {
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs "+ name + "is over. You won!");
-                    }
-                    else if((long) challengeSnapshot.child("opponentPoints").getValue() > (long) challengeSnapshot.child("myPoints").getValue()){
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + "is over. You lose");
-                    }
-                    else if((long) challengeSnapshot.child("opponentPoints").getValue() == (long) challengeSnapshot.child("myPoints").getValue()){
-                        controller.sendCustomNotification("Challenge over!", "Your challenge vs " + name + "is over. Tie game!");
-                    }
                 }
-
+                db.updateChallenge(challenge);
+                fire.removeValue();
             }
 
             @Override
@@ -108,10 +114,5 @@ public class ChallengeReceiver extends BroadcastReceiver {
             }
 
         });
-
-        //cancella la challenge dal db ?? forse meglio un boolean per stats
-        // e comunque uno potrebbe voler vedere le vecchie challenge
-        DatabaseHandler dbh=new DatabaseHandler(context);
-        dbh.deleteChallenge(challengeKey);
     }
 }

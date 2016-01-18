@@ -64,6 +64,7 @@ public class ListAdapter extends WearableListView.Adapter {
         ImageView circle=itemHolder.image;
         // replace text contents
         view.setText(mLeaderboard.get(position).getName());
+        System.out.println(mLeaderboard.get(position).getProfilePic());
         Picasso.with(holder.itemView.getContext()).load(mLeaderboard.get(position).getProfilePic()).into(circle);
         // replace list item's metadata
         holder.itemView.setTag(position);

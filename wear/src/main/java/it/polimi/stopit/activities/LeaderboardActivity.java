@@ -8,9 +8,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import adapters.ListAdapter;
+import it.polimi.stopit.adapters.ListAdapter;
 import it.polimi.stopit.R;
-import model.User;
+import it.polimi.stopit.model.User;
 
 public class LeaderboardActivity extends Activity implements WearableListView.ClickListener {
 

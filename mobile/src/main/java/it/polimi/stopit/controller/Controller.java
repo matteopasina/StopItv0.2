@@ -404,15 +404,14 @@ public class Controller {
         }
     }
 
-    public void setChallengeAlarm(long startTime, long duration, String challengeKey) {
+    public void setChallengeAlarm(long endTime, String challengeKey) {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ChallengeReceiver.class);
         intent.putExtra("challengekey", challengeKey);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
 
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, startTime,
-                duration, pi);
+        am.setExact(AlarmManager.RTC_WAKEUP, endTime, pi);
     }
 
     public void updatePoints(final long points) {
@@ -517,8 +516,7 @@ public class Controller {
                                     db.updateChallenge(chall);
 
                                     Controller controller = new Controller(context);
-                                    controller.setChallengeAlarm(chall.getStartTime(),
-                                            chall.getEndTime() - chall.getStartTime(),
+                                    controller.setChallengeAlarm(chall.getEndTime(),
                                             chall.getID());
                                     controller.sendCustomNotification("Challenge accepted", "Don't smoke if you want to win!");
                                 }
@@ -1048,7 +1046,7 @@ public class Controller {
         MutableDateTime lastDayCheck=getConvertedTime(settings.getString("lastDayCheck",null));
 
         Calendar calendar = Calendar.getInstance();
-        now.setDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH));
+        now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
         if(lastDayCheck.getYear()<=now.getYear()){
 

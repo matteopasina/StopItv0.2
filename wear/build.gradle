@@ -26,4 +26,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:8.3.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.bmarrdev:android-DecoView-charting:v0.9.4'
+    compile 'joda-time:joda-time:2.8.2'
 }

@@ -161,8 +161,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     accept.child("accepted").setValue(newChallenge.getKey());
 
                                     Controller controller = new Controller(context);
-                                    controller.setChallengeAlarm(challenge.getStartTime(),
-                                            challenge.getEndTime() - challenge.getStartTime(),
+                                    controller.setChallengeAlarm(challenge.getEndTime(),
                                             newChallenge.getKey());
 
                                     break;

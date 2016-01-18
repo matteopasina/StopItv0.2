@@ -81,6 +81,10 @@
             android:name=".services.SendDataService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <receiver
+            android:name=".Receivers.ChallengeReceiver"
+            android:enabled="true"></receiver>
     </application>
 
 </manifest>

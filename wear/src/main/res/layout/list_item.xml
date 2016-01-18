@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layoutImplementations.WearableListItemLayout
+<it.polimi.stopit.layoutImplementations.WearableListItemLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
@@ -19,4 +19,4 @@
         android:lineSpacingExtra="-4sp"
         android:textColor="@color/textColorSecondary"
         android:textSize="16sp"/>
-</layoutImplementations.WearableListItemLayout>
+</it.polimi.stopit.layoutImplementations.WearableListItemLayout>

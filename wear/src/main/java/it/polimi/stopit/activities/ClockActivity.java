@@ -1,7 +1,10 @@
 package it.polimi.stopit.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
@@ -15,8 +18,11 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.services.ScheduleServiceWear;
 
 public class ClockActivity extends Activity {
+
+    private BroadcastReceiver uiUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +91,28 @@ public class ClockActivity extends Activity {
                 arcHours.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(0).build());
                 arcMinutes.addEvent(new DecoEvent.Builder(100).setIndex(series2Index).setDelay(0).build());
                 arcSeconds.addEvent(new DecoEvent.Builder(100).setIndex(series3Index).setDelay(0).build());
+
+                uiUpdated = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        //This is the part where I get the timer value from the service and I update it every second, because I send the data from the service every second. The coundtdownTimer is a MenuItem
+                        long millisUntilFinished = intent.getExtras().getLong("countdown");
+                        setTimer(timerText, millisUntilFinished);
+
+                        long hours = millisUntilFinished / 3600000;
+                        long minutes = (millisUntilFinished - (hours * 3600000)) / 60000;
+                        long seconds = (millisUntilFinished - (hours * 3600000) - (minutes * 60000)) / 1000;
+
+                        arcHours.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
+                        arcMinutes.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
+                        arcSeconds.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
+
+                    }
+                };
+
+                startService(new Intent(ClockActivity.this, ScheduleServiceWear.class));
+                registerReceiver(uiUpdated, new IntentFilter("TIMER"));
+
             }
         });
 
@@ -96,5 +124,53 @@ public class ClockActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    public void setTimer(TextView timerText, long millis) {
+
+        long hours = millis / 3600000;
+        long minutes = (millis - (hours * 3600000)) / 60000;
+        long seconds = (millis - (hours * 3600000) - (minutes * 60000)) / 1000;
+
+        if (hours >= 10) {
+            if (minutes >= 10) {
+                if (seconds >= 10) {
+
+                    timerText.setText(hours + ":" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText(hours + ":" + minutes + ":0" + seconds);
+                }
+            } else {
+
+                if (seconds >= 10) {
+
+                    timerText.setText(hours + ":0" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText(hours + ":0" + minutes + ":0" + seconds);
+                }
+            }
+        } else {
+
+            if (minutes >= 10) {
+                if (seconds >= 10) {
+
+                    timerText.setText("0" + hours + ":" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText("0" + hours + ":" + minutes + ":0" + seconds);
+                }
+            } else {
+
+                if (seconds >= 10) {
+
+                    timerText.setText("0" + hours + ":0" + minutes + ":" + seconds);
+                } else {
+
+                    timerText.setText("0" + hours + ":0" + minutes + ":0" + seconds);
+                }
+            }
+        }
     }
 }

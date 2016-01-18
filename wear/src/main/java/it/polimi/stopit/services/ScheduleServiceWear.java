@@ -1,22 +1,15 @@
 package it.polimi.stopit.services;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -29,25 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import it.polimi.stopit.NotificationID;
-import it.polimi.stopit.R;
-import it.polimi.stopit.activities.NavigationActivity;
-import it.polimi.stopit.controller.Controller;
+public class ScheduleServiceWear extends Service {
+    public ScheduleServiceWear() {
+    }
 
-/**
- * Created by matteo on 13/12/15.
- */
-
-public class ScheduleService extends Service {
-    private NotificationManager mNM;
     private static List<MutableInterval> list;
     private static long nextCiga;
     private static MutableDateTime start;
     private static MutableDateTime end;
     private boolean beginOfDay = false;
     CountDownTimer Count;
-    int notificationID = 0;
-    Controller controller;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
@@ -75,7 +59,6 @@ public class ScheduleService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        controller = new Controller(this);
 
         deleteFile("schedule");
 
@@ -84,11 +67,6 @@ public class ScheduleService extends Service {
 
         nextCiga(list, start, end);
         setCount(nextCiga);
-
-        controller.checkChallenges();
-        controller.checkAccepted();
-        controller.checkGiveUp();
-
     }
 
 
@@ -96,7 +74,7 @@ public class ScheduleService extends Service {
         Count = new CountDownTimer(next, 1000) {
             public void onTick(long millisUntilFinished) {
 
-                Intent i = new Intent("COUNTDOWN_UPDATED");
+                Intent i = new Intent("TIMER");
                 i.putExtra("countdown", millisUntilFinished);
 
                 sendBroadcast(i);
@@ -109,41 +87,6 @@ public class ScheduleService extends Service {
                     deleteFile("schedule");
                     firstStart();
                     beginOfDay = false;
-                }
-
-                SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-                if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) <
-                        Integer.valueOf(userdata.getString("CPD", null)) / 10) {
-
-                    System.out.println("NotificationID"+notificationID);
-                    try{
-                        mNM.cancel(notificationID);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                    if (!controller.sendAlternative(calcPoints())) sendNotification(calcPoints());
-
-                } else {
-                    System.out.println("NotificationID"+notificationID);
-                    try{
-                        mNM.cancel(notificationID);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    sendNotification(calcPoints());
-                    Handler h = new Handler();
-                    long delayInMilliseconds = 300000;
-                    h.postDelayed(new Runnable() {
-
-                        public void run() {
-
-                            mNM.cancel(notificationID);
-                            controller.updatePoints(calcPoints());
-
-                        }
-
-                    }, delayInMilliseconds);
                 }
 
                 nextCiga(list, start, end);
@@ -159,17 +102,17 @@ public class ScheduleService extends Service {
         list = loadSchedule();
         if (list == null) {
 
-            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
+            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleServiceWear.this);
 
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(9);
+            start.setHourOfDay(15);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(23);
+            end.setHourOfDay(16);
             end.setMinuteOfHour(0);
 
-            list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
+            list = splitDuration(start, end, Long.valueOf(25));
             saveSchedule(list);
 
         }
@@ -233,20 +176,6 @@ public class ScheduleService extends Service {
         return null;
     }
 
-    public int calcPoints() {
-        long points = 0;
-        MutableDateTime now = new MutableDateTime();
-        now.setSecondOfDay(now.getSecondOfDay() - 5);
-        for (MutableInterval i : list) {
-            if (i.contains(now)) {
-                points = (i.getEndMillis() - i.getStartMillis()) / 60000;
-                points += 0.5;
-                break;
-            }
-        }
-        return (int) points;
-    }
-
     static List<MutableInterval> splitDuration(MutableDateTime start, MutableDateTime end, long chunkAmount) {
 
         long millis = start.getMillis();
@@ -276,74 +205,9 @@ public class ScheduleService extends Service {
         return list;
     }
 
-    public void sendNotification(int points) {
-
-        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.stopitsymbol);
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setVibrate(new long[] { 200, 500, 200, 500 })
-                        .setLargeIcon(largeIcon)
-                        .setSmallIcon(R.drawable.stopitsymbollollipop)
-                        .setContentTitle("You can smoke")
-                        .setContentText("You earned it")
-                        .setAutoCancel(true);
-        // Sets an ID for the notification
-
-
-        Intent resultIntent = new Intent(this, NavigationActivity.class);
-
-        resultIntent.putExtra("points", points);
-
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        // Gets an instance of the NotificationManager service
-        mNM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        notificationID = NotificationID.getID();
-        mNM.notify(notificationID, mBuilder.build());
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-
-        registerReceiver(uiUpdated, new IntentFilter("SMOKE_OUTOFTIME"));
-
-        return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(uiUpdated);
-    }
-
-    IBinder mBinder = new LocalBinder();
-
-
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
     }
-
-    public class LocalBinder extends Binder {
-        public ScheduleService getServerInstance() {
-            return ScheduleService.this;
-        }
-    }
-
 }
