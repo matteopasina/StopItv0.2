@@ -393,12 +393,12 @@ public class Controller {
             updatePoints(500);
         }
 
-        if (!db.getAchievement(17).isObtained() && settings.getInt("numart",0) >= 10) {
+        if (!db.getAchievement(17).isObtained() && settings.getInt("numart", 0) >= 10) {
             db.updateAchievement(new Achievement(17, "Artist", "Do 10 art activities", 500, R.drawable.artist, true));
             updatePoints(500);
         }
 
-        if (!db.getAchievement(17).isObtained() && settings.getInt("numfood",0) >= 10) {
+        if (!db.getAchievement(17).isObtained() && settings.getInt("numfood", 0) >= 10) {
             db.updateAchievement(new Achievement(18, "Food", "Do 10 food activities", 500, R.drawable.food, true));
             updatePoints(500);
         }

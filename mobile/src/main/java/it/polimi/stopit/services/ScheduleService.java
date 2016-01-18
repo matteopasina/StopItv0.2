@@ -115,10 +115,20 @@ public class ScheduleService extends Service {
                 if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) <
                         Integer.valueOf(userdata.getString("CPD", null)) / 10) {
 
+                    try{
+                        mNM.cancel(notificationID);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                     if (!controller.sendAlternative(calcPoints())) sendNotification(calcPoints());
 
                 } else {
-
+                    try{
+                        mNM.cancel(notificationID);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     sendNotification(calcPoints());
                     Handler h = new Handler();
                     long delayInMilliseconds = 300000;
@@ -152,9 +162,9 @@ public class ScheduleService extends Service {
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(9);
+            start.setHourOfDay(15);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(23);
+            end.setHourOfDay(16);
             end.setMinuteOfHour(0);
 
             list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
@@ -270,6 +280,7 @@ public class ScheduleService extends Service {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
+                        .setVibrate(new long[] { 200, 500, 200, 500 })
                         .setLargeIcon(largeIcon)
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle("You can smoke")
