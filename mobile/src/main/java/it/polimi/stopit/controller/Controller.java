@@ -404,47 +404,6 @@ public class Controller {
         }
     }
 
-    public void setDailyAlarm() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 24);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, ControllerReceiver.class);
-        intent.putExtra("type", "day");
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pi);
-
-        System.out.println("Alarm setted everyday at milliseconds: " + calendar.getTimeInMillis());
-
-    }
-
-    public void setWeeklyAlarm() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 24);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, ControllerReceiver.class);
-        intent.putExtra("type", "week");
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
-
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY * 7, pi);
-
-        System.out.println("Alarm setted everyweek at milliseconds: " + calendar.getTimeInMillis());
-    }
-
     public void setChallengeAlarm(long startTime, long duration, String challengeKey) {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

@@ -121,12 +121,18 @@ public class DatabaseSeeder {
 
                                     for(String friend:facebookFriends) {
 
-                                        User contact = snapshot.child(friend).getValue(User.class);
+                                        try{
+                                            User contact = snapshot.child(friend).getValue(User.class);
 
-                                        if(!contacts.contains(contact)) {
+                                            if(!contacts.contains(contact)) {
 
-                                            db.addContact(contact);
+                                                db.addContact(contact);
+                                            }
+
+                                        }catch (Exception e){
+
                                         }
+
                                     }
                                 }
 
