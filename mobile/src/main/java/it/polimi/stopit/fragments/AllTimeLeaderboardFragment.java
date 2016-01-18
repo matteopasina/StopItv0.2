@@ -65,11 +65,11 @@ public class AllTimeLeaderboardFragment extends Fragment{
 
         for(int i=0;i<mLeaderboard.size();i++){
 
-            if(mLeaderboard.get(i).getID().equals(me.getID()) && i<11){
+            if(mLeaderboard.get(i).getID().equals(me.getID()) && i<10){
 
                 controller.updateLeaderboardAchievement("top10");
 
-                if(i<4){
+                if(i<3){
 
                     controller.updateLeaderboardAchievement("top3");
 
