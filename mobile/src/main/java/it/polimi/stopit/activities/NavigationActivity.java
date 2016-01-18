@@ -67,6 +67,7 @@ public class NavigationActivity extends AppCompatActivity
         Controller control=new Controller(this);
 
         control.updateChallengeAchievement();
+        control.updateAlternativeAchievement();
         control.weeklyUpdate();
         control.dailyUpdate();
 

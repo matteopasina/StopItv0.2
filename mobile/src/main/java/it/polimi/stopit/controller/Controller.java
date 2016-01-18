@@ -361,6 +361,90 @@ public class Controller {
         }
     }
 
+    public void updateAlternativeAchievement(){
+
+        if (!db.getAchievement(11).isObtained() && settings.getInt("numAlternative",0) >= 1 ) {
+            db.updateAchievement(new Achievement(11, "Beginner", "Do an alternative activity", 100, R.drawable.alternative, true));
+            updatePoints(100);
+        }
+
+        if (!db.getAchievement(12).isObtained() && settings.getInt("numAlternative",0) >= 10) {
+            db.updateAchievement(new Achievement(12, "10 Activities", "Do 10 alternative activities", 200, R.drawable.alternative10, true));
+            updatePoints(200);
+        }
+
+        if (!db.getAchievement(13).isObtained() && settings.getInt("numAlternative",0) >= 20) {
+            db.updateAchievement(new Achievement(13, "20 Activities", "Do 20 alternative activities", 400, R.drawable.alternative20, true));
+            updatePoints(400);
+        }
+
+        if (!db.getAchievement(14).isObtained() && settings.getInt("numAlternative",0) >= 50) {
+            db.updateAchievement(new Achievement(14, "50 Activities", "Do 50 alternative activities", 600, R.drawable.alternative50, true));
+            updatePoints(600);
+        }
+
+        if (!db.getAchievement(15).isObtained() && settings.getInt("numsport",0) >= 10) {
+            db.updateAchievement(new Achievement(15, "Sportsman", "Do 10 sport activities", 500, R.drawable.sportsman, true));
+            updatePoints(500);
+        }
+
+        if (!db.getAchievement(16).isObtained() && settings.getInt("numsocial",0) >= 10) {
+            db.updateAchievement(new Achievement(16, "Social", "Do 10 social activities", 500, R.drawable.social, true));
+            updatePoints(500);
+        }
+
+        if (!db.getAchievement(17).isObtained() && settings.getInt("numart", 0) >= 10) {
+            db.updateAchievement(new Achievement(17, "Artist", "Do 10 art activities", 500, R.drawable.artist, true));
+            updatePoints(500);
+        }
+
+        if (!db.getAchievement(17).isObtained() && settings.getInt("numfood", 0) >= 10) {
+            db.updateAchievement(new Achievement(18, "Food", "Do 10 food activities", 500, R.drawable.food, true));
+            updatePoints(500);
+        }
+    }
+
+    public void setDailyAlarm() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, 24);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ControllerReceiver.class);
+        intent.putExtra("type", "day");
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pi);
+
+        System.out.println("Alarm setted everyday at milliseconds: " + calendar.getTimeInMillis());
+
+    }
+
+    public void setWeeklyAlarm() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, 24);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, ControllerReceiver.class);
+        intent.putExtra("type", "week");
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY * 7, pi);
+
+        System.out.println("Alarm setted everyweek at milliseconds: " + calendar.getTimeInMillis());
+    }
+
     public void setChallengeAlarm(long startTime, long duration, String challengeKey) {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -682,6 +766,7 @@ public class Controller {
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
         resultIntent.putExtra("alternative", alternativeActivity.getTitle());
+        resultIntent.putExtra("alternativeCategory", alternativeActivity.getCategory());
         resultIntent.putExtra("points", points);
 
         // The stack builder object will contain an artificial back stack for the
