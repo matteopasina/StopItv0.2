@@ -967,17 +967,49 @@ public class Controller {
 
     public ArrayList<User> addTestContacts(ArrayList<User> contacts) {
 
-        contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575"), "", ""));
-        contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480"), "", ""));
-        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920"), "", ""));
-        contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"), "", ""));
-        contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"), "", ""));
-        contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"), "", ""));
-        contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"), "", ""));
-        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"), "", ""));
-        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"), "", ""));
-        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"), "", ""));
+        final ArrayList<User> testContacts = new ArrayList<>();
 
+        testContacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575"), "", ""));
+        testContacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480"), "", ""));
+        testContacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920"), "", ""));
+        testContacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"), "", ""));
+        testContacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"), "", ""));
+        testContacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"), "", ""));
+        testContacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"), "", ""));
+        testContacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"), "", ""));
+        testContacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"), "", ""));
+        testContacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"), "", ""));
+
+        Firebase.setAndroidContext(context);
+        final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
+        for (int i = 0; i < testContacts.size(); i++) {
+
+            final User contact = testContacts.get(i);
+
+            if (!contacts.contains(contact)) {
+
+                contacts.add(contact);
+            }
+
+            myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+
+                    if (!snapshot.child(contact.getID()).exists()) {
+
+                        myFirebaseRef.child(contact.getID()).setValue(contact);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+
+        }
         return contacts;
     }
 
@@ -1092,7 +1124,7 @@ public class Controller {
 
         if (lastWeekCheck.getYear() == now.getYear()) {
 
-            if (lastWeekCheck.getDayOfYear()+7 <= now.getDayOfYear()) {
+            if (lastWeekCheck.getDayOfYear() + 7 <= now.getDayOfYear()) {
 
                 Firebase.setAndroidContext(context);
                 Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -1155,16 +1187,16 @@ public class Controller {
 
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
-        } else if(date.getDayOfMonth()-date.getDayOfWeek()>0){
+        } else if (date.getDayOfMonth() - date.getDayOfWeek() > 0) {
 
             date.set(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth() - date.getDayOfWeek());
 
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
-        }else{
+        } else {
 
             date.set(DateTimeFieldType.monthOfYear(), date.getMonthOfYear() - 1);
-            date.set(DateTimeFieldType.dayOfMonth(),date.dayOfMonth().getMaximumValue()+date.getDayOfMonth() -date.getDayOfWeek());
+            date.set(DateTimeFieldType.dayOfMonth(), date.dayOfMonth().getMaximumValue() + date.getDayOfMonth() - date.getDayOfWeek());
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
         }
 
