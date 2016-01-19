@@ -107,9 +107,9 @@ public class ScheduleServiceWear extends Service {
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(15);
+            start.setHourOfDay(9);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(16);
+            end.setHourOfDay(23);
             end.setMinuteOfHour(0);
 
             list = splitDuration(start, end, Long.valueOf(25));

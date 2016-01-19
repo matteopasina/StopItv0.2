@@ -11,12 +11,21 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -45,6 +54,7 @@ public class ScheduleService extends Service {
     private static MutableDateTime start;
     private static MutableDateTime end;
     private boolean beginOfDay = false;
+    private GoogleApiClient mGoogleApiClient;
     CountDownTimer Count;
     int notificationID = 0;
     Controller controller;
@@ -79,6 +89,27 @@ public class ScheduleService extends Service {
 
         deleteFile("schedule");
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        // Now you can use the Data Layer API
+                    }
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                    }
+                })
+                        // Request access only to the Wearable API
+                .addApi(Wearable.API)
+                .build();
+
+        mGoogleApiClient.connect();
+
         //setta lo schedule per la prima esecuzione
         firstStart();
 
@@ -88,7 +119,6 @@ public class ScheduleService extends Service {
         controller.checkChallenges();
         controller.checkAccepted();
         controller.checkGiveUp();
-
     }
 
 
@@ -171,7 +201,7 @@ public class ScheduleService extends Service {
 
             list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
             saveSchedule(list);
-
+            putScheduleInMap(start.getMillis(), end.getMillis(), Long.valueOf(userdata.getString("CPD", null)));
         }
     }
 
@@ -202,6 +232,16 @@ public class ScheduleService extends Service {
                 }
             }
         }
+    }
+
+    public void putScheduleInMap(long start,long end, long CPD){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/schedule");
+        putDataMapReq.getDataMap().putLong("start", start);
+        putDataMapReq.getDataMap().putLong("end", end);
+        putDataMapReq.getDataMap().putLong("CPD", CPD);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
     public void saveSchedule(List<MutableInterval> list) {
