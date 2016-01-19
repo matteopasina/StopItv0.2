@@ -1084,7 +1084,7 @@ public class Controller {
 
             if(lastWeekCheck.getMonthOfYear()<=now.getMonthOfYear()){
 
-                if(lastWeekCheck.getDayOfMonth()+7<now.getDayOfMonth()){
+                if(lastWeekCheck.getDayOfMonth()+7<now.getDayOfMonth() && now.getDayOfWeek()==7){
 
                     Firebase.setAndroidContext(context);
                     Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
@@ -1099,7 +1099,6 @@ public class Controller {
             }
         }
     }
-
 
     public MutableDateTime getConvertedTime(String dateString){
 
@@ -1124,6 +1123,22 @@ public class Controller {
 
 
         return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+    }
+
+    public String getSundayStringTime(MutableDateTime date){
+
+
+        if(date.getDayOfWeek()==7){
+
+            return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+
+        }else{
+
+            date.set(DateTimeFieldType.dayOfMonth(),date.getDayOfMonth()+(7-date.getDayOfWeek()));
+
+            return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+        }
+
     }
 
 }

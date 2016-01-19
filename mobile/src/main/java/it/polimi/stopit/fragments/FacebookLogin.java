@@ -79,7 +79,7 @@ public class FacebookLogin extends Fragment {
                 editor.putLong("dayPoints", 0);
                 editor.putLong("weekPoints", 0);
                 editor.putString("lastDayCheck", controller.getStringTime(now));
-                editor.putString("lastWeekCheck",controller.getStringTime(now));
+                editor.putString("lastWeekCheck",controller.getSundayStringTime(now));
                 editor.commit();
 
                 Intent intent = new Intent(getContext(),FirstLoginSettingsActivity.class);
