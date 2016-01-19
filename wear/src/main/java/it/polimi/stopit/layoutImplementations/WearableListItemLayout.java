@@ -2,6 +2,7 @@ package it.polimi.stopit.layoutImplementations;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -36,8 +37,8 @@ public class WearableListItemLayout extends LinearLayout
         super(context, attrs, defStyle);
 
         mFadedTextAlpha = 20 / 100f;
-        mFadedCircleColor = getResources().getColor(R.color.grey);
-        mChosenCircleColor = getResources().getColor(R.color.blue);
+        mFadedCircleColor = ContextCompat.getColor(context,R.color.shadows);
+        mChosenCircleColor=ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     // Get references to the icon and text in the item layout definition
@@ -53,12 +54,12 @@ public class WearableListItemLayout extends LinearLayout
     @Override
     public void onCenterPosition(boolean animate) {
         mName.setAlpha(1f);
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
+        ((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
+        ((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
         mName.setAlpha(mFadedTextAlpha);
     }
 }

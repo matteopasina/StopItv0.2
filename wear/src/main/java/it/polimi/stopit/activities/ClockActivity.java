@@ -18,6 +18,7 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.services.ListenerService;
 import it.polimi.stopit.services.ScheduleServiceWear;
 
 public class ClockActivity extends Activity {
@@ -28,6 +29,9 @@ public class ClockActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clock);
+
+        startService(new Intent(this, ListenerService.class));
+
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.clock_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override

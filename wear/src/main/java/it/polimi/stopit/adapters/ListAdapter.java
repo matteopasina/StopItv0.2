@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
@@ -64,8 +62,6 @@ public class ListAdapter extends WearableListView.Adapter {
         ImageView circle=itemHolder.image;
         // replace text contents
         view.setText(mLeaderboard.get(position).getName());
-        System.out.println(mLeaderboard.get(position).getProfilePic());
-        Picasso.with(holder.itemView.getContext()).load(mLeaderboard.get(position).getProfilePic()).into(circle);
         // replace list item's metadata
         holder.itemView.setTag(position);
     }

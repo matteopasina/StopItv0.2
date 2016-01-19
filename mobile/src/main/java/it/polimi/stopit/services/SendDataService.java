@@ -13,10 +13,12 @@ import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.WearableListenerService;
 
-public class SendDataService extends Service{
+public class SendDataService extends WearableListenerService{
 
     private GoogleApiClient mGoogleApiClient;
+    private static final String COUNT_KEY = "com.example.key.count";
 
     @Override
     public void onCreate() {
@@ -42,23 +44,26 @@ public class SendDataService extends Service{
                 .build();
 
         mGoogleApiClient.connect();
-
+        increaseCounter();
     }
 
-    // Create a data map and put data in it
-    private void increaseCounter() {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
-       // putDataMapReq.getDataMap().putInt(COUNT_KEY, count++);
+    public void putScheduleInMap(long start,long end, long CPD){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/schedule");
+        putDataMapReq.getDataMap().putLong("start", start);
+        putDataMapReq.getDataMap().putLong("end", end);
+        putDataMapReq.getDataMap().putLong("CPD", CPD);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    // Create a data map and put data in it
+    private void increaseCounter() {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/count");
+        putDataMapReq.getDataMap().putInt(COUNT_KEY, 100);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 }
 
