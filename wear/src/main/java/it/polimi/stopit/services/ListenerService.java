@@ -1,5 +1,6 @@
 package it.polimi.stopit.services;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,10 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ListenerService extends WearableListenerService implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String COUNT_KEY = "com.example.key.count";
-
     private GoogleApiClient mGoogleApiClient;
-    private int count = 0;
 
     @Override
     public void onCreate() {
@@ -52,6 +50,12 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                 System.out.println(dataMap.getLong("start"));
                 System.out.println(dataMap.getLong("end"));
                 System.out.println(dataMap.getLong("CPD"));
+                Intent schedule=new Intent("SET_SCHEDULE");
+                schedule.putExtra("start",dataMap.getLong("start"));
+                schedule.putExtra("end",dataMap.getLong("end"));
+                schedule.putExtra("CPD",dataMap.getLong("CPD"));
+                sendBroadcast(schedule);
+
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }

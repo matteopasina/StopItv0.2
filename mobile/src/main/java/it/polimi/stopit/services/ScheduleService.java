@@ -194,10 +194,11 @@ public class ScheduleService extends Service {
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(14);
+            start.setHourOfDay(9);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(15);
+            end.setHourOfDay(23);
             end.setMinuteOfHour(0);
+            end.setSecondOfMinute(0);
 
             list = splitDuration(start, end, Long.parseLong(userdata.getString("CPD", null)));
             saveSchedule(list);

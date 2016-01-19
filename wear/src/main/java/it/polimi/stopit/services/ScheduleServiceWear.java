@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -41,14 +42,22 @@ public class ScheduleServiceWear extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             Count.cancel();
-            if (intent.getSerializableExtra("time") != null) {
 
-                list = shiftIntervals((MutableDateTime) intent.getSerializableExtra("time"), list);
+            start=new MutableDateTime();
+            end=new MutableDateTime();
 
-                nextCiga(list, start, end);
-                saveSchedule(list);
+            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleServiceWear.this);
 
-            }
+            start.setMillis(intent.getLongExtra("start",0));
+            end.setMillis(intent.getLongExtra("end", 0));
+            userdata.edit().putLong("CPD", intent.getLongExtra("CPD", 0)).apply();
+
+            start.setSecondOfMinute(0);
+            end.setSecondOfMinute(0);
+
+            list = splitDuration(start, end, intent.getLongExtra("CPD", 0));
+            saveSchedule(list);
+            nextCiga(list, start, end);
 
             Count = null;
             setCount(nextCiga);
@@ -204,6 +213,16 @@ public class ScheduleServiceWear extends Service {
 
         return list;
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        registerReceiver(uiUpdated, new IntentFilter("SET_SCHEDULE"));
+
+        return START_STICKY;
+    }
+
 
     @Override
     public IBinder onBind(Intent intent) {
