@@ -1046,7 +1046,7 @@ public class Controller {
         MutableDateTime lastDayCheck = getConvertedTime(settings.getString("lastDayCheck", null));
 
         Calendar calendar = Calendar.getInstance();
-        now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+        now.setMonthOfYear(calendar.get(Calendar.MONTH) + 1);
 
         if (lastDayCheck.getYear() == now.getYear()) {
 
@@ -1088,11 +1088,11 @@ public class Controller {
         MutableDateTime lastWeekCheck = getConvertedTime(settings.getString("lastWeekCheck", null));
 
         Calendar calendar = Calendar.getInstance();
-        now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+        now.setMonthOfYear(calendar.get(Calendar.MONTH) + 1);
 
         if (lastWeekCheck.getYear() == now.getYear()) {
 
-            if (lastWeekCheck.getDayOfYear() <= now.getDayOfYear() + 7) {
+            if (lastWeekCheck.getDayOfYear()+7 <= now.getDayOfYear()) {
 
                 Firebase.setAndroidContext(context);
                 Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");

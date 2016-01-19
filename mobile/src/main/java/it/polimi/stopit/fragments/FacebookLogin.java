@@ -72,7 +72,8 @@ public class FacebookLogin extends Fragment {
                         MutableDateTime now = new MutableDateTime();
                         Calendar calendar = Calendar.getInstance();
                         Controller controller = new Controller(getActivity());
-                        now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+                        now.setMonthOfYear(calendar.get(Calendar.MONTH) + 1);
+
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
                         settings.edit().clear();
                         SharedPreferences.Editor editor = settings.edit();
