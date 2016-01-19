@@ -146,6 +146,12 @@ public class ProfileFragment extends Fragment {
                 int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
                 levelProgress.setProgress(progress);
                 level.setText(controller.getLevel(Long.parseLong(points)));
+
+                TextView sidelevel = (TextView) getActivity().findViewById(R.id.sideLevel);
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+                sidelevel.setText(controller.getLevel(Long.parseLong(points)));
             }
 
             @Override
