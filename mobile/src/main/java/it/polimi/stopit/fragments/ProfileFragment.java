@@ -149,8 +149,6 @@ public class ProfileFragment extends Fragment {
 
                 TextView sidelevel = (TextView) getActivity().findViewById(R.id.sideLevel);
 
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
                 sidelevel.setText(controller.getLevel(Long.parseLong(points)));
             }
 
