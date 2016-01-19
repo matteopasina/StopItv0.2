@@ -344,51 +344,51 @@ public class Controller {
 
     }
 
-    public void updateChallengeAchievement(){
+    public void updateChallengeAchievement() {
 
         Achievement achievement;
 
-        if (!db.getAchievement(23).isObtained() && db.getAllWonChallenges().size()>=1) {
+        if (!db.getAchievement(23).isObtained() && db.getAllWonChallenges().size() >= 1) {
             achievement = new Achievement(23, "Challenger", "Win a challenge", 250, R.drawable.challenge, true);
             db.updateAchievement(achievement);
             updatePoints(250);
         }
 
-        if (!db.getAchievement(24).isObtained() && db.getAllWonChallenges().size()>=3) {
+        if (!db.getAchievement(24).isObtained() && db.getAllWonChallenges().size() >= 3) {
             achievement = new Achievement(24, "Super Challenger", "Win 5 challenges", 1300, R.drawable.five_challenge, true);
             db.updateAchievement(achievement);
             updatePoints(1300);
         }
     }
 
-    public void updateAlternativeAchievement(){
+    public void updateAlternativeAchievement() {
 
-        if (!db.getAchievement(11).isObtained() && settings.getInt("numAlternative",0) >= 1 ) {
+        if (!db.getAchievement(11).isObtained() && settings.getInt("numAlternative", 0) >= 1) {
             db.updateAchievement(new Achievement(11, "Beginner", "Do an alternative activity", 100, R.drawable.alternative, true));
             updatePoints(100);
         }
 
-        if (!db.getAchievement(12).isObtained() && settings.getInt("numAlternative",0) >= 10) {
+        if (!db.getAchievement(12).isObtained() && settings.getInt("numAlternative", 0) >= 10) {
             db.updateAchievement(new Achievement(12, "10 Activities", "Do 10 alternative activities", 200, R.drawable.alternative10, true));
             updatePoints(200);
         }
 
-        if (!db.getAchievement(13).isObtained() && settings.getInt("numAlternative",0) >= 20) {
+        if (!db.getAchievement(13).isObtained() && settings.getInt("numAlternative", 0) >= 20) {
             db.updateAchievement(new Achievement(13, "20 Activities", "Do 20 alternative activities", 400, R.drawable.alternative20, true));
             updatePoints(400);
         }
 
-        if (!db.getAchievement(14).isObtained() && settings.getInt("numAlternative",0) >= 50) {
+        if (!db.getAchievement(14).isObtained() && settings.getInt("numAlternative", 0) >= 50) {
             db.updateAchievement(new Achievement(14, "50 Activities", "Do 50 alternative activities", 600, R.drawable.alternative50, true));
             updatePoints(600);
         }
 
-        if (!db.getAchievement(15).isObtained() && settings.getInt("numsport",0) >= 10) {
+        if (!db.getAchievement(15).isObtained() && settings.getInt("numsport", 0) >= 10) {
             db.updateAchievement(new Achievement(15, "Sportsman", "Do 10 sport activities", 500, R.drawable.sportsman, true));
             updatePoints(500);
         }
 
-        if (!db.getAchievement(16).isObtained() && settings.getInt("numsocial",0) >= 10) {
+        if (!db.getAchievement(16).isObtained() && settings.getInt("numsocial", 0) >= 10) {
             db.updateAchievement(new Achievement(16, "Social", "Do 10 social activities", 500, R.drawable.social, true));
             updatePoints(500);
         }
@@ -967,16 +967,16 @@ public class Controller {
 
     public ArrayList<User> addTestContacts(ArrayList<User> contacts) {
 
-        contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575"),"",""));
-        contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480"),"",""));
-        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920"),"",""));
-        contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"),"",""));
-        contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"),"",""));
-        contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"),"",""));
-        contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"),"",""));
-        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"),"",""));
-        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"),"",""));
-        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));
+        contacts.add(new User("1", "Paulo", "Dybala", "http://sortitoutsi.net/uploads/face/14044150.png", Long.parseLong("34110"), Long.parseLong("888"), Long.parseLong("17575"), "", ""));
+        contacts.add(new User("2", "Lionel", "Messi", "http://static2.blastingnews.com/media/photogallery/2015/10/8/290x290/b_290x290/lionel-messi-pode-terminar-a-carreira-dessa-forma_452055.jpg", Long.parseLong("89670"), Long.parseLong("3200"), Long.parseLong("18480"), "", ""));
+        contacts.add(new User("3", "Eden", "Hazard", "http://img.uefa.com/imgml/TP/players/9/2013/324x324/1902160.jpg", Long.parseLong("17923"), Long.parseLong("2280"), Long.parseLong("7920"), "", ""));
+        contacts.add(new User("4", "Scarlett", "Johansson", "https://pbs.twimg.com/profile_images/629741380957511680/cruVnLi2.jpg", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"), "", ""));
+        contacts.add(new User("5", "Guido", "Meda", "http://www.motocorse.com/foto/22762/thumbs500/1.jpg", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"), "", ""));
+        contacts.add(new User("6", "Federica", "Nargi", "http://pbs.twimg.com/profile_images/665605062585155584/fhGO4ZY9_reasonably_small.jpg", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"), "", ""));
+        contacts.add(new User("7", "Alessandro", "Del Piero", "http://d1ktyob8e4hu6c.cloudfront.net/pub/avatar/RUNA_9839085/communitygazzetta/Il%20futuro%20di%20Del%20Piero.jpg", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"), "", ""));
+        contacts.add(new User("8", "Gianluigi", "Buffon", "http://i.imgur.com/9VYiq8e.png", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"), "", ""));
+        contacts.add(new User("9", "Stephen", "Curry", "http://www.sportsspeakers360.com/admin/img/stephen-curry.jpg", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"), "", ""));
+        contacts.add(new User("10", "Joe", "Bastianich", "http://www.foodserviceconsultant.org/wp-content/uploads/Joe-Bastianich250.jpg", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"), "", ""));
 
         return contacts;
     }
@@ -996,7 +996,7 @@ public class Controller {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            largeicon=result;
+            largeicon = result;
         }
     }
 
@@ -1038,71 +1038,95 @@ public class Controller {
         return output;
     }
 
-    public void dailyUpdate(){
+    public void dailyUpdate() {
 
-        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
-        MutableDateTime now=new MutableDateTime();
-        MutableDateTime lastDayCheck=getConvertedTime(settings.getString("lastDayCheck",null));
+        MutableDateTime now = new MutableDateTime();
+        MutableDateTime lastDayCheck = getConvertedTime(settings.getString("lastDayCheck", null));
 
         Calendar calendar = Calendar.getInstance();
         now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
-        if(lastDayCheck.getYear()<=now.getYear()){
+        if (lastDayCheck.getYear() == now.getYear()) {
 
-            if(lastDayCheck.getMonthOfYear()<=now.getMonthOfYear()){
+            if (lastDayCheck.getDayOfYear() < now.getDayOfYear()) {
 
-                if(lastDayCheck.getDayOfMonth()<now.getDayOfMonth()){
+                Firebase.setAndroidContext(context);
+                Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
 
-                    Firebase.setAndroidContext(context);
-                    Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                myFirebaseRef.child(settings.getString("ID", null)).child("lastDayCheck").setValue(getStringTime(now));
+                myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
 
-                    myFirebaseRef.child(settings.getString("ID", null)).child("lastDayCheck").setValue(getStringTime(now));
-                    myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
+                settings.edit().putLong("dayPoints", 0).apply();
+                settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
-                    settings.edit().putLong("dayPoints", 0).apply();
-                    settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
+                dailyMoneyControl();
 
-                    dailyMoneyControl();
-
-                }
             }
+
+        } else if (lastDayCheck.getYear() < now.getYear()) {
+
+            Firebase.setAndroidContext(context);
+            Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
+            myFirebaseRef.child(settings.getString("ID", null)).child("lastDayCheck").setValue(getStringTime(now));
+            myFirebaseRef.child(settings.getString("ID", null)).child("dayPoints").setValue(0);
+
+            settings.edit().putLong("dayPoints", 0).apply();
+            settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
+
+            dailyMoneyControl();
         }
     }
 
-    public void weeklyUpdate(){
+    public void weeklyUpdate() {
 
-        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
-        MutableDateTime now=new MutableDateTime();
-        MutableDateTime lastWeekCheck=getConvertedTime(settings.getString("lastWeekCheck",null));
+        MutableDateTime now = new MutableDateTime();
+        MutableDateTime lastWeekCheck = getConvertedTime(settings.getString("lastWeekCheck", null));
 
         Calendar calendar = Calendar.getInstance();
-        now.setDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH));
+        now.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 
-        if(lastWeekCheck.getYear()<=now.getYear()){
+        if (lastWeekCheck.getYear() == now.getYear()) {
 
-            if(lastWeekCheck.getMonthOfYear()<=now.getMonthOfYear()){
+            if (lastWeekCheck.getDayOfYear() <= now.getDayOfYear() + 7) {
 
-                if(lastWeekCheck.getDayOfMonth()+7<now.getDayOfMonth() && now.getDayOfWeek()==7){
+                Firebase.setAndroidContext(context);
+                Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
 
-                    Firebase.setAndroidContext(context);
-                    Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+                myFirebaseRef.child(settings.getString("ID", null)).child("lastWeekCheck").setValue(getStringTime(now));
+                myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
 
-                    myFirebaseRef.child(settings.getString("ID", null)).child("lastWeekCheck").setValue(getStringTime(now));
-                    myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
+                settings.edit().putString("lastWeekCheck", getStringTime(now)).apply();
+                settings.edit().putLong("weekPoints", 0).apply();
 
-                    settings.edit().putString("lastWeekCheck", getStringTime(now)).apply();
-                    settings.edit().putLong("weekPoints", 0).apply();
-
-                }
             }
+
+
+        } else if (lastWeekCheck.getYear() < now.getYear()) {
+
+            if ((365 - lastWeekCheck.getDayOfYear()) + now.getDayOfYear() >= 7) {
+
+                Firebase.setAndroidContext(context);
+                Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
+                myFirebaseRef.child(settings.getString("ID", null)).child("lastWeekCheck").setValue(getStringTime(now));
+                myFirebaseRef.child(settings.getString("ID", null)).child("weekPoints").setValue(0);
+
+                settings.edit().putString("lastWeekCheck", getStringTime(now)).apply();
+                settings.edit().putLong("weekPoints", 0).apply();
+
+            }
+
         }
     }
 
-    public MutableDateTime getConvertedTime(String dateString){
+    public MutableDateTime getConvertedTime(String dateString) {
 
-        MutableDateTime date=new MutableDateTime();
+        MutableDateTime date = new MutableDateTime();
 
         try {
 
@@ -1111,7 +1135,7 @@ public class Controller {
             date.setDate(Integer.parseInt(columns[2]), Integer.parseInt(columns[1]), Integer.parseInt(columns[0]));
             return date;
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             System.out.println("date cannot be splitted !");
         }
@@ -1119,24 +1143,34 @@ public class Controller {
         return null;
     }
 
-    public String getStringTime(MutableDateTime date){
+    public String getStringTime(MutableDateTime date) {
 
 
-        return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+        return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
     }
 
-    public String getSundayStringTime(MutableDateTime date){
+    public String getSundayStringTime(MutableDateTime date) {
 
+        if (date.getDayOfWeek() == 7) {
 
-        if(date.getDayOfWeek()==7){
+            return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
-            return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+        } else if(date.getDayOfMonth()-date.getDayOfWeek()>0){
+
+            System.out.println("OLD DAY OF MONTH: "+date.getDayOfMonth());
+
+            date.set(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth() - date.getDayOfWeek());
+
+            System.out.println("DAY OF WEEK: " + date.getDayOfWeek());
+            System.out.println("DAY OF MONTH: "+date.getDayOfMonth());
+
+            return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
         }else{
 
-            date.set(DateTimeFieldType.dayOfMonth(),date.getDayOfMonth()+(7-date.getDayOfWeek()));
-
-            return date.getDayOfMonth()+"/"+date.getMonthOfYear()+"/"+date.getYear();
+            date.set(DateTimeFieldType.monthOfYear(), date.getMonthOfYear() - 1);
+            date.set(DateTimeFieldType.dayOfMonth(),date.dayOfMonth().getMaximumValue()+date.getDayOfMonth() -date.getDayOfWeek());
+            return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
         }
 
     }

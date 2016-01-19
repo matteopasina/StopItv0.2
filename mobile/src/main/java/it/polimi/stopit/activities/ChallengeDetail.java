@@ -21,15 +21,11 @@ import com.firebase.client.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
 import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
-import it.polimi.stopit.model.Cigarette;
 
 public class ChallengeDetail extends AppCompatActivity {
 
@@ -63,18 +59,17 @@ public class ChallengeDetail extends AppCompatActivity {
         opponentPoints.setText(String.valueOf(challenge.getMyPoints()));
 
         MutableDateTime time = new MutableDateTime();
-        progressBar.setProgress((int) (100 * (Float.valueOf(time.getMillis()-challenge.getStartTime()) /
+        progressBar.setProgress((int) (100 * (Float.valueOf(time.getMillis() - challenge.getStartTime()) /
                 (challenge.getEndTime() - challenge.getStartTime()))));
         time.setMillis(challenge.getEndTime() - time.getMillis());
 
-        int days = (int) (time.getMillis()) / (1000 * 60 * 60 * 24);
+        long days = (time.getMillis()) / (1000 * 60 * 60 * 24);
         time.setMillis(time.getMillis() - days * 1000 * 60 * 60 * 24);
 
-
-        int hours = (int) (time.getMillis()) / (1000 * 60 * 60);
+        long hours = (time.getMillis()) / (1000 * 60 * 60);
         time.setMillis(time.getMillis() - hours * 1000 * 60 * 60);
 
-        int minutes = (int) (time.getMillis()) / (1000 * 60);
+        long minutes = (time.getMillis()) / (1000 * 60);
         timeLeft.setText("Time left: " + days + " days " + hours + " hours " + minutes + " minutes");
 
 
