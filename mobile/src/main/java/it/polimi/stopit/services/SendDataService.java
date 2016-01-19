@@ -1,19 +1,22 @@
 package it.polimi.stopit.services;
 
-import android.app.Service;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
+
+import java.util.ArrayList;
+
+import it.polimi.stopit.controller.Controller;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.User;
 
 public class SendDataService extends WearableListenerService{
 
@@ -64,6 +67,25 @@ public class SendDataService extends WearableListenerService{
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+    }
+
+    public void sendLeaderboardImages(){
+
+        DatabaseHandler db=new DatabaseHandler(getBaseContext());
+        Controller controller=new Controller(getBaseContext());
+
+        ArrayList<User> contacts=db.getAllContacts();
+
+        for(User contact:contacts){
+
+            Asset asset= Asset.createFromBytes(controller.convertImageToBytes(contact.getProfilePic()));
+            PutDataMapRequest dataMap = PutDataMapRequest.create("/image");
+
+            dataMap.getDataMap().putAsset("contactImage", asset);
+            PutDataRequest request = dataMap.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
+                    .putDataItem(mGoogleApiClient, request);
+        }
     }
 }
 

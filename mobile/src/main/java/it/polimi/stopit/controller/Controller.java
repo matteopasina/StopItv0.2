@@ -30,9 +30,11 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Instant;
 import org.joda.time.MutableDateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1200,6 +1202,47 @@ public class Controller {
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
         }
 
+    }
+
+    public byte[] convertImageToBytes(String urlString){
+
+        URL url= null;
+        try {
+
+            url = new URL(urlString);
+
+        } catch (MalformedURLException e) {
+
+            e.printStackTrace();
+        }
+
+        InputStream is = null;
+        byte[] imageBytes=null;
+
+        try {
+            is = url.openStream ();
+             imageBytes= getBytes(is);
+        }
+        catch (IOException e) {
+
+            e.printStackTrace ();
+
+        }
+
+        return imageBytes;
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
 }
