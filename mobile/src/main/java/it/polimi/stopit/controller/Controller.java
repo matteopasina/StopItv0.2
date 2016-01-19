@@ -1157,12 +1157,7 @@ public class Controller {
 
         } else if(date.getDayOfMonth()-date.getDayOfWeek()>0){
 
-            System.out.println("OLD DAY OF MONTH: "+date.getDayOfMonth());
-
             date.set(DateTimeFieldType.dayOfMonth(), date.getDayOfMonth() - date.getDayOfWeek());
-
-            System.out.println("DAY OF WEEK: " + date.getDayOfWeek());
-            System.out.println("DAY OF MONTH: "+date.getDayOfMonth());
 
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
