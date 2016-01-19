@@ -33,7 +33,7 @@ public class MoneyGalleryFragment extends Fragment {
         return fragment;
     }
 
-    public void registerActivity(OnPassingData activity){
+    public void registerActivity(OnPassingData activity) {
         myListener = activity;
     }
 
@@ -48,20 +48,19 @@ public class MoneyGalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_moneygallery_list, container, false);
 
-        mTargets=new ArrayList<>();
-        db=new DatabaseHandler(getActivity());
-        mTargets=db.getAllCategories();
+        mTargets = new ArrayList<>();
+        db = new DatabaseHandler(getActivity());
+        mTargets = db.getAllCategories();
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
+
             RecyclerView recyclerView = (RecyclerView) view;
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
             recyclerView.setLayoutManager(layoutManager);
 
-            recyclerView.setAdapter(new MoneyRecyclerViewAdapter(mTargets,myListener));
+            recyclerView.setAdapter(new MoneyRecyclerViewAdapter(mTargets, myListener));
         }
         return view;
     }

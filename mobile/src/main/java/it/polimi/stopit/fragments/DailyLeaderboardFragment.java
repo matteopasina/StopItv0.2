@@ -64,7 +64,7 @@ public class DailyLeaderboardFragment extends Fragment{
         mLeaderboard=controller.addTestContacts(mLeaderboard);
 
         // reorder the leaderboard
-        Collections.sort(mLeaderboard, new leaderComparator());
+        Collections.sort(mLeaderboard, new LeaderComparator());
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -79,7 +79,7 @@ public class DailyLeaderboardFragment extends Fragment{
         return view;
     }
 
-    public class leaderComparator implements Comparator<User> {
+    public static class LeaderComparator implements Comparator<User> {
 
         @Override
         public int compare(User contact1, User contact2) {

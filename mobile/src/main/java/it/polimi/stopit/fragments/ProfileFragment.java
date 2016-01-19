@@ -1,5 +1,6 @@
 package it.polimi.stopit.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
@@ -63,7 +64,7 @@ public class ProfileFragment extends Fragment {
     SharedPreferences settings;
 
     public ProfileFragment() {
-        // Required empty public constructor
+
     }
 
     public static Fragment newInstance(String ID, String name, String surname, String points, String imageURL) {
@@ -119,17 +120,21 @@ public class ProfileFragment extends Fragment {
         final ProgressBar levelProgress = (ProgressBar) view.findViewById(R.id.level_progress);
         levelProgress.setMax(100);
 
-        int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+        int progress = (int) (100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
         levelProgress.setProgress(progress);
 
         smokeOrDont();
+
+        final Activity act = getActivity();
 
         Firebase.setAndroidContext(getActivity());
         final Firebase fire = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + ID + "/points");
         fire.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                long delta = (long) snapshot.getValue() - Long.valueOf(points);
+
+                long delta = (long) snapshot.getValue() - Long.parseLong(points);
+
                 if (delta < 0) {
                     losePoints.setText("-" + String.valueOf(delta));
                     losePoints.setVisibility(TextView.VISIBLE);
@@ -143,13 +148,13 @@ public class ProfileFragment extends Fragment {
                 }
                 points = snapshot.getValue().toString();
                 showPoints.setText(controller.getLevelPointsString(Long.parseLong(points)));
-                int progress=(int)(100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
+                int progress = (int) (100 * controller.getPointsLevel(Long.parseLong(points)) / controller.getLevelPoints(Long.parseLong(points)));
                 levelProgress.setProgress(progress);
                 level.setText(controller.getLevel(Long.parseLong(points)));
 
-                TextView sidelevel = (TextView) getActivity().findViewById(R.id.sideLevel);
-
+                TextView sidelevel = (TextView) act.findViewById(R.id.sideLevel);
                 sidelevel.setText(controller.getLevel(Long.parseLong(points)));
+
             }
 
             @Override
@@ -353,9 +358,9 @@ public class ProfileFragment extends Fragment {
             getActivity().getIntent().removeExtra("points");
         }
 
-        if(getActivity().getIntent().hasExtra("alternative")){
-            final String category=getActivity().getIntent().getExtras().getString("alternativeCategory", null);
-            final String title=getActivity().getIntent().getExtras().getString("alternative", null);
+        if (getActivity().getIntent().hasExtra("alternative")) {
+            final String category = getActivity().getIntent().getExtras().getString("alternativeCategory", null);
+            final String title = getActivity().getIntent().getExtras().getString("alternative", null);
             getActivity().getIntent().removeExtra("alternative");
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -367,7 +372,6 @@ public class ProfileFragment extends Fragment {
                     long weekpoints = settings.getLong("weekPoints", 0);
                     SharedPreferences.Editor editor = settings.edit();
                     DatabaseHandler dbh = new DatabaseHandler(getActivity());
-                    DateTime date;
 
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
@@ -377,12 +381,12 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("weekPoints", weekpoints + bonus);
                             editor.putLong("points", points + bonus);
                             editor.putInt("numAlternative", settings.getInt("numAlternative", 0) + 1);
-                            editor.putInt("num"+category,settings.getInt("num"+category,0)+1);
+                            editor.putInt("num" + category, settings.getInt("num" + category, 0) + 1);
                             editor.commit();
 
                             controller.updatePoints(bonus);
 
-                            date = new DateTime(new Instant());
+                            DateTime date = new DateTime(new Instant());
                             dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
 
@@ -408,9 +412,7 @@ public class ProfileFragment extends Fragment {
                     .setNegativeButton("smoke", dialogClickListener)
                     .setIcon(R.drawable.stopitsymbol)
                     .show();
-        }
-
-        else if (gain != 0) {
+        } else if (gain != 0) {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

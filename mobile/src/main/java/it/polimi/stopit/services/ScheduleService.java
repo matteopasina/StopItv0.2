@@ -194,14 +194,14 @@ public class ScheduleService extends Service {
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(9);
+            start.setHourOfDay(14);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(23);
+            end.setHourOfDay(15);
             end.setMinuteOfHour(0);
 
-            list = splitDuration(start, end, Long.valueOf(userdata.getString("CPD", null)));
+            list = splitDuration(start, end, Long.parseLong(userdata.getString("CPD", null)));
             saveSchedule(list);
-            putScheduleInMap(start.getMillis(), end.getMillis(), Long.valueOf(userdata.getString("CPD", null)));
+            putScheduleInMap(start.getMillis(), end.getMillis(), Long.parseLong(userdata.getString("CPD", null)));
         }
     }
 

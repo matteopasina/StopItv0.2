@@ -61,7 +61,7 @@ public class AllTimeLeaderboardFragment extends Fragment{
         mLeaderboard=controller.addTestContacts(mLeaderboard);
 
         // reorder the leaderboard
-        Collections.sort(mLeaderboard,new leaderComparator());
+        Collections.sort(mLeaderboard,new LeaderComparator());
 
         for(int i=0;i<mLeaderboard.size();i++){
 
@@ -94,7 +94,7 @@ public class AllTimeLeaderboardFragment extends Fragment{
         return view;
     }
 
-    public class leaderComparator implements Comparator<User>{
+    public static class LeaderComparator implements Comparator<User>{
 
         @Override
         public int compare(User contact1, User contact2) {

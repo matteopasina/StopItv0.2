@@ -310,30 +310,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // GET SINGLE ROW
 
-    public Cigarette getCigarette(int id) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_CIGARETTES, new String[]{CIGARETTE_ID,
-                        CIGARETTE_YEAR, CIGARETTE_MONTH, CIGARETTE_DAY, CIGARETTE_HOUR, CIGARETTE_MINUTES, CIGARETTE_TYPE}, CIGARETTE_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-
-        Cigarette cig;
-        try {
-
-            cursor.moveToFirst();
-            DateTime date = new DateTime(cursor.getInt(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), cursor.getInt(5));
-            cig = new Cigarette(cursor.getInt(0), date, cursor.getString(6));
-
-        } finally {
-
-            cursor.close();
-        }
-
-        return cig;
-
-    }
-
     public Achievement getAchievement(int id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -353,40 +329,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
         return achievement;
-    }
-
-    public User getContact(int id) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_CONTACTS, new String[]{CONTACT_ID,
-                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS, CONTACT_DAYPOINTS, CONTACT_WEEKPOINTS}, CONTACT_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-
-        User user;
-        try {
-            cursor.moveToFirst();
-            user = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), Long.parseLong(cursor.getString(4)), Long.parseLong(cursor.getString(5)), Long.parseLong(cursor.getString(6)),"","");
-
-        } finally {
-            cursor.close();
-        }
-
-        return user;
-    }
-
-    public MoneyTarget getMoneyTarget(int id) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_MONEY_TARGETS, new String[]{MONEYTARGET_ID,
-                        MONEYTARGET_NAME, MONEYTARGET_AMOUNT, MONEYTARGET_SAVED, MONEYTARGET_DURATION, MONEYTARGET_IMAGE, MONEYTARGET_CIGREDUCED}, MONEYTARGET_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
-
-
-        return new MoneyTarget(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3), cursor.getInt(4), cursor.getInt(5), cursor.getInt(6));
     }
 
     public Challenge getChallenge(String id) {
@@ -832,14 +774,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CHALLENGES, CHALLENGE_OPPONENTID + " = ?",
                 new String[]{id});
-        db.close();
-    }
-
-    public void deleteAchievement(Achievement achievement) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_ACHIEVEMENTS, ACHIEVEMENT_ID + " = ?",
-                new String[]{String.valueOf(achievement.getId())});
         db.close();
     }
 
