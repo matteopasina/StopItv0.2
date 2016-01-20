@@ -125,6 +125,7 @@ public class ProfileFragment extends Fragment {
 
         smokeOrDont();
 
+
         final Activity act = getActivity();
 
         Firebase.setAndroidContext(getActivity());
@@ -154,6 +155,9 @@ public class ProfileFragment extends Fragment {
 
                 TextView sidelevel = (TextView) act.findViewById(R.id.sideLevel);
                 sidelevel.setText(controller.getLevel(Long.parseLong(points)));
+
+                controller.updateChallengeAchievement();
+                controller.updateAlternativeAchievement();
 
             }
 

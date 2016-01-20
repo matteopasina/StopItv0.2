@@ -37,7 +37,6 @@ import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.ProfileFragment;
 import it.polimi.stopit.model.User;
-import it.polimi.stopit.services.SendDataService;
 
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,8 +66,6 @@ public class NavigationActivity extends AppCompatActivity
 
         Controller control=new Controller(this);
 
-        control.updateChallengeAchievement();
-        control.updateAlternativeAchievement();
         control.weeklyUpdate();
         control.dailyUpdate();
 

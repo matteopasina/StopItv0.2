@@ -738,7 +738,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        ;
         values.put(MONEYTARGET_NAME, target.getName());
         values.put(MONEYTARGET_AMOUNT, target.getMoneyAmount());
         values.put(MONEYTARGET_SAVED, target.getMoneySaved());
