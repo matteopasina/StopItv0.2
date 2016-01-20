@@ -11,8 +11,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import org.joda.time.Interval;
-
 import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;

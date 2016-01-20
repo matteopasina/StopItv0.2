@@ -130,6 +130,12 @@ public class ClockActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(uiUpdated);
+    }
+
     public void setTimer(TextView timerText, long millis) {
 
         long hours = millis / 3600000;

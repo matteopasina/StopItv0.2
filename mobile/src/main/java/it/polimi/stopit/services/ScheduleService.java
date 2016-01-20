@@ -40,6 +40,7 @@ import java.util.Random;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
+import it.polimi.stopit.Receivers.SmokeReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
 
@@ -56,7 +57,7 @@ public class ScheduleService extends Service {
     private boolean beginOfDay = false;
     private GoogleApiClient mGoogleApiClient;
     CountDownTimer Count;
-    int notificationID = 0;
+    int notificationID;
     Controller controller;
 
     /*
@@ -145,7 +146,6 @@ public class ScheduleService extends Service {
                 if (new Random().nextInt(Integer.parseInt(userdata.getString("CPD", null))) <
                         Integer.valueOf(userdata.getString("CPD", null)) / 10) {
 
-                    System.out.println("NotificationID"+notificationID);
                     try{
                         mNM.cancel(notificationID);
                     }catch (Exception e){
@@ -194,9 +194,9 @@ public class ScheduleService extends Service {
             start = new MutableDateTime();
             end = new MutableDateTime();
 
-            start.setHourOfDay(9);
+            start.setHourOfDay(13);
             start.setMinuteOfHour(0);
-            end.setHourOfDay(23);
+            end.setHourOfDay(15);
             end.setMinuteOfHour(0);
             end.setSecondOfMinute(0);
 
@@ -319,7 +319,20 @@ public class ScheduleService extends Service {
 
     public void sendNotification(int points) {
 
+        notificationID = NotificationID.getID();
+
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.stopitsymbol);
+
+        Intent smokeIntent = new Intent(this, SmokeReceiver.class);
+        smokeIntent.putExtra("points",points);
+        smokeIntent.putExtra("notificationID",notificationID);
+        smokeIntent.putExtra("smoke",true);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, smokeIntent, 0);
+
+        Intent dontSmokeIntent = new Intent(this, SmokeReceiver.class);
+        dontSmokeIntent.putExtra("points",points*2);
+        dontSmokeIntent.putExtra("notificationID", notificationID);
+        PendingIntent piDS = PendingIntent.getBroadcast(this, 0, dontSmokeIntent, 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -328,6 +341,8 @@ public class ScheduleService extends Service {
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle("You can smoke")
                         .setContentText("You earned it")
+                        .addAction(R.drawable.stopitsymbollollipop, "Smoke", pi)
+                        .addAction(R.drawable.stopitsymbollollipop,"Don't smoke", piDS)
                         .setAutoCancel(true);
         // Sets an ID for the notification
 
@@ -354,7 +369,6 @@ public class ScheduleService extends Service {
         // Gets an instance of the NotificationManager service
         mNM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        notificationID = NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
     }
 
