@@ -142,7 +142,7 @@ public class ScheduleService extends Service {
                 }
 
                 SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-                if (new Random().nextInt(Integer.valueOf(userdata.getString("CPD", null))) <
+                if (new Random().nextInt(Integer.parseInt(userdata.getString("CPD", null))) <
                         Integer.valueOf(userdata.getString("CPD", null)) / 10) {
 
                     System.out.println("NotificationID"+notificationID);
