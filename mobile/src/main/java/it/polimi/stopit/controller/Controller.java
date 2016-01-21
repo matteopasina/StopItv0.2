@@ -105,6 +105,7 @@ public class Controller {
 
             } catch (Exception e) {
 
+                e.printStackTrace();
             }
 
             if (noSmokeDays > 0) {
@@ -182,7 +183,7 @@ public class Controller {
 
         for (MoneyTarget target : moneyTargets) {
 
-            if ((target.getMoneySaved() != target.getMoneyAmount()) && first == false) {
+            if ((target.getMoneySaved() != target.getMoneyAmount()) && !first) {
 
                 first = true;
                 currentTarget = target;
@@ -260,33 +261,37 @@ public class Controller {
 
         Achievement achievement;
 
-        if (type.equals("first")) {
+        switch (type) {
+            case "first":
 
-            if (!db.getAchievement(10).isObtained()) {
+                if (!db.getAchievement(10).isObtained()) {
 
-                achievement = new Achievement(10, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true);
-                db.updateAchievement(achievement);
-                updatePoints(500);
-            }
+                    achievement = new Achievement(10, "Winner", "First in all time leaderboard", 500, R.drawable.winner, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(500);
+                }
 
-        } else if (type.equals("top10")) {
+                break;
+            case "top10":
 
-            if (!db.getAchievement(8).isObtained()) {
+                if (!db.getAchievement(8).isObtained()) {
 
-                achievement = new Achievement(8, "Top10", "In all time leaderboard", 100, R.drawable.top10, true);
-                db.updateAchievement(achievement);
-                updatePoints(100);
+                    achievement = new Achievement(8, "Top10", "In all time leaderboard", 100, R.drawable.top10, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(100);
 
-            }
+                }
 
-        } else if (type.equals("top3")) {
+                break;
+            case "top3":
 
-            if (!db.getAchievement(9).isObtained()) {
+                if (!db.getAchievement(9).isObtained()) {
 
-                achievement = new Achievement(9, "Top3", "In all time leaderboard", 250, R.drawable.top3, true);
-                db.updateAchievement(achievement);
-                updatePoints(250);
-            }
+                    achievement = new Achievement(9, "Top3", "In all time leaderboard", 250, R.drawable.top3, true);
+                    db.updateAchievement(achievement);
+                    updatePoints(250);
+                }
+                break;
         }
     }
 
@@ -1221,8 +1226,10 @@ public class Controller {
         byte[] imageBytes=null;
 
         try {
-            is = url.openStream ();
-             imageBytes= getBytes(is);
+            if (url != null) {
+                is = url.openStream ();
+            }
+            imageBytes= getBytes(is);
         }
         catch (IOException e) {
 

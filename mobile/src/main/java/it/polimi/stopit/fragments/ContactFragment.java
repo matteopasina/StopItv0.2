@@ -19,7 +19,6 @@ import it.polimi.stopit.model.User;
 
 public class ContactFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
     private DatabaseHandler db;
     private ArrayList<User> mContacts;
 
@@ -33,7 +32,7 @@ public class ContactFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
@@ -43,12 +42,12 @@ public class ContactFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
 
-        db=new DatabaseHandler(getActivity());
-        mContacts=db.getAllContacts();
+        db = new DatabaseHandler(getActivity());
+        mContacts = db.getAllContacts();
 
-        Controller controller=new Controller(getActivity());
+        Controller controller = new Controller(getActivity());
 
-        mContacts=controller.addTestContacts(mContacts);
+        mContacts = controller.addTestContacts(mContacts);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -57,7 +56,7 @@ public class ContactFragment extends Fragment {
 
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            recyclerView.setAdapter(new ContactRecyclerViewAdapter(mContacts, mListener));
+            recyclerView.setAdapter(new ContactRecyclerViewAdapter(mContacts));
         }
         return view;
     }
@@ -66,18 +65,12 @@ public class ContactFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    public interface OnListFragmentInteractionListener {
-
-    }
 }

@@ -23,18 +23,15 @@ import java.util.List;
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
-import it.polimi.stopit.fragments.ContactFragment.OnListFragmentInteractionListener;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.User;
 
 public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ViewHolder> {
 
-    private final OnListFragmentInteractionListener mListener;
     private final List<User> mContacts;
 
-    public ContactRecyclerViewAdapter(ArrayList<User> contacts, OnListFragmentInteractionListener listener) {
+    public ContactRecyclerViewAdapter(ArrayList<User> contacts) {
         mContacts = contacts;
-        mListener = listener;
     }
 
     @Override
@@ -59,11 +56,10 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
         return mContacts.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
         public final CircularImageView mProfilePic;
         public final TextView mName;
-
 
 
         public ViewHolder(View view) {
@@ -82,18 +78,17 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
         @Override
         public void onClick(final View view) {
-            DatabaseHandler dbh=new DatabaseHandler(mView.getContext());
+            DatabaseHandler dbh = new DatabaseHandler(mView.getContext());
             dbh.getActiveChallenges();
-            boolean singleChallenge=true;
-            for(Challenge challenge : dbh.getActiveChallenges()){
-                if(challenge.getOpponentID().equals(mContacts.get(getLayoutPosition()).getID()))
-                {
-                    singleChallenge=false;
+            boolean singleChallenge = true;
+            for (Challenge challenge : dbh.getActiveChallenges()) {
+                if (challenge.getOpponentID().equals(mContacts.get(getLayoutPosition()).getID())) {
+                    singleChallenge = false;
                     Toast.makeText(mView.getContext(), "You already have an active challenge with this contact", Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
-            if(singleChallenge) {
+            if (singleChallenge) {
                 final View dialogView = View.inflate(view.getContext(), R.layout.dialog_challenge, null);
                 TextView messageDialog = (TextView) dialogView.findViewById(R.id.message_challenge);
                 messageDialog.setText("You are challenging " + mName.getText() + "!" + "\nSet the days of the challenge:");
@@ -147,7 +142,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                                 challenge.child("opponent").setValue(settings.getString("ID", null));
 
                                 Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
-                                createChallenge.putExtra("redirect","challenges");
+                                createChallenge.putExtra("redirect", "challenges");
                                 createChallenge.putExtra("ID", mContacts.get(getLayoutPosition()).getID());
                                 createChallenge.putExtra("length_days", days.getProgress());
                                 view.getContext().startActivity(createChallenge);
