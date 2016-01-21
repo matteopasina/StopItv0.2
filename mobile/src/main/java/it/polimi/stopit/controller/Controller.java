@@ -753,6 +753,7 @@ public class Controller {
     public boolean sendAlternative(int points) {
 
         List<AlternativeActivity> alternativeActivityList = db.getAllAlternative();
+        List<AlternativeActivity> alternativeActivityListCandidate=new ArrayList<>();
 
         AlternativeActivity alternativeChoosen;
         int j = 0;
