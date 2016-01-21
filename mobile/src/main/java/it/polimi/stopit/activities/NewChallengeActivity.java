@@ -1,14 +1,11 @@
 package it.polimi.stopit.activities;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.fragments.ContactFragment;
 
 public class NewChallengeActivity extends AppCompatActivity {
 
@@ -21,11 +18,6 @@ public class NewChallengeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Select a contact");
-
-
-        Fragment contactFragment = new ContactFragment();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(R.id.rel_layout_content, contactFragment).commit();
     }
 
     @Override

@@ -6,7 +6,7 @@
     android:name="it.polimi.stopit.fragments.MoneyGalleryFragment"
     android:layout_width="match_parent"
     android:layout_height="150dp"
+    android:layout_margin="1dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="it.polimi.stopit.fragments.MoneyGalleryFragment"
-    tools:listitem="@layout/fragment_moneygallery"
-    android:layout_margin="1dp"/>
+    tools:listitem="@layout/fragment_moneygallery" />

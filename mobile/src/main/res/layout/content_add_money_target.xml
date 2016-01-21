@@ -24,15 +24,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/rel_layout_content"
         android:layout_width="wrap_content"
-        android:layout_height="140dp">
-
-        <fragment android:name="it.polimi.stopit.fragments.MoneyGalleryFragment"
-            android:id="@+id/gallery_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_moneygallery_list" />
-
-    </android.support.v7.widget.CardView>
+        android:layout_height="140dp"/>
 
     <LinearLayout
         android:id="@+id/lin_lay1"

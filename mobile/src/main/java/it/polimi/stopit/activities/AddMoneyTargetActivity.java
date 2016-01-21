@@ -38,11 +38,10 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Add new money target");
 
-
         Fragment moneyGalleryFragment = new MoneyGalleryFragment();
         ((MoneyGalleryFragment)moneyGalleryFragment).registerActivity(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(R.id.rel_layout_content, moneyGalleryFragment).commit();
+        ft.replace(R.id.rel_layout_content, moneyGalleryFragment).commit();
 
         final EditText priceText = (EditText) findViewById(R.id.price_text);
 

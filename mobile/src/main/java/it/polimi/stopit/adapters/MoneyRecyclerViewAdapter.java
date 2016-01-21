@@ -103,8 +103,13 @@ public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecycler
             targetPic=(ImageView) view.findViewById(R.id.target_image);
             targetName= (TextView) view.findViewById(R.id.target_name);
             pos=getLayoutPosition();
+
         }
+
+
     }
+
+
 
 
 }

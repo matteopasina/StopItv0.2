@@ -27,7 +27,7 @@ public class MoneyGalleryFragment extends Fragment {
     public MoneyGalleryFragment() {
     }
 
-    public static Fragment newInstance(int columnCount) {
+    public static Fragment newInstance() {
         Fragment fragment = new MoneyGalleryFragment();
 
         return fragment;
