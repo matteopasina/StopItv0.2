@@ -195,8 +195,8 @@ public class ScheduleService extends Service {
             end = new MutableDateTime();
 
             start.setHourOfDay(7);
-            start.setMinuteOfHour(30);
-            end.setHourOfDay(24);
+            start.setMinuteOfHour(0);
+            end.setHourOfDay(23);
             end.setMinuteOfHour(0);
             end.setSecondOfMinute(0);
 
