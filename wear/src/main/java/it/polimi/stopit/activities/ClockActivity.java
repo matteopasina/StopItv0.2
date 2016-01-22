@@ -123,17 +123,11 @@ public class ClockActivity extends Activity {
         stub.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent launchCall = new Intent(ClockActivity.this, MenuActivity.class);
-                startActivity(launchCall);
+                Intent launchMenu = new Intent(ClockActivity.this, MenuActivity.class);
+                startActivity(launchMenu);
                 return true;
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(uiUpdated);
     }
 
     public void setTimer(TextView timerText, long millis) {
@@ -182,5 +176,17 @@ public class ClockActivity extends Activity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        unregisterReceiver(uiUpdated);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(uiUpdated);
     }
 }
