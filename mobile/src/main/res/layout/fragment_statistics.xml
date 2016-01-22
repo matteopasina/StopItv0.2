@@ -1,128 +1,139 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="85dp"
-    tools:context="it.polimi.stopit.activities.StatisticsActivity"
-    tools:showIn="@layout/activity_statistics">
+    android:layout_height="match_parent"
+    tools:context="it.polimi.stopit.fragments.StatisticsFragment">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp">
 
         <RelativeLayout
+            android:id="@+id/relativeOne"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true">
 
             <ImageView
                 android:id="@+id/total_points_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginLeft="35dp"
-                android:background="@drawable/redstar" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/icestar" />
 
             <TextView
                 android:id="@+id/total_points"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="19dp"
                 android:layout_toEndOf="@id/total_points_img"
                 android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeOne"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true">
 
             <ImageView
                 android:id="@+id/cig_avoided_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
-                android:layout_below="@id/total_points_img"
-                android:background="@drawable/cig_avoided" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/health" />
 
             <TextView
                 android:id="@+id/cig_avoided"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="50dp"
-                android:layout_below="@id/total_points"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/cig_avoided_img"
                 android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeThree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeTwo"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true">
 
             <ImageView
                 android:id="@+id/money_saved_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_below="@id/cig_avoided_img"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/coins" />
 
             <TextView
                 android:id="@+id/money_saved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cig_avoided"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="51dp"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/money_saved_img"
                 android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeFour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeThree"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true">
 
             <ImageView
                 android:id="@+id/challenge_won_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_below="@id/money_saved_img"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/challengewon" />
 
             <TextView
                 android:id="@+id/challenge_won"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/money_saved"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="50dp"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/challenge_won_img"
                 android:textSize="18sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relativeFour"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true">
 
             <ImageView
                 android:id="@+id/moneytarget_completed_img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_below="@id/challenge_won_img"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
+                android:layout_centerVertical="true"
                 android:background="@drawable/moneybox" />
 
             <TextView
                 android:id="@+id/moneytarget_completed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/challenge_won"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="50dp"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/moneytarget_completed_img"
                 android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/health_saved_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_below="@id/moneytarget_completed_img"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/health" />
-
-            <TextView
-                android:id="@+id/health_saved"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/moneytarget_completed"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="50dp"
-                android:layout_toEndOf="@id/health_saved_img"
-                android:textSize="18sp" />
-
         </RelativeLayout>
-</FrameLayout>
+    </RelativeLayout>
 
+</FrameLayout>
