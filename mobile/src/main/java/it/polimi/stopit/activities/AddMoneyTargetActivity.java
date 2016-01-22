@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
 import it.polimi.stopit.model.MoneyTarget;
@@ -137,6 +138,9 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
                         settings.edit().putString("CPD",String.valueOf(CPD)).commit();
+
+                        Controller controller=new Controller(getBaseContext());
+                        controller.buildStopProgram(CPD);
 
                         insertTarget(name, price, duration, imageResource, cigToReduce);
 

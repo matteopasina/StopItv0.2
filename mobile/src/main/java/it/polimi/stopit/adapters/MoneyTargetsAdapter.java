@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.MoneyTarget;
 
@@ -83,6 +84,9 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
                                     int newCPD=Integer.parseInt(settings.getString("CPD", null))+target.getCigReduced();
+
+                                    Controller controller=new Controller(context);
+                                    controller.buildStopProgram(newCPD);
 
                                     SharedPreferences.Editor editor = settings.edit();
                                     editor.putString("CPD",String.valueOf(newCPD)).apply();

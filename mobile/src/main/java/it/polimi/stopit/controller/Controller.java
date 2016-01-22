@@ -228,6 +228,8 @@ public class Controller {
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("CPD", String.valueOf(newCPD)).apply();
 
+            buildStopProgram(newCPD);
+
             int numCompleted = settings.getInt("moneyTargetCompleted", 0);
             numCompleted++;
             editor.putInt("moneyTargetCompleted", numCompleted).apply();
@@ -758,7 +760,7 @@ public class Controller {
     public boolean sendAlternative(int points) {
 
         List<AlternativeActivity> alternativeActivityList = db.getAllAlternative();
-        List<AlternativeActivity> alternativeActivityListCandidate=new ArrayList<>();
+        List<AlternativeActivity> alternativeActivityListCandidate = new ArrayList<>();
 
         AlternativeActivity alternativeChoosen;
         int j = 0;
@@ -1102,6 +1104,7 @@ public class Controller {
                 settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
                 dailyMoneyControl();
+                stopProgramControl();
 
             }
 
@@ -1117,6 +1120,7 @@ public class Controller {
             settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
             dailyMoneyControl();
+            stopProgramControl();
         }
     }
 
@@ -1210,9 +1214,9 @@ public class Controller {
 
     }
 
-    public byte[] convertImageToBytes(String urlString){
+    public byte[] convertImageToBytes(String urlString) {
 
-        URL url= null;
+        URL url = null;
         try {
 
             url = new URL(urlString);
@@ -1223,17 +1227,16 @@ public class Controller {
         }
 
         InputStream is = null;
-        byte[] imageBytes=null;
+        byte[] imageBytes = null;
 
         try {
             if (url != null) {
-                is = url.openStream ();
+                is = url.openStream();
             }
-            imageBytes= getBytes(is);
-        }
-        catch (IOException e) {
+            imageBytes = getBytes(is);
+        } catch (IOException e) {
 
-            e.printStackTrace ();
+            e.printStackTrace();
 
         }
 
@@ -1251,6 +1254,61 @@ public class Controller {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    public void buildStopProgram(int numCig) {
+
+        int days;
+
+        if (settings.getInt("daysToRed", 0) == 0) {
+
+            days = 365;
+            settings.edit().putInt("daysToRed", days).commit();
+
+        } else {
+
+            days = settings.getInt("daysToRed", 0);
+        }
+
+        settings.edit().putInt("redInterval", days / numCig).commit();
+
+        System.out.println("Stop schedule has been setted");
+        System.out.println("Reduction Interval: "+days/numCig);
+
+    }
+
+    public void stopProgramControl(){
+
+        int remainDays=settings.getInt("daysToRed",0);
+        if(remainDays>0){
+
+            remainDays--;
+
+            settings.edit().putInt("daysToRed",remainDays).commit();
+
+            int interval=settings.getInt("redInterval",0);
+            if(interval>0){
+
+                interval--;
+
+                settings.edit().putInt("redInterval", interval).commit();
+
+            }else{
+
+                int CPD=settings.getInt("CPD",0);
+
+                if(CPD>0){
+
+                    CPD--;
+                    settings.edit().putInt("CPD",CPD);
+                    buildStopProgram(CPD);
+                }
+            }
+
+        }else{
+
+
+        }
     }
 
 }

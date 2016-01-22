@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
@@ -85,6 +86,9 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             dbSeed.seedMoneyCategories();
                             dbSeed.seedAlternatives();
                             dbSeed.seedAchievements();
+
+                            Controller controller=new Controller(getBaseContext());
+                            controller.buildStopProgram(Integer.parseInt(settings.getString("CPD",null)));
 
                             startActivity(intent);
                             finish();
