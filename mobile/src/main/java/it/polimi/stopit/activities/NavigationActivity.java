@@ -36,6 +36,7 @@ import it.polimi.stopit.fragments.AchievementFragment;
 import it.polimi.stopit.fragments.ChallengeFragment;
 import it.polimi.stopit.fragments.MoneyFragment;
 import it.polimi.stopit.fragments.ProfileFragment;
+import it.polimi.stopit.fragments.StatisticsFragment;
 import it.polimi.stopit.model.User;
 
 public class NavigationActivity extends AppCompatActivity
@@ -85,13 +86,7 @@ public class NavigationActivity extends AppCompatActivity
 
                 Fragment fragment = MoneyFragment.newInstance();
 
-                FragmentManager fragmentManager = getFragmentManager();
-
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-
-                ft.replace(R.id.content_frame, fragment);
-
-                ft.commit();
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
                 getSupportActionBar().setTitle("Money Target");
 
@@ -99,13 +94,7 @@ public class NavigationActivity extends AppCompatActivity
 
                 Fragment fragment = ChallengeFragment.newInstance();
 
-                FragmentManager fragmentManager = getFragmentManager();
-
-                FragmentTransaction ft = fragmentManager.beginTransaction();
-
-                ft.replace(R.id.content_frame, fragment);
-
-                ft.commit();
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
                 getSupportActionBar().setTitle("Challenges");
             }
@@ -251,13 +240,7 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(user.getPoints()), user.getProfilePic());
 
-            FragmentManager fragmentManager = getFragmentManager();
-
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             getSupportActionBar().setTitle("Profile");
 
@@ -272,13 +255,7 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = AchievementFragment.newInstance();
 
-            FragmentManager fragmentManager = getFragmentManager();
-
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             getSupportActionBar().setTitle("Achievements");
 
@@ -286,39 +263,29 @@ public class NavigationActivity extends AppCompatActivity
 
             Fragment fragment = ChallengeFragment.newInstance();
 
-            FragmentManager fragmentManager = getFragmentManager();
-
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             getSupportActionBar().setTitle("Challenges");
 
         } else if (id == R.id.stats) {
 
-            Intent intent = new Intent(getApplicationContext(), StatisticsActivity.class);
+            Fragment fragment = StatisticsFragment.newInstance();
 
-            startActivity(intent);
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+            getSupportActionBar().setTitle("Statistics");
 
         } else if (id == R.id.money) {
 
             Fragment fragment = MoneyFragment.newInstance();
 
-            FragmentManager fragmentManager = getFragmentManager();
-
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
             getSupportActionBar().setTitle("Money Target");
 
         } else if (id == R.id.settings) {
 
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
 
             startActivity(intent);
 

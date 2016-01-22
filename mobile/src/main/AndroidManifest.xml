@@ -70,11 +70,6 @@
             android:label="@string/title_activity_challenge_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Leaderboard" />
-        <activity
-            android:name=".activities.StatisticsActivity"
-            android:label="@string/title_activity_statistics"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name=".Receivers.ChallengeReceiver"
