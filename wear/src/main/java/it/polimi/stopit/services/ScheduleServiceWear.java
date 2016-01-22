@@ -111,8 +111,6 @@ public class ScheduleServiceWear extends Service {
         list = loadSchedule();
         if (list == null) {
 
-            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleServiceWear.this);
-
             start = new MutableDateTime();
             end = new MutableDateTime();
 

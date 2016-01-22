@@ -71,19 +71,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Leaderboard" />
 
-        <service
-            android:name=".services.SendDataService"
-            android:enabled="true"
-            android:exported="true" />
-
         <receiver
             android:name=".Receivers.ChallengeReceiver"
             android:enabled="true" />
         <receiver
             android:name=".Receivers.SmokeReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
-
+            android:exported="true" />
     </application>
 
 </manifest>

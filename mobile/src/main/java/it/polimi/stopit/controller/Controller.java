@@ -16,6 +16,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -44,6 +45,7 @@ import java.util.Random;
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
 import it.polimi.stopit.Receivers.ChallengeReceiver;
+import it.polimi.stopit.Receivers.SmokeReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Achievement;
@@ -227,8 +229,6 @@ public class Controller {
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("CPD", String.valueOf(newCPD)).apply();
-
-            buildStopProgram(newCPD);
 
             int numCompleted = settings.getInt("moneyTargetCompleted", 0);
             numCompleted++;
@@ -718,9 +718,22 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
-    public void sendAlternativeNotification(AlternativeActivity alternativeActivity, int points) {
+    public int sendAlternativeNotification(AlternativeActivity alternativeActivity, int points) {
+
+        int notificationID = NotificationID.getID();
 
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), alternativeActivity.getImage());
+
+        Intent smokeIntent = new Intent(context, SmokeReceiver.class);
+        smokeIntent.putExtra("points",points);
+        smokeIntent.putExtra("notificationID",notificationID);
+        smokeIntent.putExtra("smoke",true);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, smokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent alternativeIntent = new Intent(context, SmokeReceiver.class);
+        alternativeIntent.putExtra("points",alternativeActivity.getBonusPoints());
+        alternativeIntent.putExtra("notificationID", notificationID);
+        PendingIntent piDS = PendingIntent.getBroadcast(context, 0, alternativeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -728,6 +741,8 @@ public class Controller {
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle(alternativeActivity.getTitle())
                         .setContentText(alternativeActivity.getDescription())
+                        .addAction(R.drawable.stopitsymbollollipop, "Alternative!", piDS)
+                        .addAction(R.drawable.stopitsymbollollipop, "Smoke", pi)
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
@@ -753,11 +768,11 @@ public class Controller {
         // Gets an instance of the NotificationManager service
         NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        int notificationID = NotificationID.getID();
         mNM.notify(notificationID, mBuilder.build());
+        return notificationID;
     }
 
-    public boolean sendAlternative(int points) {
+    public AlternativeActivity chooseAlternative(int points) {
 
         List<AlternativeActivity> alternativeActivityList = db.getAllAlternative();
         List<AlternativeActivity> alternativeActivityListCandidate = new ArrayList<>();
@@ -782,13 +797,12 @@ public class Controller {
         }
 
         if (alternativeActivityList.isEmpty()) {
-            return false;
+            return null;
         }
 
         alternativeChoosen = alternativeActivityList.get((int) listWeight.get(new Random().nextInt(listWeight.size())));
 
-        sendAlternativeNotification(alternativeChoosen, points);
-        return true;
+        return alternativeChoosen;
     }
 
     public long[] getLevelXPs() {
@@ -1104,7 +1118,6 @@ public class Controller {
                 settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
                 dailyMoneyControl();
-                stopProgramControl();
 
             }
 
@@ -1120,7 +1133,6 @@ public class Controller {
             settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
             dailyMoneyControl();
-            stopProgramControl();
         }
     }
 
@@ -1254,6 +1266,24 @@ public class Controller {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    public void cancelNotification(final int nID,long delay,final int points){
+
+        final NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Handler h = new Handler();
+        long delayInMilliseconds = delay;
+        h.postDelayed(new Runnable() {
+
+            public void run() {
+
+                mNM.cancel(nID);
+                updatePoints(points);
+
+            }
+
+        }, delayInMilliseconds);
     }
 
     public void buildStopProgram(int numCig) {
