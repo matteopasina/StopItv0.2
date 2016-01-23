@@ -2,11 +2,10 @@ package it.polimi.stopit.activities;
 
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -19,8 +18,6 @@ import java.util.List;
 import it.polimi.stopit.R;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
-
-    final Context context=this;
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -38,19 +35,72 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         index >= 0
                                 ? listPreference.getEntries()[index]
                                 : null);
-            } else {
+
+                return true;
+
+            } else if(preference instanceof EditTextPreference){
+
+                if(preference.getKey().equals("CPD")){
+
+                    int CPD=Integer.parseInt(stringValue);
+
+                    System.out.println("CPD = "+CPD);
+                    if(CPD>50 || CPD<1){
+
+                        System.out.println("ERROR WRONG VALUE");
+
+                    }else{
+
+                        preference.setSummary(stringValue);
+                        //new Controller(new SettingsActivity()).buildStopProgram();
+                        return true;
+                    }
+
+
+                }else if(preference.getKey().equals("cigcost")){
+
+                    int cigcost=Integer.parseInt(stringValue);
+
+                    System.out.println("cigcost = "+cigcost);
+                    if(cigcost>50 || cigcost<1){
+
+                        System.out.println("ERROR WRONG VALUE");
+
+                    }else{
+
+                        preference.setSummary(stringValue);
+                        return true;
+                    }
+
+                }else if(preference.getKey().equals("daysToRed")){
+
+                    int daysToRed=Integer.parseInt(stringValue);
+
+                    System.out.println("daysToRed = "+daysToRed);
+
+                    if(daysToRed<1 || daysToRed>1000){
+
+                        System.out.println("ERROR WRONG VALUE");
+
+                    }else{
+
+                        preference.setSummary(stringValue);
+                        //new Controller().buildStopProgram();
+                        return true;
+                    }
+
+                }
+
+
+            }else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
+                return true;
             }
-            return true;
+            return false;
         }
     };
-
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
 
     private static void bindPreferenceSummaryToValue(Preference preference) {
 
@@ -59,7 +109,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+                        .getInt(preference.getKey(), 0));
     }
 
     @Override
@@ -68,13 +118,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            // Show the Up button in the action bar.
+
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -92,10 +139,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this);
-    }
 
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -119,6 +162,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             bindPreferenceSummaryToValue(findPreference("CPD"));
             bindPreferenceSummaryToValue(findPreference("cigcost"));
+            bindPreferenceSummaryToValue(findPreference("daysToRed"));
         }
 
         @Override

@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -58,10 +57,6 @@ import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.AlternativeActivity;
 import it.polimi.stopit.model.User;
 
-/**
- * Created by matteo on 13/12/15.
- */
-
 public class ScheduleService extends WearableListenerService {
     private NotificationManager mNM;
     private static List<MutableInterval> list;
@@ -104,8 +99,8 @@ public class ScheduleService extends WearableListenerService {
     public void onCreate() {
         super.onCreate();
         controller = new Controller(this);
-        db=new DatabaseHandler(this);
-        settings=PreferenceManager.getDefaultSharedPreferences(this);
+        db = new DatabaseHandler(this);
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         deleteFile("schedule");
 
@@ -115,6 +110,7 @@ public class ScheduleService extends WearableListenerService {
                     public void onConnected(Bundle connectionHint) {
                         // Now you can use the Data Layer API
                     }
+
                     @Override
                     public void onConnectionSuspended(int cause) {
                     }
@@ -162,37 +158,35 @@ public class ScheduleService extends WearableListenerService {
                 }
 
                 SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
-                if (new Random().nextInt(Integer.parseInt(userdata.getString("CPD", null))) <
-                        Integer.valueOf(userdata.getString("CPD", null)) / 10) {
+                if (new Random().nextInt(userdata.getInt("CPD", 0)) < userdata.getInt("CPD", 0) / 10) {
 
-                    AlternativeActivity a=controller.chooseAlternative(calcPoints());
-                    int p=calcPoints();
+                    AlternativeActivity a = controller.chooseAlternative(calcPoints());
+                    int p = calcPoints();
 
-                    if (a==null) {
+                    if (a == null) {
 
                         nID = sendNotification(p);
-                        controller.cancelNotification(nID,300000,p);
+                        controller.cancelNotification(nID, 300000, p);
 
-                    }
-                    else{
+                    } else {
 
-                        nID=controller.sendAlternativeNotification(a,p);
-                        controller.cancelNotification(nID,300000,p);
+                        nID = controller.sendAlternativeNotification(a, p);
+                        controller.cancelNotification(nID, 300000, p);
 
                     }
 
                 } else {
 
-                    try{
+                    try {
 
                         mNM.cancel(nID);
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    nID=sendNotification(calcPoints());
-                    controller.cancelNotification(nID,300000,calcPoints());
+                    nID = sendNotification(calcPoints());
+                    controller.cancelNotification(nID, 300000, calcPoints());
 
                 }
 
@@ -221,9 +215,9 @@ public class ScheduleService extends WearableListenerService {
             end.setMinuteOfHour(0);
             end.setSecondOfMinute(0);
 
-            list = splitDuration(start, end, Long.parseLong(userdata.getString("CPD", null)));
+            list = splitDuration(start, end, userdata.getInt("CPD", 0));
             saveSchedule(list);
-            putScheduleInMap(start.getMillis(), end.getMillis(), Long.parseLong(userdata.getString("CPD", null)));
+            putScheduleInMap(start.getMillis(), end.getMillis(), userdata.getInt("CPD", 0));
         }
     }
 
@@ -256,7 +250,7 @@ public class ScheduleService extends WearableListenerService {
         }
     }
 
-    public void putScheduleInMap(long start,long end, long CPD){
+    public void putScheduleInMap(long start, long end, long CPD) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/schedule");
         putDataMapReq.getDataMap().putLong("start", start);
         putDataMapReq.getDataMap().putLong("end", end);
@@ -313,9 +307,11 @@ public class ScheduleService extends WearableListenerService {
 
         long millis = start.getMillis();
         long endMillis = end.getMillis();
+
+        if(chunkAmount==0) chunkAmount++;
         long chunkSize = (endMillis - millis) / chunkAmount;
 
-        List<MutableInterval> list = new ArrayList<MutableInterval>();
+        List<MutableInterval> list = new ArrayList<>();
 
         for (int i = 0; i < chunkAmount; ++i) {
             list.add(new MutableInterval(millis, millis += chunkSize));
@@ -345,19 +341,19 @@ public class ScheduleService extends WearableListenerService {
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.stopitsymbol);
 
         Intent smokeIntent = new Intent(this, SmokeReceiver.class);
-        smokeIntent.putExtra("points",points);
-        smokeIntent.putExtra("notificationID",notificationID);
-        smokeIntent.putExtra("smoke",true);
+        smokeIntent.putExtra("points", points);
+        smokeIntent.putExtra("notificationID", notificationID);
+        smokeIntent.putExtra("smoke", true);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, smokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent dontSmokeIntent = new Intent(this, SmokeReceiver.class);
-        dontSmokeIntent.putExtra("points",points*2);
+        dontSmokeIntent.putExtra("points", points * 2);
         dontSmokeIntent.putExtra("notificationID", notificationID);
         PendingIntent piDS = PendingIntent.getBroadcast(this, 0, dontSmokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setVibrate(new long[] { 200, 500, 200, 500 })
+                        .setVibrate(new long[]{200, 500, 200, 500})
                         .setLargeIcon(largeIcon)
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle("You can smoke")
@@ -397,7 +393,7 @@ public class ScheduleService extends WearableListenerService {
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         System.out.println("DATA CHANGE");
-        int i=0;
+        int i = 0;
 
         for (DataEvent event : dataEvents) {
 
@@ -408,7 +404,7 @@ public class ScheduleService extends WearableListenerService {
                 Asset profileAsset = dataMapItem.getDataMap().getAsset("contactImage");
                 Bitmap bitmap = loadBitmapFromAsset(profileAsset);
 
-                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage"+i+".jpg";
+                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage" + i + ".jpg";
 
                 try {
                     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imagePath));
@@ -425,10 +421,10 @@ public class ScheduleService extends WearableListenerService {
                 DataItem item = event.getDataItem();
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
 
-                Log.v("LEADERBOARD_IN_MOBILE",String.valueOf(item.getUri().getPath().compareTo("/askLeaderboard")));
+                Log.v("LEADERBOARD_IN_MOBILE", String.valueOf(item.getUri().getPath().compareTo("/askLeaderboard")));
                 System.out.println(item.getUri().getPath().compareTo("/askLeaderboard"));
 
-                if(item.getUri().getPath().compareTo("/askLeaderboard") == 0) {
+                if (item.getUri().getPath().compareTo("/askLeaderboard") == 0) {
                     if (dataMap.getBoolean("leaderboard")) {
                         putLeaderboardInMap();
                     }
@@ -461,21 +457,21 @@ public class ScheduleService extends WearableListenerService {
         return BitmapFactory.decodeStream(assetInputStream);
     }
 
-    public void putLeaderboardInMap(){
+    public void putLeaderboardInMap() {
 
-        ArrayList<User> mLeaderboard=db.getAllContacts();
+        ArrayList<User> mLeaderboard = db.getAllContacts();
 
-        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0),"","");
+        User me = new User(settings.getString("ID", null), settings.getString("name", null), settings.getString("surname", null), settings.getString("image", null), settings.getLong("points", 0), settings.getLong("dayPoints", 0), settings.getLong("weekPoints", 0), "", "");
         mLeaderboard.add(me);
 
-        mLeaderboard=controller.addTestContacts(mLeaderboard);
+        mLeaderboard = controller.addTestContacts(mLeaderboard);
 
         // reorder the leaderboard
         Collections.sort(mLeaderboard, new LeaderComparator());
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/leaderboard");
 
-        for(User contact: mLeaderboard){
+        for (User contact : mLeaderboard) {
             contact.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
             com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult =

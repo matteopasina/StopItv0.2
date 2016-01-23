@@ -16,68 +16,69 @@
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:textColor="@color/textColorSecondary"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="30dp" />
 
     <TextView
         android:id="@+id/SetCiga"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="How many cigarettes per day do you usually smoke?"
-        android:textSize="18dp"
-        android:textColor="@color/textColorTertiary"
-        android:layout_marginTop="35dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/welcome"
-        android:textAlignment="center"/>
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:padding="0dp"
-        android:layout_below="@+id/SetCiga"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="How many cigarettes per day do you usually smoke?"
+        android:textAlignment="center"
+        android:textColor="@color/textColorTertiary"
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/textColorSecondary"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/SetCiga"
         android:layout_centerHorizontal="true"
-        android:textSize="18dp"
-        android:layout_below="@+id/seekBar" />
+        android:layout_marginTop="30dp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="18dp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:padding="0dp" />
+
 
     <LinearLayout
         android:id="@+id/linlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_below="@+id/seekBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:layout_below="@+id/progress">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/cig_cost"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:textColor="@color/textColorTertiary"
             android:text="Set the price of a cigarette (in € cents):"
+            android:textColor="@color/textColorTertiary"
             android:textSize="18dp" />
 
         <EditText
             android:id="@+id/cigcost_text"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text=""
             android:layout_marginTop="20dp"
-            android:layout_toEndOf="@id/cig_cost" />
+            android:layout_toEndOf="@id/cig_cost"
+            android:text="" />
 
     </LinearLayout>
 
@@ -85,13 +86,12 @@
         android:id="@+id/done"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/buttonsquare"
         android:text="DONE"
-        android:textColor="@color/white"
-        android:background="@drawable/buttonsquare" />
-
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>

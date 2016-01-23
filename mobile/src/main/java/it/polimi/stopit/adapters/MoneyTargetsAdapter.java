@@ -83,13 +83,12 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
                                     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
-                                    int newCPD=Integer.parseInt(settings.getString("CPD", null))+target.getCigReduced();
-
-                                    Controller controller=new Controller(context);
-                                    controller.buildStopProgram(newCPD);
-
+                                    int newCPD=settings.getInt("CPD", 0)+target.getCigReduced();
                                     SharedPreferences.Editor editor = settings.edit();
-                                    editor.putString("CPD",String.valueOf(newCPD)).apply();
+                                    editor.putInt("CPD",newCPD).commit();
+
+                                    new Controller(context).buildStopProgram();
+
                                 }
 
                                 db.deleteMoneyTarget(target);

@@ -27,6 +27,9 @@
     <string name="pref_title_costcig">Cigarette cost (in € cents)</string>
     <string name="pref_default_costcig">0</string>
 
+    <string name="pref_title_daysToReduce">Days to stop</string>
+    <string name="pref_default_days">365</string>
+
     <!-- settings for alternative activities -->
 
     <string name="pref_header_altactivities">Alternative Activities</string>

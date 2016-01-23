@@ -75,9 +75,9 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
 
                             SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("CPD", String.valueOf(cigaPerDay.getProgress() / 2));
+                            editor.putInt("CPD", cigaPerDay.getProgress() / 2);
 
-                            editor.putString("cigcost", String.valueOf(cigCostVal.getText()));
+                            editor.putInt("cigcost", Integer.parseInt(String.valueOf(cigCostVal.getText())));
 
                             editor.commit();
 
@@ -87,8 +87,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             dbSeed.seedAlternatives();
                             dbSeed.seedAchievements();
 
-                            Controller controller=new Controller(getBaseContext());
-                            controller.buildStopProgram(Integer.parseInt(settings.getString("CPD",null)));
+                            new Controller(getBaseContext()).buildStopProgram();
 
                             startActivity(intent);
                             finish();

@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:defaultValue="@string/pref_default_numcig"
+    <it.polimi.stopit.IntEditTextPreference
+        android:defaultValue="0"
         android:inputType="number"
         android:key="CPD"
         android:maxLines="1"
@@ -9,7 +9,7 @@
         android:singleLine="true"
         android:title="@string/pref_title_numcig" />
 
-    <EditTextPreference
+    <it.polimi.stopit.IntEditTextPreference
         android:defaultValue="@string/pref_default_costcig"
         android:inputType="number"
         android:key="cigcost"
@@ -17,5 +17,14 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_costcig" />
+
+    <it.polimi.stopit.IntEditTextPreference
+        android:defaultValue="@string/pref_default_days"
+        android:inputType="number"
+        android:key="daysToRed"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_daysToReduce" />
 
 </PreferenceScreen>

@@ -24,7 +24,7 @@ import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.fragments.MoneyGalleryFragment;
 import it.polimi.stopit.model.MoneyTarget;
 
-public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassingData{
+public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassingData {
 
     String name;
     int imgRes;
@@ -40,7 +40,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         getSupportActionBar().setTitle("Add new money target");
 
         Fragment moneyGalleryFragment = new MoneyGalleryFragment();
-        ((MoneyGalleryFragment)moneyGalleryFragment).registerActivity(this);
+        ((MoneyGalleryFragment) moneyGalleryFragment).registerActivity(this);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.rel_layout_content, moneyGalleryFragment).commit();
 
@@ -51,61 +51,61 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
         for (int i = 0; i < timeValues.length; i++) {
 
-            String number = Integer.toString(i+1);
+            String number = Integer.toString(i + 1);
             timeValues[i] = number + " Weeks";
         }
-        timeValues[0]="1 Week";
+        timeValues[0] = "1 Week";
 
         timePicker.setMinValue(1);
         timePicker.setMaxValue(52);
         timePicker.setWrapSelectorWheel(false);
         timePicker.setDisplayedValues(timeValues);
 
-        Button addButton= (Button) findViewById(R.id.add_button);
+        Button addButton = (Button) findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 int price;
-                int duration=timePicker.getValue()*7;
+                int duration = timePicker.getValue() * 7;
                 int maxPrice;
 
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
 
-                int cigCost = Integer.parseInt(settings.getString("cigcost", null));
-                int cigPerDay = Integer.parseInt(settings.getString("CPD", null));
+                int cigCost = settings.getInt("cigcost", 0);
+                int cigPerDay = settings.getInt("CPD", 0);
 
-                maxPrice=(cigCost*cigPerDay*duration);
+                maxPrice = (cigCost * cigPerDay * duration);
 
-                if(name==null || imgRes==0){
+                if (name == null || imgRes == 0) {
 
                     Toast.makeText(AddMoneyTargetActivity.this, "Select a category", Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
 
-                    try{
+                    try {
 
-                        price=Integer.parseInt(priceText.getText().toString())*100;
+                        price = Integer.parseInt(priceText.getText().toString()) * 100;
 
-                        if(price>0){
+                        if (price > 0) {
 
-                            if(price<=maxPrice){
+                            if (price <= maxPrice) {
 
-                                int cigToReduce=(price/(cigCost*duration));
+                                int cigToReduce = (price / (cigCost * duration));
 
-                                showDialog(name,price,duration,imgRes,cigPerDay-cigToReduce,cigToReduce);
-                            }else{
+                                showDialog(name, price, duration, imgRes, cigPerDay - cigToReduce, cigToReduce);
+                            } else {
 
-                                Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum "+maxPrice/100+" € in "+duration+" days ", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddMoneyTargetActivity.this, "You can save maximum " + maxPrice / 100 + " € in " + duration + " days ", Toast.LENGTH_SHORT).show();
 
                             }
 
-                        }else{
+                        } else {
 
                             Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price", Toast.LENGTH_SHORT).show();
                         }
 
-                    }catch(Exception e){
+                    } catch (Exception e) {
 
                         Toast.makeText(AddMoneyTargetActivity.this, "Insert a valid price ", Toast.LENGTH_SHORT).show();
                     }
@@ -127,25 +127,24 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(final String name,final int price,final int duration,final int imageResource, final int CPD,final int cigToReduce){
+    public void showDialog(final String name, final int price, final int duration, final int imageResource, final int CPD, final int cigToReduce) {
 
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
 
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
-                        settings.edit().putString("CPD",String.valueOf(CPD)).commit();
+                        settings.edit().putInt("CPD", CPD).commit();
 
-                        Controller controller=new Controller(getBaseContext());
-                        controller.buildStopProgram(CPD);
+                        new Controller(getBaseContext()).buildStopProgram();
 
                         insertTarget(name, price, duration, imageResource, cigToReduce);
 
-                        Intent intent=new Intent(getApplicationContext(),NavigationActivity.class);
-                        intent.putExtra("redirect","money");
+                        Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+                        intent.putExtra("redirect", "money");
                         startActivity(intent);
 
                         break;
@@ -158,25 +157,25 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AddMoneyTargetActivity.this);
-        builder.setMessage("Adding "+ name +", you will avoid to smoke "+(cigToReduce)+" cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Adding " + name + ", you will avoid to smoke " + (cigToReduce) + " cigarettes per day, confirm?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
 
     }
 
-    public void insertTarget(String name,int price, int duration,int imageResource,int cigToReduce){
+    public void insertTarget(String name, int price, int duration, int imageResource, int cigToReduce) {
 
-        DatabaseHandler db=new DatabaseHandler(getApplication());
+        DatabaseHandler db = new DatabaseHandler(getApplication());
 
-        db.addMoneyTarget(new MoneyTarget(1, name, price, 0, duration, imageResource,cigToReduce));
+        db.addMoneyTarget(new MoneyTarget(1, name, price, 0, duration, imageResource, cigToReduce));
         Toast.makeText(AddMoneyTargetActivity.this, "" + name + " inserted correctly!", Toast.LENGTH_SHORT).show();
 
     }
 
 
     @Override
-    public void callBack(String name,int imgResource) {
+    public void callBack(String name, int imgResource) {
 
-        this.name=name;
-        this.imgRes=imgResource;
+        this.name = name;
+        this.imgRes = imgResource;
     }
 }

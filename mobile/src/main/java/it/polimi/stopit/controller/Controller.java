@@ -181,7 +181,7 @@ public class Controller {
         ArrayList<MoneyTarget> moneyTargets = db.getAllTargets();
         MoneyTarget currentTarget = new MoneyTarget();
         boolean first = false;
-        int cigCost = Integer.parseInt(settings.getString("cigcost", null));
+        int cigCost = settings.getInt("cigcost", 0);
 
         for (MoneyTarget target : moneyTargets) {
 
@@ -225,10 +225,10 @@ public class Controller {
             currentTarget.setMoneySaved(currentTarget.getMoneyAmount());
             currentTarget.setDuration(0);
 
-            int newCPD = Integer.parseInt(settings.getString("CPD", null)) + currentTarget.getCigReduced();
+            int newCPD = settings.getInt("CPD", 0) + currentTarget.getCigReduced();
 
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString("CPD", String.valueOf(newCPD)).apply();
+            editor.putInt("CPD", newCPD).apply();
 
             int numCompleted = settings.getInt("moneyTargetCompleted", 0);
             numCompleted++;
@@ -247,7 +247,7 @@ public class Controller {
         } else {
             currentTarget.setMoneySaved(newMoney);
 
-            int cigcost = Integer.parseInt(settings.getString("cigcost", null));
+            int cigcost = settings.getInt("cigcost", 0);
 
             int duration = (int) (currentTarget.getMoneyAmount() - currentTarget.getMoneySaved()) / (currentTarget.getCigReduced() * cigcost);
 
@@ -482,7 +482,7 @@ public class Controller {
 
     public int getMoneySaved() {
 
-        int cigCost = Integer.parseInt(settings.getString("cigcost", null));
+        int cigCost = settings.getInt("cigcost", 0);
 
         return cigCost * db.getCigarettesAvoided();
     }
@@ -1118,6 +1118,7 @@ public class Controller {
                 settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
                 dailyMoneyControl();
+                stopProgramControl();
 
             }
 
@@ -1133,6 +1134,7 @@ public class Controller {
             settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
             dailyMoneyControl();
+            stopProgramControl();
         }
     }
 
@@ -1286,30 +1288,39 @@ public class Controller {
         }, delayInMilliseconds);
     }
 
-    public void buildStopProgram(int numCig) {
+    public void buildStopProgram() {
 
-        int days;
+        int numCig=settings.getInt("CPD",0);
 
-        if (settings.getInt("daysToRed", 0) == 0) {
+        if(numCig>0){
 
-            days = 365;
-            settings.edit().putInt("daysToRed", days).commit();
+            int days;
 
-        } else {
+            if (settings.getInt("daysToRed", 0) == 0) {
 
-            days = settings.getInt("daysToRed", 0);
+                days = 365;
+                settings.edit().putInt("daysToRed", days).commit();
+
+            } else {
+
+                days = settings.getInt("daysToRed", 0);
+            }
+
+            settings.edit().putInt("redInterval", days / numCig).commit();
+
+            System.out.println("Stop schedule for " + days + " from now has been setted");
+            System.out.println("Reduction every "+days/numCig+" days");
+
+        }else{
+
+            System.out.println("Already stopped smoking");
         }
-
-        settings.edit().putInt("redInterval", days / numCig).commit();
-
-        System.out.println("Stop schedule has been setted");
-        System.out.println("Reduction Interval: "+days/numCig);
-
     }
 
     public void stopProgramControl(){
 
         int remainDays=settings.getInt("daysToRed",0);
+
         if(remainDays>0){
 
             remainDays--;
@@ -1317,6 +1328,7 @@ public class Controller {
             settings.edit().putInt("daysToRed",remainDays).commit();
 
             int interval=settings.getInt("redInterval",0);
+
             if(interval>0){
 
                 interval--;
@@ -1330,15 +1342,32 @@ public class Controller {
                 if(CPD>0){
 
                     CPD--;
-                    settings.edit().putInt("CPD",CPD);
-                    buildStopProgram(CPD);
+                    settings.edit().putInt("CPD",CPD).commit();
+
+                    if(CPD>0){
+
+                        buildStopProgram();
+
+                    }else{
+
+                        notifyStopCompleted();
+                    }
+
+                }else{
+
+                    notifyStopCompleted();
                 }
             }
 
         }else{
 
-
+            notifyStopCompleted();
         }
+    }
+
+    public void notifyStopCompleted(){
+
+
     }
 
 }
