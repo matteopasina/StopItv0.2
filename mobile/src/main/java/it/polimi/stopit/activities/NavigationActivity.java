@@ -65,6 +65,8 @@ public class NavigationActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
+
         Controller control=new Controller(this);
 
         control.weeklyUpdate();
@@ -90,6 +92,9 @@ public class NavigationActivity extends AppCompatActivity
 
                 getSupportActionBar().setTitle("Money Target");
 
+                dialog.dismiss();
+
+
             }else if(redirect.equals("challenges")){
 
                 Fragment fragment = ChallengeFragment.newInstance();
@@ -97,11 +102,12 @@ public class NavigationActivity extends AppCompatActivity
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
                 getSupportActionBar().setTitle("Challenges");
+
+                dialog.dismiss();
+
             }
 
         }
-
-        dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -173,7 +179,6 @@ public class NavigationActivity extends AppCompatActivity
                         }
                     }
 
-
                 }
 
                 @Override
@@ -187,8 +192,11 @@ public class NavigationActivity extends AppCompatActivity
             Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
             getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+
             dialog.dismiss();
+
         }
+
     }
 
     @Override
