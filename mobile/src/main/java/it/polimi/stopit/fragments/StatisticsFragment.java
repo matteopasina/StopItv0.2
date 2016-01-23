@@ -39,7 +39,10 @@ public class StatisticsFragment extends Fragment {
         SharedPreferences settings= PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         TextView totalPoints=(TextView) view.findViewById(R.id.total_points);
-        totalPoints.setText(settings.getLong("points",0)+" total points ");
+        totalPoints.setText(settings.getLong("points",0)+" total points");
+
+        TextView daysToRed=(TextView) view.findViewById(R.id.days_reduce);
+        daysToRed.setText(settings.getInt("daysToRed",0)+" days to stop");
 
         TextView moneySaved=(TextView) view.findViewById(R.id.money_saved);
         int monSaved=control.getMoneySaved();
@@ -49,10 +52,10 @@ public class StatisticsFragment extends Fragment {
         cigAvoided.setText(control.getCigAvoided()+" cigarettes avoided");
 
         TextView challengeWon=(TextView) view.findViewById(R.id.challenge_won);
-        challengeWon.setText(control.challengeWonLost()+" challenge won ");
+        challengeWon.setText(control.challengeWonLost()+" challenge won");
 
         TextView moneyTargetCompleted=(TextView) view.findViewById(R.id.moneytarget_completed);
-        moneyTargetCompleted.setText(settings.getInt("moneytargetcompleted",0)+" money target completed ");
+        moneyTargetCompleted.setText(settings.getInt("moneytargetcompleted",0)+" money target completed");
 
         return view;
 

@@ -1,8 +1,7 @@
 package it.polimi.stopit.activities;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +46,7 @@ public class NavigationActivity extends AppCompatActivity
     private long daypoints;
     private long weekpoints;
     private String redirect="";
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +101,8 @@ public class NavigationActivity extends AppCompatActivity
 
         }
 
+        dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
+
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         user.setID(settings.getString("ID", null));
@@ -152,8 +154,8 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("image", user.getProfilePic());
                     editor.putLong("dayPoints", user.getDayPoints());
                     editor.putLong("weekPoints", user.getWeekPoints());
-                    editor.putString("lastDayCheck",user.getLastDayCheck());
-                    editor.putString("lastWeekCheck",user.getLastWeekCheck());
+                    editor.putString("lastDayCheck", user.getLastDayCheck());
+                    editor.putString("lastWeekCheck", user.getLastWeekCheck());
 
                     editor.commit();
 
@@ -162,13 +164,9 @@ public class NavigationActivity extends AppCompatActivity
                         try {
                             Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
-                            FragmentManager fragmentManager = getFragmentManager();
+                            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-                            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-                            ft.replace(R.id.content_frame, fragment);
-
-                            ft.commit();
+                            dialog.dismiss();
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -188,13 +186,8 @@ public class NavigationActivity extends AppCompatActivity
             Toast.makeText(NavigationActivity.this, "Offline", Toast.LENGTH_SHORT).show();
             Fragment fragment = ProfileFragment.newInstance(user.getID(), user.getName(), user.getSurname(), String.valueOf(points), user.getProfilePic());
 
-            FragmentManager fragmentManager = getFragmentManager();
-
-            FragmentTransaction ft = fragmentManager.beginTransaction();
-
-            ft.replace(R.id.content_frame, fragment);
-
-            ft.commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+            dialog.dismiss();
         }
     }
 

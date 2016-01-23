@@ -8,4 +8,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="statistics_icon_size">55dp</dimen>
+    <dimen name="statistics_margintop">20dp</dimen>
+    <dimen name="statistics_marginleft">30dp</dimen>
 </resources>

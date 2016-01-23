@@ -7,8 +7,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="50dp">
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/statistics_marginleft">
 
         <RelativeLayout
             android:id="@+id/relativeOne"
@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/total_points_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
                 android:layout_centerVertical="true"
                 android:background="@drawable/icestar" />
 
@@ -38,24 +38,24 @@
             android:id="@+id/relativeTwo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_below="@id/relativeOne"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true">
+            android:layout_marginTop="@dimen/statistics_margintop">
 
             <ImageView
-                android:id="@+id/cig_avoided_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:id="@+id/days_reduce_img"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
                 android:layout_centerVertical="true"
-                android:background="@drawable/health" />
+                android:background="@drawable/calendar" />
 
             <TextView
-                android:id="@+id/cig_avoided"
+                android:id="@+id/days_reduce"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/cig_avoided_img"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@id/days_reduce_img"
                 android:textSize="18sp" />
 
         </RelativeLayout>
@@ -64,14 +64,40 @@
             android:id="@+id/relativeThree"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_below="@id/relativeTwo"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true">
+            android:layout_marginTop="@dimen/statistics_margintop">
+
+            <ImageView
+                android:id="@+id/cig_avoided_img"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
+                android:layout_centerVertical="true"
+                android:background="@drawable/health" />
+
+            <TextView
+                android:id="@+id/cig_avoided"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toEndOf="@id/cig_avoided_img"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeFour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/relativeThree"
+            android:layout_marginTop="@dimen/statistics_margintop">
 
             <ImageView
                 android:id="@+id/money_saved_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
                 android:layout_centerVertical="true"
                 android:background="@drawable/coins" />
 
@@ -79,24 +105,24 @@
                 android:id="@+id/money_saved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@id/money_saved_img"
                 android:textSize="18sp" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relativeFour"
+            android:id="@+id/relativeFive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/relativeThree"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true">
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/relativeFour"
+            android:layout_marginTop="@dimen/statistics_margintop">
 
             <ImageView
                 android:id="@+id/challenge_won_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
                 android:layout_centerVertical="true"
                 android:background="@drawable/challengewon" />
 
@@ -104,8 +130,8 @@
                 android:id="@+id/challenge_won"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@id/challenge_won_img"
                 android:textSize="18sp" />
         </RelativeLayout>
@@ -113,14 +139,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/relativeFour"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentLeft="true">
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/relativeFive"
+            android:layout_marginTop="@dimen/statistics_margintop">
 
             <ImageView
                 android:id="@+id/moneytarget_completed_img"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/statistics_icon_size"
+                android:layout_height="@dimen/statistics_icon_size"
                 android:layout_centerVertical="true"
                 android:background="@drawable/moneybox" />
 
@@ -128,12 +154,11 @@
                 android:id="@+id/moneytarget_completed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@id/moneytarget_completed_img"
                 android:textSize="18sp" />
 
         </RelativeLayout>
     </RelativeLayout>
-
 </FrameLayout>
