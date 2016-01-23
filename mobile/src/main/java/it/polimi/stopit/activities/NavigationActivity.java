@@ -41,7 +41,7 @@ import it.polimi.stopit.model.User;
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    User user = new User();
+    User user;
     private long points;
     private long daypoints;
     private long weekpoints;
@@ -111,6 +111,7 @@ public class NavigationActivity extends AppCompatActivity
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
+        user=new User();
         user.setID(settings.getString("ID", null));
         user.setName(settings.getString("name", null));
         user.setSurname(settings.getString("surname", null));
