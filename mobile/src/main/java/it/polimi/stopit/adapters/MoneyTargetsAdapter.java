@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -86,8 +87,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
                                     int newCPD=settings.getInt("CPD", 0)+target.getCigReduced();
                                     SharedPreferences.Editor editor = settings.edit();
                                     editor.putInt("CPD",newCPD).commit();
-
-                                    new Controller(context).buildStopProgram();
+                                    new Controller(context).buildStopProgram(newCPD,0);
 
                                 }
 
@@ -95,6 +95,8 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
                                 mTargets.remove(position);
                                 notifyDataSetChanged();
+
+                                Toast.makeText(context, "Money target succesfully deleted", Toast.LENGTH_SHORT).show();
 
                                 break;
 

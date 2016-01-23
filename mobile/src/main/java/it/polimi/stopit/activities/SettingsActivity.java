@@ -12,17 +12,19 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.List;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.controller.Controller;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            String stringValue = String.valueOf(newValue);
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -38,63 +40,59 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 return true;
 
-            } else if(preference instanceof EditTextPreference){
+            } else if (preference instanceof EditTextPreference && !stringValue.contentEquals(((EditTextPreference) preference).getText())) {
 
-                if(preference.getKey().equals("CPD")){
+                if (preference.getKey().equals("CPD")) {
 
-                    int CPD=Integer.parseInt(stringValue);
+                    int CPD = Integer.parseInt(stringValue);
 
-                    System.out.println("CPD = "+CPD);
-                    if(CPD>50 || CPD<1){
+                    if (CPD > 50 || CPD < 1) {
 
-                        System.out.println("ERROR WRONG VALUE");
+                        Toast.makeText(preference.getContext(), "Cigarettes per day must be in range 1 - 50", Toast.LENGTH_SHORT).show();
 
-                    }else{
+                    } else {
 
                         preference.setSummary(stringValue);
-                        //new Controller(new SettingsActivity()).buildStopProgram();
+                        new Controller(preference.getContext()).buildStopProgram(Integer.parseInt(stringValue),0);
+
                         return true;
                     }
 
 
-                }else if(preference.getKey().equals("cigcost")){
+                } else if (preference.getKey().equals("cigcost")) {
 
-                    int cigcost=Integer.parseInt(stringValue);
+                    int cigcost = Integer.parseInt(stringValue);
 
-                    System.out.println("cigcost = "+cigcost);
-                    if(cigcost>50 || cigcost<1){
+                    if (cigcost > 50 || cigcost < 1) {
 
-                        System.out.println("ERROR WRONG VALUE");
+                        Toast.makeText(preference.getContext(), "Error insert a realistic price!", Toast.LENGTH_SHORT).show();
 
-                    }else{
+                    } else {
 
                         preference.setSummary(stringValue);
                         return true;
                     }
 
-                }else if(preference.getKey().equals("daysToRed")){
+                } else if (preference.getKey().equals("daysToRed")) {
 
-                    int daysToRed=Integer.parseInt(stringValue);
+                    int daysToRed = Integer.parseInt(stringValue);
 
-                    System.out.println("daysToRed = "+daysToRed);
+                    if (daysToRed < 1 || daysToRed > 1000) {
 
-                    if(daysToRed<1 || daysToRed>1000){
+                        Toast.makeText(preference.getContext(), "Days must be in range 1 - 1000", Toast.LENGTH_SHORT).show();
 
-                        System.out.println("ERROR WRONG VALUE");
-
-                    }else{
+                    } else {
 
                         preference.setSummary(stringValue);
-                        //new Controller().buildStopProgram();
+                        new Controller(preference.getContext()).buildStopProgram(100,Integer.parseInt(stringValue));
                         return true;
                     }
 
                 }
 
 
-            }else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
+            } else {
+
                 preference.setSummary(stringValue);
                 return true;
             }
@@ -132,7 +130,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         if (id == android.R.id.home) {
 
             this.finish();
-            Intent intent=new Intent(this,NavigationActivity.class);
+            Intent intent = new Intent(this, NavigationActivity.class);
             startActivity(intent);
             return true;
         }

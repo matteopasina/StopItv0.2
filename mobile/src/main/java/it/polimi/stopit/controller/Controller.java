@@ -234,6 +234,8 @@ public class Controller {
             numCompleted++;
             editor.putInt("moneyTargetCompleted", numCompleted).apply();
 
+            buildStopProgram(newCPD,0);
+
             if (numCompleted > 2) {
 
                 updateMoneyTargetAchievement(3);
@@ -1288,32 +1290,31 @@ public class Controller {
         }, delayInMilliseconds);
     }
 
-    public void buildStopProgram() {
+    public void buildStopProgram(int numCig,int newDays) {
 
-        int numCig=settings.getInt("CPD",0);
+        if(numCig==100){
+
+            numCig = settings.getInt("CPD",0);
+        }
 
         if(numCig>0){
 
-            int days;
+            if (newDays == 0) {
 
-            if (settings.getInt("daysToRed", 0) == 0) {
-
-                days = 365;
-                settings.edit().putInt("daysToRed", days).commit();
-
-            } else {
-
-                days = settings.getInt("daysToRed", 0);
+                newDays = settings.getInt("daysToRed", 0);
             }
 
-            settings.edit().putInt("redInterval", days / numCig).commit();
+            int interval=newDays / numCig;
 
-            System.out.println("Stop schedule for " + days + " from now has been setted");
-            System.out.println("Reduction every "+days/numCig+" days");
+            if(interval==0) interval++;
+            settings.edit().putInt("redInterval", interval).commit();
+
+            System.out.println("Stop schedule for " + newDays + " days from now has been setted");
+            System.out.println("Reduction every "+interval+" days");
 
         }else{
 
-            System.out.println("Already stopped smoking");
+            notifyStopCompleted();
         }
     }
 
@@ -1346,7 +1347,7 @@ public class Controller {
 
                     if(CPD>0){
 
-                        buildStopProgram();
+                        buildStopProgram(CPD,0);
 
                     }else{
 
