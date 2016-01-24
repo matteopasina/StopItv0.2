@@ -2,6 +2,7 @@ package it.polimi.stopit.services;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +12,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -22,20 +25,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableListenerService;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -54,10 +51,16 @@ import it.polimi.stopit.Receivers.SmokeReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
 import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.AlternativeActivity;
+import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.User;
 
-public class ScheduleService extends WearableListenerService {
+/**
+ * Created by matteo on 13/12/15.
+ */
+
+public class ScheduleService extends Service {
     private NotificationManager mNM;
     private static List<MutableInterval> list;
     private static long nextCiga;
@@ -95,6 +98,15 @@ public class ScheduleService extends WearableListenerService {
         }
     };
 
+    private BroadcastReceiver askLeaderboard = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            putLeaderboardInMap();
+
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -103,6 +115,8 @@ public class ScheduleService extends WearableListenerService {
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         deleteFile("schedule");
+
+        startService(new Intent(this, ListenerService.class));
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -217,6 +231,9 @@ public class ScheduleService extends WearableListenerService {
 
             list = splitDuration(start, end, userdata.getInt("CPD", 0));
             saveSchedule(list);
+            putLeaderboardInMap();
+            putAchievementsInMap();
+            putChallengesInMap();
             putScheduleInMap(start.getMillis(), end.getMillis(), userdata.getInt("CPD", 0));
         }
     }
@@ -250,14 +267,91 @@ public class ScheduleService extends WearableListenerService {
         }
     }
 
-    public void putScheduleInMap(long start, long end, long CPD) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/schedule");
+    public void putScheduleInMap(long start,long end, long CPD){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/schedule");
         putDataMapReq.getDataMap().putLong("start", start);
         putDataMapReq.getDataMap().putLong("end", end);
         putDataMapReq.getDataMap().putLong("CPD", CPD);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+    }
+
+    public void putLeaderboardInMap() {
+
+        ArrayList<User> mLeaderboard = db.getAllContacts();
+
+        User me = new User(settings.getString("ID", null), settings.getString("name", null), settings.getString("surname", null), settings.getString("image", null), settings.getLong("points", 0), settings.getLong("dayPoints", 0), settings.getLong("weekPoints", 0), "", "");
+        mLeaderboard.add(me);
+
+        mLeaderboard = controller.addTestContacts(mLeaderboard);
+
+        int i = 0;
+        for(User contact: mLeaderboard) {
+
+            //Bitmap img=controller.(contact.getProfilePic());
+            //Asset asset=createAssetFromBitmap(img);
+
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard/" + i);
+            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+           // putDataMapReq.getDataMap().putAsset("profileImage", asset);
+            contact.putToDataMap(putDataMapReq.getDataMap());
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            i++;
+        }
+
+    }
+
+    public void putAchievementsInMap() {
+
+        ArrayList<Achievement> mAchievements = (ArrayList<Achievement>) db.getAllAchievements();
+
+        int i = 0;
+        for(Achievement achievement: mAchievements) {
+
+            /*Bitmap img = BitmapFactory.decodeResource(getResources(), achievement.getImage());
+            Asset asset=createAssetFromBitmap(img);*/
+
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements/" + i);
+            putDataMapReq.getDataMap().putLong("timestamp",new MutableDateTime().getMillis());
+            //putDataMapReq.getDataMap().putAsset("achievementImage", asset);
+            achievement.putToDataMap(putDataMapReq.getDataMap());
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            i++;
+        }
+
+    }
+
+    public void putChallengesInMap() {
+
+        ArrayList<Challenge> mChallenges = (ArrayList<Challenge>) db.getActiveChallenges();
+
+        int i = 0;
+        for(Challenge challenge: mChallenges) {
+
+            //Bitmap img=controller.(contact.getProfilePic());
+            //Asset asset=createAssetFromBitmap(img);
+
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/challenges/" + i);
+            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+            // putDataMapReq.getDataMap().putAsset("profileImage", asset);
+            challenge.putToDataMap(putDataMapReq.getDataMap());
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            i++;
+        }
+
+    }
+
+    private static Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
     }
 
     public void saveSchedule(List<MutableInterval> list) {
@@ -390,51 +484,6 @@ public class ScheduleService extends WearableListenerService {
         return notificationID;
     }
 
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        System.out.println("DATA CHANGE");
-        int i = 0;
-
-        for (DataEvent event : dataEvents) {
-
-            if (event.getType() == DataEvent.TYPE_CHANGED && event.getDataItem().getUri().getPath().equals("/image")) {
-
-                DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
-
-                Asset profileAsset = dataMapItem.getDataMap().getAsset("contactImage");
-                Bitmap bitmap = loadBitmapFromAsset(profileAsset);
-
-                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage" + i + ".jpg";
-
-                try {
-                    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imagePath));
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.close();
-                    i++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } else if (event.getType() == DataEvent.TYPE_CHANGED) {
-
-                // DataItem changed
-                DataItem item = event.getDataItem();
-                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-
-                Log.v("LEADERBOARD_IN_MOBILE", String.valueOf(item.getUri().getPath().compareTo("/askLeaderboard")));
-                System.out.println(item.getUri().getPath().compareTo("/askLeaderboard"));
-
-                if (item.getUri().getPath().compareTo("/askLeaderboard") == 0) {
-                    if (dataMap.getBoolean("leaderboard")) {
-                        putLeaderboardInMap();
-                    }
-                }
-            } else if (event.getType() == DataEvent.TYPE_DELETED) {
-                // DataItem deleted
-            }
-        }
-    }
-
     public Bitmap loadBitmapFromAsset(Asset asset) {
         if (asset == null) {
             throw new IllegalArgumentException("Asset must be non-null");
@@ -457,29 +506,6 @@ public class ScheduleService extends WearableListenerService {
         return BitmapFactory.decodeStream(assetInputStream);
     }
 
-    public void putLeaderboardInMap() {
-
-        ArrayList<User> mLeaderboard = db.getAllContacts();
-
-        User me = new User(settings.getString("ID", null), settings.getString("name", null), settings.getString("surname", null), settings.getString("image", null), settings.getLong("points", 0), settings.getLong("dayPoints", 0), settings.getLong("weekPoints", 0), "", "");
-        mLeaderboard.add(me);
-
-        mLeaderboard = controller.addTestContacts(mLeaderboard);
-
-        // reorder the leaderboard
-        Collections.sort(mLeaderboard, new LeaderComparator());
-
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/leaderboard");
-
-        for (User contact : mLeaderboard) {
-            contact.putToDataMap(putDataMapReq.getDataMap());
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            com.google.android.gms.common.api.PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        }
-
-    }
-
     public static class LeaderComparator implements Comparator<User> {
 
         @Override
@@ -495,6 +521,7 @@ public class ScheduleService extends WearableListenerService {
         super.onStartCommand(intent, flags, startId);
 
         registerReceiver(uiUpdated, new IntentFilter("SMOKE_OUTOFTIME"));
+        registerReceiver(askLeaderboard, new IntentFilter("ASK_LEADERBOARD"));
 
         return START_STICKY;
     }
@@ -502,6 +529,12 @@ public class ScheduleService extends WearableListenerService {
     @Override
     public void onDestroy() {
         unregisterReceiver(uiUpdated);
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 }

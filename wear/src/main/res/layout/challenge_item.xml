@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<it.polimi.stopit.layoutImplementations.WearableChallengeItemLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/me"
+        android:text="You"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="16sp"
+        android:layout_alignParentStart="true"   />
+
+    <TextView
+        android:id="@+id/mypoints"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="16sp"
+        android:layout_alignParentStart="true"   />
+
+    <ImageView
+        android:id="@+id/VS"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/versus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/opponent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="16sp"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/opponentPoints"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="16sp"
+        android:layout_alignParentEnd="true" />
+
+</it.polimi.stopit.layoutImplementations.WearableChallengeItemLayout>

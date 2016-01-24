@@ -1,46 +1,42 @@
 package it.polimi.stopit.layoutImplementations;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import it.polimi.stopit.R;
 
 /**
- * Created by matteo on 15/01/16.
+ * Created by matteo on 24/01/16.
  */
-public class WearableListItemLayout extends RelativeLayout
+public class WearableChallengeItemLayout extends RelativeLayout
         implements WearableListView.OnCenterProximityListener {
 
-    private ImageView mCircle;
-    private TextView mName;
-    private TextView mPoints;
-    private TextView mPosition,me;
+    private ImageView mypic,opponentpic;
+    private TextView me,opponent,mypoints,opponentpoints;
 
     private final float mFadedTextAlpha;
     private final int mFadedCircleColor;
     private final int mChosenCircleColor;
 
-    public WearableListItemLayout(Context context) {
+    public WearableChallengeItemLayout(Context context) {
         this(context, null);
     }
 
-    public WearableListItemLayout(Context context, AttributeSet attrs) {
+    public WearableChallengeItemLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WearableListItemLayout(Context context, AttributeSet attrs,
+    public WearableChallengeItemLayout(Context context, AttributeSet attrs,
                                   int defStyle) {
         super(context, attrs, defStyle);
 
         mFadedTextAlpha = 20 / 100f;
-        mFadedCircleColor = ContextCompat.getColor(context,R.color.shadows);
+        mFadedCircleColor = ContextCompat.getColor(context, R.color.shadows);
         mChosenCircleColor=ContextCompat.getColor(context, R.color.colorAccent);
     }
 
@@ -50,29 +46,30 @@ public class WearableListItemLayout extends RelativeLayout
         super.onFinishInflate();
         // These are defined in the layout file for list items
         // (see next section)
-        mCircle = (ImageView) findViewById(R.id.circle);
-        mName = (TextView) findViewById(R.id.name);
-        mPoints = (TextView) findViewById(R.id.points);
-        mPosition = (TextView) findViewById(R.id.position);
+        //mypic = (ImageView) findViewById(R.id.mypic);
+        //opponentpic = (ImageView) findViewById(R.id.opponentPic);
+        me = (TextView) findViewById(R.id.me);
+        mypoints = (TextView) findViewById(R.id.mypoints);
+        opponent = (TextView) findViewById(R.id.opponent);
+        opponentpoints = (TextView) findViewById(R.id.opponentPoints);
     }
 
     @Override
     public void onCenterPosition(boolean animate) {
-        if(mName!=null) {
-            mName.setAlpha(1f);
-            mPoints.setAlpha(1f);
-            mPosition.setAlpha(1f);
-        }
+        me.setAlpha(1f);
+        mypoints.setAlpha(1f);
+        opponent.setAlpha(1f);
+        opponentpoints.setAlpha(1f);
         //((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
         //((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
-        if(mName!=null) {
-            mName.setAlpha(mFadedTextAlpha);
-            mPosition.setAlpha(mFadedTextAlpha);
-            mPoints.setAlpha(mFadedTextAlpha);
-        }
+        me.setAlpha(1f);
+        mypoints.setAlpha(1f);
+        opponent.setAlpha(1f);
+        opponentpoints.setAlpha(1f);
     }
 }
+

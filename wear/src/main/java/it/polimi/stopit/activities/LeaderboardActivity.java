@@ -4,62 +4,30 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
-import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-import it.polimi.stopit.adapters.ListAdapter;
+import it.polimi.stopit.adapters.LeaderboardAdapter;
 import it.polimi.stopit.R;
 import it.polimi.stopit.model.User;
 
 public class LeaderboardActivity extends Activity implements WearableListView.ClickListener {
 
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        // Now you can use the Data Layer API
-                        Log.v("APICLIENT", "Connected Leaderboard");
-                    }
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                        Log.v("APICLIENT","NOT Connected Leaderboard: "+result.toString());
-                    }
-                })
-                        // Request access only to the Wearable API
-                .addApi(Wearable.API)
-                .build();
+        final ArrayList<User> mLeaderboard = loadLeaderboard();
 
-        mGoogleApiClient.connect();
-
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/askLeaderboard");
-        putDataMapReq.getDataMap().putBoolean("leaderboard", true);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-
-        final ArrayList<User> mLeaderboard=new ArrayList<>();
+        Collections.sort(mLeaderboard, new LeaderComparator());
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.stub_leaderboard);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -70,7 +38,7 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
                         (WearableListView) findViewById(R.id.leaderboard_list);
 
                 // Assign an adapter to the list
-                listView.setAdapter(new ListAdapter(LeaderboardActivity.this, mLeaderboard));
+                listView.setAdapter(new LeaderboardAdapter(LeaderboardActivity.this, mLeaderboard));
 
                 // Set a click listener
                 listView.setClickListener(LeaderboardActivity.this);
@@ -87,5 +55,31 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
 
     @Override
     public void onTopEmptyRegionClick() {
+    }
+
+    public static class LeaderComparator implements Comparator<User> {
+
+        @Override
+        public int compare(User contact1, User contact2) {
+
+            return contact2.getPoints().compareTo(contact1.getPoints());
+
+        }
+    }
+
+    public ArrayList<User> loadLeaderboard() {
+        String filename = "leaderboard";
+        ArrayList<User> lista;
+
+        try {
+            FileInputStream fis = this.openFileInput(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            lista = (ArrayList<User>) ois.readObject();
+            ois.close();
+            return lista;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

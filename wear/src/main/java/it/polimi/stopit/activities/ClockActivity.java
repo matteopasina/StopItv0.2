@@ -18,7 +18,7 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.services.ListenerService;
+import it.polimi.stopit.services.WearListenerService;
 import it.polimi.stopit.services.ScheduleServiceWear;
 
 public class ClockActivity extends Activity {
@@ -30,7 +30,7 @@ public class ClockActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clock);
 
-        startService(new Intent(this, ListenerService.class));
+        startService(new Intent(this, WearListenerService.class));
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.clock_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -115,7 +115,11 @@ public class ClockActivity extends Activity {
                 };
 
                 startService(new Intent(ClockActivity.this, ScheduleServiceWear.class));
-                registerReceiver(uiUpdated, new IntentFilter("TIMER"));
+                try {
+                    registerReceiver(uiUpdated, new IntentFilter("TIMER"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -178,15 +182,4 @@ public class ClockActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        unregisterReceiver(uiUpdated);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(uiUpdated);
-    }
 }

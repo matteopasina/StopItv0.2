@@ -453,6 +453,7 @@ public class Controller {
 
                 challenge.setMyPoints(challenge.getMyPoints() + points);
                 challenge.setOpponentPoints(challenge.getOpponentPoints() + points);
+                db.updateChallenge(challenge);
 
                 final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
                 VS.addListenerForSingleValueEvent(new ValueEventListener() {

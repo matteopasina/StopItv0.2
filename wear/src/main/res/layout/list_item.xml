@@ -3,20 +3,42 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="center_vertical"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
-    <ImageView
-        android:id="@+id/circle"
-        android:layout_height="20dp"
-        android:layout_margin="16dp"
-        android:layout_width="20dp" />
+    android:layout_height="200dp">
+
     <TextView
-        android:id="@+id/name"
-        android:gravity="center_vertical|left"
+        android:id="@+id/position"
         android:layout_width="wrap_content"
-        android:layout_marginRight="16dp"
         android:layout_height="match_parent"
         android:fontFamily="sans-serif-condensed-light"
         android:lineSpacingExtra="-4sp"
         android:textColor="@color/textColorSecondary"
         android:textSize="16sp"/>
+
+    <ImageView
+        android:id="@+id/circle"
+        android:layout_toRightOf="@+id/position"
+        android:layout_height="20dp"
+        android:layout_margin="16dp"
+        android:layout_width="20dp" />
+    <TextView
+        android:id="@+id/name"
+        android:layout_toRightOf="@+id/circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-light"
+        android:lineSpacingExtra="-4sp"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="12sp"
+        android:layout_below="@+id/name"
+        android:layout_toRightOf="@+id/circle"/>
+
 </it.polimi.stopit.layoutImplementations.WearableListItemLayout>

@@ -1,6 +1,7 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,33 +12,34 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
-import it.polimi.stopit.model.User;
+import it.polimi.stopit.model.Achievement;
 
 /**
- * Created by matteo on 15/01/16.
+ * Created by matteo on 24/01/16.
  */
-public class ListAdapter extends WearableListView.Adapter {
+public class AchievementsAdapter extends WearableListView.Adapter {
 
-    private final ArrayList<User> mLeaderboard;
+    private final ArrayList<Achievement> mAchievements;
     private final Context context;
     private final LayoutInflater mInflater;
 
-    public ListAdapter(Context context, ArrayList<User> leaderboard) {
-        mLeaderboard = leaderboard;
+    public AchievementsAdapter(Context context, ArrayList<Achievement> achievements) {
+        mAchievements = achievements;
         this.context=context;
         mInflater = LayoutInflater.from(context);
     }
 
     // Provide a reference to the type of views you're using
     public static class ItemViewHolder extends WearableListView.ViewHolder {
-        private TextView textView;
+        private TextView title,points;
         private ImageView image;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             // find the text view within the custom item's layout
-            textView = (TextView) itemView.findViewById(R.id.name);
+            title = (TextView) itemView.findViewById(R.id.name);
             image=(ImageView) itemView.findViewById(R.id.circle);
+            points=(TextView) itemView.findViewById(R.id.points);
         }
     }
 
@@ -56,12 +58,26 @@ public class ListAdapter extends WearableListView.Adapter {
     @Override
     public void onBindViewHolder(WearableListView.ViewHolder holder,
                                  int position) {
+
+        Achievement achievement=mAchievements.get(position);
+
         // retrieve the text view
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
-        TextView view = itemHolder.textView;
+        TextView title = itemHolder.title;
+        TextView points=itemHolder.points;
         ImageView circle=itemHolder.image;
-        // replace text contents
-        view.setText(mLeaderboard.get(position).getName());
+
+        /*
+
+        circle.setImageBitmap(achievement.getImg());
+
+        if(!achievement.isObtained()) {
+            circle.setImageAlpha(40);
+        }*/
+
+        title.setText(achievement.getTitle());
+        points.setText("" + achievement.getPoints());
+
         // replace list item's metadata
         holder.itemView.setTag(position);
     }
@@ -70,6 +86,6 @@ public class ListAdapter extends WearableListView.Adapter {
     // (invoked by the WearableListView's layout manager)
     @Override
     public int getItemCount() {
-        return mLeaderboard.size();
+        return mAchievements.size();
     }
 }

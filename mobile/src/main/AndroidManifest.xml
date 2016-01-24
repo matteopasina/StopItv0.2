@@ -78,6 +78,11 @@
             android:name=".Receivers.SmokeReceiver"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".services.ListenerService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
