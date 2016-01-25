@@ -1,8 +1,10 @@
 package it.polimi.stopit.activities;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -56,6 +58,11 @@ public class NavigationActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Controller control=new Controller(this);
+
+        control.weeklyUpdate();
+        control.dailyUpdate();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -100,6 +107,28 @@ public class NavigationActivity extends AppCompatActivity
 
                 dialog.dismiss();
 
+            }else if(redirect.equals("stopped")){
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+
+                                Intent intent = new Intent(getBaseContext(), NavigationActivity.class);
+                                startActivity(intent);
+
+                                break;
+
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
+                builder.setIcon(getResources().getDrawable(R.drawable.legend,null));
+                builder.setMessage("Congratulations, you have succesfully stopped smoking !!").setPositiveButton("Wonderful", dialogClickListener).show();
+
+                dialog.dismiss();
             }
 
         }
@@ -192,11 +221,6 @@ public class NavigationActivity extends AppCompatActivity
             dialog.dismiss();
 
         }
-
-        Controller control=new Controller(this);
-
-        control.weeklyUpdate();
-        control.dailyUpdate();
 
     }
 

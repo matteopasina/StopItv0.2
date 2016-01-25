@@ -246,8 +246,16 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        getActivity().startService(new Intent(getActivity(), ScheduleService.class));
-        getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
+        if(settings.getInt("CPD",0)>0){
+
+            getActivity().startService(new Intent(getActivity(), ScheduleService.class));
+            getActivity().registerReceiver(uiUpdated, new IntentFilter("COUNTDOWN_UPDATED"));
+
+        }else{
+
+            getActivity().stopService(new Intent(getActivity(), ScheduleService.class));
+        }
+
 
         Button smoke = (Button) view.findViewById(R.id.smoke);
         smoke.setOnClickListener(new View.OnClickListener() {
@@ -301,7 +309,16 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        getActivity().unregisterReceiver(uiUpdated);
+
+        try{
+
+            getActivity().unregisterReceiver(uiUpdated);
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+        }
+
     }
 
     public void setTimer(TextView timerText, long millis) {

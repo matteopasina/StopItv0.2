@@ -399,7 +399,7 @@ public class ScheduleService extends Service {
         long millis = start.getMillis();
         long endMillis = end.getMillis();
 
-        if(chunkAmount==0) return null;
+        if(chunkAmount==0) chunkAmount=1;
         long chunkSize = (endMillis - millis) / chunkAmount;
 
         List<MutableInterval> list = new ArrayList<>();

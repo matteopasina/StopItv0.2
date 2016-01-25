@@ -93,6 +93,8 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
 
                                 int cigToReduce = (price / (cigCost * duration));
 
+                                if(cigToReduce==0) cigToReduce=1;
+
                                 showDialog(name, price, duration, imgRes, cigPerDay - cigToReduce, cigToReduce);
                             } else {
 

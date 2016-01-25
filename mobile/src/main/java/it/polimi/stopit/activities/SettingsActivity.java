@@ -77,11 +77,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                     int daysToRed = Integer.parseInt(stringValue);
 
-                    if (daysToRed < 1 || daysToRed > 1000) {
+                    if (daysToRed < 0) {
 
-                        Toast.makeText(preference.getContext(), "Days must be in range 1 - 1000", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(preference.getContext(), "You will need at least 50 days", Toast.LENGTH_SHORT).show();
 
-                    } else {
+                    } else if(daysToRed > 1000){
+
+                        Toast.makeText(preference.getContext(), "Come on, don't be lazy!", Toast.LENGTH_SHORT).show();
+
+                    }else {
 
                         preference.setSummary(stringValue);
                         new Controller(preference.getContext()).buildStopProgram(100,Integer.parseInt(stringValue));

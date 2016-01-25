@@ -234,7 +234,7 @@ public class Controller {
             numCompleted++;
             editor.putInt("moneyTargetCompleted", numCompleted).apply();
 
-            buildStopProgram(newCPD,0);
+            buildStopProgram(newCPD, 0);
 
             if (numCompleted > 2) {
 
@@ -728,13 +728,13 @@ public class Controller {
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), alternativeActivity.getImage());
 
         Intent smokeIntent = new Intent(context, SmokeReceiver.class);
-        smokeIntent.putExtra("points",points);
-        smokeIntent.putExtra("notificationID",notificationID);
-        smokeIntent.putExtra("smoke",true);
+        smokeIntent.putExtra("points", points);
+        smokeIntent.putExtra("notificationID", notificationID);
+        smokeIntent.putExtra("smoke", true);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, smokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent alternativeIntent = new Intent(context, SmokeReceiver.class);
-        alternativeIntent.putExtra("points",alternativeActivity.getBonusPoints());
+        alternativeIntent.putExtra("points", alternativeActivity.getBonusPoints());
         alternativeIntent.putExtra("notificationID", notificationID);
         PendingIntent piDS = PendingIntent.getBroadcast(context, 0, alternativeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -1273,7 +1273,7 @@ public class Controller {
         return byteBuffer.toByteArray();
     }
 
-    public void cancelNotification(final int nID,long delay,final int points){
+    public void cancelNotification(final int nID, long delay, final int points) {
 
         final NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -1291,83 +1291,106 @@ public class Controller {
         }, delayInMilliseconds);
     }
 
-    public void buildStopProgram(int numCig,int newDays) {
+    public void buildStopProgram(int numCig, int newDays) {
 
-        if(numCig==100){
+        if (numCig == 100) {
 
-            numCig = settings.getInt("CPD",0);
+            numCig = settings.getInt("CPD", 0);
         }
 
-        if(numCig>0){
+        if (numCig > 0) {
 
             if (newDays == 0) {
 
                 newDays = settings.getInt("daysToRed", 0);
             }
 
-            int interval=newDays / numCig;
+            int interval = newDays / numCig;
 
-            if(interval==0) interval++;
+            if (interval == 0) interval++;
             settings.edit().putInt("redInterval", interval).commit();
 
             System.out.println("Stop schedule for " + newDays + " days from now has been setted");
-            System.out.println("Reduction every "+interval+" days");
+            System.out.println("Reduction every " + interval + " days");
 
-        }else{
+        } else {
 
             notifyStopCompleted();
         }
     }
 
-    public void stopProgramControl(){
+    public void stopProgramControl() {
 
-        int remainDays=settings.getInt("daysToRed",0);
+        int remainDays = settings.getInt("daysToRed", 0);
 
-        if(remainDays>0){
+        if (remainDays > 1) {
 
             remainDays--;
+            settings.edit().putInt("daysToRed", remainDays).commit();
 
-            settings.edit().putInt("daysToRed",remainDays).commit();
+            int interval = settings.getInt("redInterval", 0);
 
-            int interval=settings.getInt("redInterval",0);
+            if (interval == 1) {
 
-            if(interval>0){
+                int CPD = settings.getInt("CPD", 0);
 
-                interval--;
-
-                settings.edit().putInt("redInterval", interval).commit();
-
-            }else{
-
-                int CPD=settings.getInt("CPD",0);
-
-                if(CPD>0){
+                if (CPD > 1) {
 
                     CPD--;
-                    settings.edit().putInt("CPD",CPD).commit();
+                    settings.edit().putInt("CPD", CPD).commit();
+                    buildStopProgram(CPD, 0);
 
-                    if(CPD>0){
+                } else {
 
-                        buildStopProgram(CPD,0);
-
-                    }else{
-
-                        notifyStopCompleted();
-                    }
-
-                }else{
-
+                    settings.edit().putInt("daysToRed", 0).commit();
+                    settings.edit().putInt("CPD", 0).commit();
                     notifyStopCompleted();
                 }
+
+            } else {
+
+                interval--;
+                settings.edit().putInt("redInterval", interval).commit();
             }
 
-        }else{
+        } else {
 
+            settings.edit().putInt("daysToRed", 0).commit();
+            settings.edit().putInt("CPD", 0).commit();
             notifyStopCompleted();
         }
+
     }
 
-    public void notifyStopCompleted(){
+    public void notifyStopCompleted() {
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.legend);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.stopitsymbollollipop)
+                        .setContentTitle("YOU DID!")
+                        .setContentText("Congratulations you have stopped smoking!")
+                        .setAutoCancel(true);
+
+        Intent resultIntent = new Intent(context, NavigationActivity.class);
+        resultIntent.putExtra("redirect", "stopped");
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(NavigationActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+        int notificationID = NotificationID.getID();
+        mNM.notify(notificationID, mBuilder.build());
 
 
     }
