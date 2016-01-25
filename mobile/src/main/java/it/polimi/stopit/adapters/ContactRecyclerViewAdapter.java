@@ -105,7 +105,13 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                 days.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                        daysText.setText(String.valueOf(days.getProgress()));
+
+                        if (days.getProgress() == 0) {
+                            daysText.setText("1");
+                        } else {
+                            daysText.setText(String.valueOf(days.getProgress()));
+                        }
+
                     }
 
                     @Override
@@ -134,9 +140,15 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                                 Firebase challenge = fire.push();
 
+                                long duration=days.getProgress();
+
+                                if(duration==0){
+
+                                    duration=1;
+                                }
                                 dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
                                         , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
-                                        (long) days.getProgress() * 86400000, "false", "true", "false", "false"));
+                                        duration * 86400000, "false", "true", "false", "false"));
 
                                 challenge.child("duration").setValue(days.getProgress());
                                 challenge.child("opponent").setValue(settings.getString("ID", null));

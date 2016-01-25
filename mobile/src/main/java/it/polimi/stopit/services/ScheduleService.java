@@ -13,12 +13,10 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,7 +37,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -402,7 +399,7 @@ public class ScheduleService extends Service {
         long millis = start.getMillis();
         long endMillis = end.getMillis();
 
-        if(chunkAmount==0) chunkAmount++;
+        if(chunkAmount==0) return null;
         long chunkSize = (endMillis - millis) / chunkAmount;
 
         List<MutableInterval> list = new ArrayList<>();
