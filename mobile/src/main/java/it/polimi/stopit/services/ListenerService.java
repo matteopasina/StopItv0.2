@@ -48,11 +48,8 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
                 if (item.getUri().getPath().compareTo("/stopit/askLeaderboard") == 0) {
 
-                    System.out.println("DATAMAP: " + dataMap);
-
-                } else if (item.getUri().getPath().compareTo("/stopit/leaderboard") == 0) {
-
-                    Log.v("DATA CHANGE", dataMap.toString());
+                    Intent intent=new Intent("ASK_LEADERBOARD");
+                    sendBroadcast(intent);
 
                 }
 

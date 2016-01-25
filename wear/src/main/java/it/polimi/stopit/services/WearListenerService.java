@@ -29,6 +29,7 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -36,8 +37,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import it.polimi.stopit.R;
 import it.polimi.stopit.activities.ChallengesActivity;
 import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.Challenge;
@@ -49,9 +53,10 @@ import it.polimi.stopit.model.User;
 public class WearListenerService extends WearableListenerService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private ArrayList<User> leaderboard=new ArrayList<>();
-    private ArrayList<Achievement> achievements=new ArrayList<>();
-    private ArrayList<Challenge> challenges=new ArrayList<>();
+    private ArrayList<User> leaderboard = new ArrayList<>();
+    private ArrayList<Achievement> achievements = new ArrayList<>();
+    private ArrayList<Challenge> challenges = new ArrayList<>();
+    private DataMap dataMap;
 
     @Override
     public void onCreate() {
@@ -70,7 +75,7 @@ public class WearListenerService extends WearableListenerService implements Goog
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         System.out.println("DATA CHANGE");
-        int i=0;
+        int i = 0;
 
         for (DataEvent event : dataEvents) {
 
@@ -81,7 +86,7 @@ public class WearListenerService extends WearableListenerService implements Goog
                 Asset profileAsset = dataMapItem.getDataMap().getAsset("contactImage");
                 Bitmap bitmap = loadBitmapFromAsset(profileAsset);
 
-                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage"+i+".jpg";
+                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage" + i + ".jpg";
 
                 try {
                     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imagePath));
@@ -96,10 +101,10 @@ public class WearListenerService extends WearableListenerService implements Goog
 
                 // DataItem changed
                 DataItem item = event.getDataItem();
-                DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 Log.v("PATHONWEAR", item.getUri().getPath());
 
-                if(item.getUri().getPath().compareTo("/stopit/schedule") == 0) {
+                if (item.getUri().getPath().compareTo("/stopit/schedule") == 0) {
 
                     Intent schedule = new Intent("SET_SCHEDULE");
                     schedule.putExtra("start", dataMap.getLong("start"));
@@ -109,41 +114,56 @@ public class WearListenerService extends WearableListenerService implements Goog
 
                 }
 
-               for(i=0;i<20;i++) {
-                    if (item.getUri().getPath().compareTo("/stopit/leaderboard/"+i) == 0) {
+                //for (i = 0; i < 20; i++) {
 
-                        /*Asset profileAsset = dataMap.getAsset("profileImage");
-                        Bitmap bitmap = loadBitmapFromAsset(profileAsset);*/
+                if (item.getUri().getPath().matches("/stopit/leaderboard/.*")) {
 
-                        User user=new User(dataMap);
-                        //user.setImg(bitmap);
 
-                        leaderboard.add(user);
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Log.v("DENTRO;", "Dentro");
+                            Asset profileAsset = dataMap.getAsset("profileImage");
+                            Bitmap bitmap = loadBitmapFromAsset(profileAsset);
 
-                    }
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            byte[] byteArray = stream.toByteArray();
+
+                            User user = new User(dataMap);
+                            user.setImg(byteArray);
+
+                            leaderboard.add(user);
+                        }
+                    }).start();
                 }
+                // }
 
-                for(int j=0;j<24;j++) {
-                    if (item.getUri().getPath().compareTo("/stopit/achievements/"+j) == 0) {
+                for (int j = 0; j < 24; j++) {
+                    if (item.getUri().getPath().compareTo("/stopit/achievements/" + j) == 0) {
 
-                        /*Asset achievementAsset = dataMap.getAsset("achievementImage");
-                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);*/
+                        Asset achievementAsset = dataMap.getAsset("achievementImage");
+                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
 
-                        Achievement achievement=new Achievement(dataMap);
-                       // achievement.setImg(bitmap);
+                        Achievement achievement = new Achievement(dataMap);
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+
+                        achievement.setImg(byteArray);
 
                         achievements.add(achievement);
 
                     }
                 }
 
-                for(int k=0;k<5;k++) {
-                    if (item.getUri().getPath().compareTo("/stopit/challenges/"+k) == 0) {
+                for (int k = 0; k < 5; k++) {
+                    if (item.getUri().getPath().compareTo("/stopit/challenges/" + k) == 0) {
 
                         /*Asset achievementAsset = dataMap.getAsset("achievementImage");
                         Bitmap bitmap = loadBitmapFromAsset(achievementAsset);*/
 
-                        Challenge challenge=new Challenge(dataMap);
+                        Challenge challenge = new Challenge(dataMap);
 
                         challenges.add(challenge);
 
@@ -233,7 +253,7 @@ public class WearListenerService extends WearableListenerService implements Goog
         ConnectionResult result = mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
 
         if (!result.isSuccess()) {
-            Log.v("ASSETRESULT", "Requested an unknown Asset. Unsuccess "+result);
+            Log.v("ASSETRESULT", "Requested an unknown Asset. Unsuccess " + result);
             return null;
         }
         // convert asset into a file descriptor and block until it's ready

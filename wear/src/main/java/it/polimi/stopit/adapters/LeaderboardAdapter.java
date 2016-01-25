@@ -1,6 +1,8 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +73,8 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
         name.setText(mLeaderboard.get(position).getName());
         points.setText(mLeaderboard.get(position).getPoints().toString());
         myposition.setText(""+(position+1));
+        Bitmap bmp = BitmapFactory.decodeByteArray(mLeaderboard.get(position).getImg(), 0, mLeaderboard.get(position).getImg().length);
+        circle.setImageBitmap(bmp);
 
         // replace list item's metadata
         holder.itemView.setTag(position);

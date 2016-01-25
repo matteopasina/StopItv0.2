@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -17,7 +18,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
+import com.facebook.internal.LockOnGetVariable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -26,6 +29,7 @@ import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -33,14 +37,20 @@ import org.joda.time.MutableInterval;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
@@ -71,6 +81,7 @@ public class ScheduleService extends Service {
     Controller controller;
     private DatabaseHandler db;
     private SharedPreferences settings;
+    public static Bitmap img=null;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
@@ -99,7 +110,16 @@ public class ScheduleService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            putLeaderboardInMap();
+            try {
+                Log.v("LEADERBOARD: ","Received askleaderboard");
+                putLeaderboardInMap();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -138,7 +158,15 @@ public class ScheduleService extends Service {
         mGoogleApiClient.connect();
 
         //setta lo schedule per la prima esecuzione
-        firstStart();
+        try {
+            firstStart();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
 
         nextCiga(list, start, end);
         setCount(nextCiga);
@@ -164,7 +192,15 @@ public class ScheduleService extends Service {
 
                 if (beginOfDay) {
                     deleteFile("schedule");
-                    firstStart();
+                    try {
+                        firstStart();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }
                     beginOfDay = false;
                 }
 
@@ -210,11 +246,9 @@ public class ScheduleService extends Service {
         }.start();
     }
 
-    public void firstStart() {
+    public void firstStart() throws InterruptedException, ExecutionException, TimeoutException {
         list = loadSchedule();
         if (list == null) {
-
-            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleService.this);
 
             start = new MutableDateTime();
             end = new MutableDateTime();
@@ -226,12 +260,25 @@ public class ScheduleService extends Service {
             end.setMinuteOfHour(0);
             end.setSecondOfMinute(0);
 
-            list = splitDuration(start, end, userdata.getInt("CPD", 0));
+            list = splitDuration(start, end, settings.getInt("CPD", 0));
             saveSchedule(list);
-            putLeaderboardInMap();
-            putAchievementsInMap();
-            putChallengesInMap();
-            putScheduleInMap(start.getMillis(), end.getMillis(), userdata.getInt("CPD", 0));
+
+            new Thread(new Runnable() {
+                public void run() {
+                    /*try {
+                        putLeaderboardInMap();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (TimeoutException e) {
+                        e.printStackTrace();
+                    }*/
+                    putAchievementsInMap();
+                    putChallengesInMap();
+                    putScheduleInMap(start.getMillis(), end.getMillis(), settings.getInt("CPD", 0));
+                }
+            }).start();
         }
     }
 
@@ -274,7 +321,7 @@ public class ScheduleService extends Service {
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
-    public void putLeaderboardInMap() {
+    public void putLeaderboardInMap() throws ExecutionException, InterruptedException, TimeoutException {
 
         ArrayList<User> mLeaderboard = db.getAllContacts();
 
@@ -286,17 +333,18 @@ public class ScheduleService extends Service {
         int i = 0;
         for(User contact: mLeaderboard) {
 
-            //Bitmap img=controller.(contact.getProfilePic());
-            //Asset asset=createAssetFromBitmap(img);
+            Asset asset=createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000,TimeUnit.MILLISECONDS));
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard/" + i);
             putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-           // putDataMapReq.getDataMap().putAsset("profileImage", asset);
+            putDataMapReq.getDataMap().putAsset("profileImage", asset);
             contact.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
             PendingResult<DataApi.DataItemResult> pendingResult =
                     Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
             i++;
+
+            Log.v("LEADERBOARD","DONE: "+contact.getName());
         }
 
     }
@@ -308,12 +356,12 @@ public class ScheduleService extends Service {
         int i = 0;
         for(Achievement achievement: mAchievements) {
 
-            /*Bitmap img = BitmapFactory.decodeResource(getResources(), achievement.getImage());
-            Asset asset=createAssetFromBitmap(img);*/
+            Bitmap img = BitmapFactory.decodeResource(getResources(), achievement.getImage());
+            Asset asset=createAssetFromBitmap(img);
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements/" + i);
             putDataMapReq.getDataMap().putLong("timestamp",new MutableDateTime().getMillis());
-            //putDataMapReq.getDataMap().putAsset("achievementImage", asset);
+            putDataMapReq.getDataMap().putAsset("achievementImage", asset);
             achievement.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
             PendingResult<DataApi.DataItemResult> pendingResult =
@@ -532,6 +580,21 @@ public class ScheduleService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    private class DownloadImgTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            for (String url : urls) {
+                return controller.getCircleBitmap(controller.getBitmapFromURL(url));
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            img=result;
+        }
     }
 
 }

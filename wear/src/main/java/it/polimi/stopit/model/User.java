@@ -18,7 +18,7 @@ public class User implements Serializable{
     private Long weekPoints;
     private Long dayPoints;
 
-    private Bitmap img;
+    private byte[] img;
 
     public User(){}
 
@@ -41,11 +41,11 @@ public class User implements Serializable{
         );
     }
 
-    public Bitmap getImg() {
+    public byte[] getImg() {
         return img;
     }
 
-    public void setImg(Bitmap img) {
+    public void setImg(byte[] img) {
         this.img = img;
     }
 

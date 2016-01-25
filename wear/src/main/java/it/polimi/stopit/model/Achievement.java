@@ -17,7 +17,8 @@ public class Achievement implements Serializable{
     private long points;
     private int imageResource;
     private boolean obtained;
-    private Bitmap img;
+
+    private byte[] img;
 
     public Achievement(){
 
@@ -53,11 +54,12 @@ public class Achievement implements Serializable{
         );
     }
 
-    public Bitmap getImg() {
+
+    public byte[] getImg() {
         return img;
     }
 
-    public void setImg(Bitmap img) {
+    public void setImg(byte[] img) {
         this.img = img;
     }
 

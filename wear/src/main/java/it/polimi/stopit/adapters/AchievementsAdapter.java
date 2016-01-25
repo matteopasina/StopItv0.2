@@ -1,6 +1,8 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
@@ -67,13 +69,14 @@ public class AchievementsAdapter extends WearableListView.Adapter {
         TextView points=itemHolder.points;
         ImageView circle=itemHolder.image;
 
-        /*
 
-        circle.setImageBitmap(achievement.getImg());
+
+        Bitmap bmp = BitmapFactory.decodeByteArray(achievement.getImg(), 0, achievement.getImg().length);
+        circle.setImageBitmap(bmp);
 
         if(!achievement.isObtained()) {
             circle.setImageAlpha(40);
-        }*/
+        }
 
         title.setText(achievement.getTitle());
         points.setText("" + achievement.getPoints());

@@ -21,11 +21,9 @@ public class WearableListItemLayout extends RelativeLayout
     private ImageView mCircle;
     private TextView mName;
     private TextView mPoints;
-    private TextView mPosition,me;
+    private TextView mPosition;
 
     private final float mFadedTextAlpha;
-    private final int mFadedCircleColor;
-    private final int mChosenCircleColor;
 
     public WearableListItemLayout(Context context) {
         this(context, null);
@@ -39,9 +37,8 @@ public class WearableListItemLayout extends RelativeLayout
                                   int defStyle) {
         super(context, attrs, defStyle);
 
-        mFadedTextAlpha = 20 / 100f;
-        mFadedCircleColor = ContextCompat.getColor(context,R.color.shadows);
-        mChosenCircleColor=ContextCompat.getColor(context, R.color.colorAccent);
+        mFadedTextAlpha = 40 / 100f;
+
     }
 
     // Get references to the icon and text in the item layout definition
@@ -58,21 +55,19 @@ public class WearableListItemLayout extends RelativeLayout
 
     @Override
     public void onCenterPosition(boolean animate) {
-        if(mName!=null) {
-            mName.setAlpha(1f);
-            mPoints.setAlpha(1f);
-            mPosition.setAlpha(1f);
-        }
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
+
+        mName.setAlpha(1f);
+        mPoints.setAlpha(1f);
+        mPosition.setAlpha(1f);
+        mCircle.getDrawable().setAlpha(100);
+
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
-        if(mName!=null) {
-            mName.setAlpha(mFadedTextAlpha);
-            mPosition.setAlpha(mFadedTextAlpha);
-            mPoints.setAlpha(mFadedTextAlpha);
-        }
+        mCircle.getDrawable().setAlpha(40);
+        mName.setAlpha(mFadedTextAlpha);
+        mPosition.setAlpha(mFadedTextAlpha);
+        mPoints.setAlpha(mFadedTextAlpha);
     }
 }
