@@ -67,11 +67,6 @@ public class NavigationActivity extends AppCompatActivity
 
         dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
 
-        Controller control=new Controller(this);
-
-        control.weeklyUpdate();
-        control.dailyUpdate();
-
         try {
 
             if(getIntent().hasExtra("redirect")) {
@@ -161,8 +156,8 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("image", user.getProfilePic());
                     editor.putLong("dayPoints", user.getDayPoints());
                     editor.putLong("weekPoints", user.getWeekPoints());
-                    editor.putString("lastDayCheck", user.getLastDayCheck());
-                    editor.putString("lastWeekCheck", user.getLastWeekCheck());
+                    editor.putString("lastDayCheck", snapshot.child(user.getID()).child("lastDayCheck").getValue().toString());
+                    editor.putString("lastWeekCheck", snapshot.child(user.getID()).child("lastWeekCheck").getValue().toString());
 
                     editor.commit();
 
@@ -197,6 +192,11 @@ public class NavigationActivity extends AppCompatActivity
             dialog.dismiss();
 
         }
+
+        Controller control=new Controller(this);
+
+        control.weeklyUpdate();
+        control.dailyUpdate();
 
     }
 

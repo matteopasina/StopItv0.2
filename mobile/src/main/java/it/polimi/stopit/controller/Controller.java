@@ -77,7 +77,7 @@ public class Controller {
         int month = instant.get(DateTimeFieldType.monthOfYear());
         int day = instant.get(DateTimeFieldType.dayOfMonth());
 
-        int cigPD = Integer.parseInt(settings.getString("CPD", null));
+        int cigPD = settings.getInt("CPD", 0);
 
         int numSmoked = 0;
 
