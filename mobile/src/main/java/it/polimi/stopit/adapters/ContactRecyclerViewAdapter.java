@@ -145,18 +145,19 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
                                 if(duration==0){
 
                                     duration=1;
+
                                 }
                                 dbh.addChallenge(new Challenge(mContacts.get(getLayoutPosition()).getID()
                                         , mContacts.get(getLayoutPosition()).getID(), 0, 0, 0,
                                         duration * 86400000, "false", "true", "false", "false"));
 
-                                challenge.child("duration").setValue(days.getProgress());
+                                challenge.child("duration").setValue(duration);
                                 challenge.child("opponent").setValue(settings.getString("ID", null));
 
                                 Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                                 createChallenge.putExtra("redirect", "challenges");
                                 createChallenge.putExtra("ID", mContacts.get(getLayoutPosition()).getID());
-                                createChallenge.putExtra("length_days", days.getProgress());
+                                createChallenge.putExtra("length_days", duration);
                                 view.getContext().startActivity(createChallenge);
 
                                 break;
