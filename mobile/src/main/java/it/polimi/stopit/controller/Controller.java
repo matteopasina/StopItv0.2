@@ -44,6 +44,7 @@ import java.util.Random;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
+import it.polimi.stopit.Receivers.ChallengeAcceptReceiver;
 import it.polimi.stopit.Receivers.ChallengeReceiver;
 import it.polimi.stopit.Receivers.SmokeReceiver;
 import it.polimi.stopit.activities.NavigationActivity;
@@ -592,8 +593,7 @@ public class Controller {
 
 
                                     //manda notifica
-                                    sendNotificationChallenge(opponent, children.child("opponent").getValue().toString()
-                                            , snapshot.child("profilePic").getValue().toString());
+                                    sendNotificationChallenge(opponent, snapshot.child("ID").getValue().toString(),snapshot.child("profilePic").getValue().toString());
 
 
                                     //aggiungi challenge al DB dello sfidato
@@ -646,9 +646,17 @@ public class Controller {
 
     public void sendNotificationChallenge(String opponent, String ID, String urlImage) {
 
-        //Bitmap largeIcon = getBitmapFromURL(urlImage);
-        //largeIcon = getCircleBitmap(largeIcon);
         new DownloadImgTask().execute(urlImage);
+
+        Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
+        acceptIntent.putExtra("accept", true);
+        acceptIntent.putExtra("opponent",ID);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
+        refuseIntent.putExtra("accept", false);
+        refuseIntent.putExtra("opponent",ID);
+        PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -656,6 +664,8 @@ public class Controller {
                         .setSmallIcon(R.drawable.stopitsymbollollipop)
                         .setContentTitle(opponent + " challenged you!")
                         .setContentText("Begin the challenge!")
+                        .addAction(R.drawable.stopitsymbollollipop, "Refuse", piDS)
+                        .addAction(R.drawable.stopitsymbollollipop, "Accept", pi)
                         .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, NavigationActivity.class);
