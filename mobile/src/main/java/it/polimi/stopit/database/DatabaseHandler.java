@@ -341,14 +341,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         CHALLENGE_ACCEPTED, CHALLENGE_CHALLENGER, CHALLENGE_OVER, CHALLENGE_WON}, CHALLENGE_ID + "=?",
                 new String[]{id}, null, null, null, null);
 
-        Challenge challenge;
+        Challenge challenge=null;
 
         try {
             cursor.moveToFirst();
             challenge = new Challenge(cursor.getString(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3), cursor.getLong(4),
                     cursor.getLong(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getString(9));
 
-        } finally {
+        } catch(Exception e){
+
+            e.printStackTrace();
+
+        }finally {
             cursor.close();
         }
 
