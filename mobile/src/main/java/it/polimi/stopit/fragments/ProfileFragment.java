@@ -408,8 +408,6 @@ public class ProfileFragment extends Fragment {
 
                             controller.updatePoints(bonus);
 
-                            DateTime date = new DateTime(new Instant());
-                            dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -421,6 +419,8 @@ public class ProfileFragment extends Fragment {
 
                             controller.updatePoints(gain);
 
+                            DateTime date = new DateTime(new Instant());
+                            dbh.addCigarette(new Cigarette(1, date, "smoke"));
                             break;
                     }
                 }

@@ -114,47 +114,40 @@ public class WearListenerService extends WearableListenerService implements Goog
 
                 }
 
-                //for (i = 0; i < 20; i++) {
-
                 if (item.getUri().getPath().matches("/stopit/leaderboard/.*")) {
 
+                    Log.v("DENTRO;", "Dentro");
+                    Asset profileAsset = dataMap.getAsset("profileImage");
+                    Bitmap bitmap = loadBitmapFromAsset(profileAsset);
 
-                    new Thread(new Runnable() {
-                        public void run() {
-                            Log.v("DENTRO;", "Dentro");
-                            Asset profileAsset = dataMap.getAsset("profileImage");
-                            Bitmap bitmap = loadBitmapFromAsset(profileAsset);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
 
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                            byte[] byteArray = stream.toByteArray();
+                    User user = new User(dataMap);
+                    user.setImg(byteArray);
 
-                            User user = new User(dataMap);
-                            user.setImg(byteArray);
-
-                            leaderboard.add(user);
-                        }
-                    }).start();
-                }
-                // }
-
-                for (int j = 0; j < 24; j++) {
-                    if (item.getUri().getPath().compareTo("/stopit/achievements/" + j) == 0) {
-
-                        Asset achievementAsset = dataMap.getAsset("achievementImage");
-                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
-
-                        Achievement achievement = new Achievement(dataMap);
-
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byte[] byteArray = stream.toByteArray();
-
-                        achievement.setImg(byteArray);
-
-                        achievements.add(achievement);
-
+                    if (!leaderboard.contains(user)) {
+                        leaderboard.add(user);
                     }
+
+                }
+
+                if (item.getUri().getPath().matches("/stopit/achievements/.*")) {
+
+                    Asset achievementAsset = dataMap.getAsset("achievementImage");
+                    Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
+
+                    Achievement achievement = new Achievement(dataMap);
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+
+                    achievement.setImg(byteArray);
+
+                    achievements.add(achievement);
+
                 }
 
                 for (int k = 0; k < 5; k++) {
@@ -250,12 +243,12 @@ public class WearListenerService extends WearableListenerService implements Goog
             throw new IllegalArgumentException("Asset must be non-null");
         }
 
-        ConnectionResult result = mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
+        /*ConnectionResult result = mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
 
         if (!result.isSuccess()) {
             Log.v("ASSETRESULT", "Requested an unknown Asset. Unsuccess " + result);
             return null;
-        }
+        }*/
         // convert asset into a file descriptor and block until it's ready
         InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
                 mGoogleApiClient, asset).await().getInputStream();

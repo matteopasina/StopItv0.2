@@ -79,6 +79,8 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
         // replace list item's metadata
         holder.itemView.setTag(position);
 
+        holder.setIsRecyclable(false);
+
     }
 
     // Return the size of your dataset

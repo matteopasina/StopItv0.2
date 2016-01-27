@@ -459,13 +459,16 @@ public class Controller {
                 VS.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            //se sei tu lo sfidante
+                            if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
+                                VS.child("myPoints").setValue((long) dataSnapshot.child("myPoints").getValue() + points);
 
-                        //se sei tu lo sfidante
-                        if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
-                            VS.child("myPoints").setValue((long) dataSnapshot.child("myPoints").getValue() + points);
-
-                        } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
-                            VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
+                            } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
+                                VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
+                            }
+                        }catch(Exception e){
+                            e.printStackTrace();
                         }
                     }
 
@@ -736,6 +739,8 @@ public class Controller {
         Intent alternativeIntent = new Intent(context, SmokeReceiver.class);
         alternativeIntent.putExtra("points", alternativeActivity.getBonusPoints());
         alternativeIntent.putExtra("notificationID", notificationID);
+        alternativeIntent.putExtra("alternative", alternativeActivity.getTitle());
+        alternativeIntent.putExtra("alternativeCategory", alternativeActivity.getCategory());
         PendingIntent piDS = PendingIntent.getBroadcast(context, 0, alternativeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =

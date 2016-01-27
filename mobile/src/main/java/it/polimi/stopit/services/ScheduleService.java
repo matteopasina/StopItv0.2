@@ -81,7 +81,7 @@ public class ScheduleService extends Service {
     Controller controller;
     private DatabaseHandler db;
     private SharedPreferences settings;
-    public static Bitmap img=null;
+    public static Bitmap img = null;
 
     /*
     * Receives the broadcast from the button smoke on the main screen, the restarts the
@@ -111,8 +111,10 @@ public class ScheduleService extends Service {
         public void onReceive(Context context, Intent intent) {
 
             try {
-                Log.v("LEADERBOARD: ","Received askleaderboard");
+
+                Log.v("LEADERBOARD: ", "Received askleaderboard");
                 putLeaderboardInMap();
+
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -131,7 +133,29 @@ public class ScheduleService extends Service {
         db = new DatabaseHandler(this);
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        deleteFile("schedule");
+        list = loadSchedule();
+
+        //setta lo schedule per la prima esecuzione
+        try {
+            if (list == null) {
+                firstStart();
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        // deleteFile("schedule");
+        start=new MutableDateTime();
+        end=new MutableDateTime();
+        Log.v("SCHEDULE", "start:" + list.get(0).getStartMillis() +
+                " end:" + list.get(list.size() - 1).getEndMillis());
+        start.setMillis(list.get(0).getStartMillis());
+        end.setMillis(list.get(list.size() - 1).getEndMillis());
 
         startService(new Intent(this, ListenerService.class));
 
@@ -157,23 +181,23 @@ public class ScheduleService extends Service {
 
         mGoogleApiClient.connect();
 
-        //setta lo schedule per la prima esecuzione
-        try {
-            firstStart();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-
         nextCiga(list, start, end);
         setCount(nextCiga);
 
         controller.checkChallenges();
         controller.checkAccepted();
         controller.checkGiveUp();
+
+        try {
+            putLeaderboardInMap();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -247,39 +271,27 @@ public class ScheduleService extends Service {
     }
 
     public void firstStart() throws InterruptedException, ExecutionException, TimeoutException {
-        list = loadSchedule();
-        if (list == null) {
 
-            start = new MutableDateTime();
-            end = new MutableDateTime();
+        start = new MutableDateTime();
+        end = new MutableDateTime();
 
-            start.setHourOfDay(9);
-            start.setMinuteOfHour(0);
-            start.setSecondOfMinute(0);
-            end.setHourOfDay(23);
-            end.setMinuteOfHour(0);
-            end.setSecondOfMinute(0);
+        start.setHourOfDay(9);
+        start.setMinuteOfHour(0);
+        start.setSecondOfMinute(0);
+        end.setHourOfDay(23);
+        end.setMinuteOfHour(0);
+        end.setSecondOfMinute(0);
 
-            list = splitDuration(start, end, settings.getInt("CPD", 0));
-            saveSchedule(list);
+        list = splitDuration(start, end, settings.getInt("CPD", 0));
+        saveSchedule(list);
 
-            new Thread(new Runnable() {
-                public void run() {
-                    /*try {
-                        putLeaderboardInMap();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
-                        e.printStackTrace();
-                    }*/
-                    putAchievementsInMap();
-                    putChallengesInMap();
-                    putScheduleInMap(start.getMillis(), end.getMillis(), settings.getInt("CPD", 0));
-                }
-            }).start();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                putAchievementsInMap();
+                putChallengesInMap();
+                putScheduleInMap(start.getMillis(), end.getMillis(), settings.getInt("CPD", 0));
+            }
+        }).start();
     }
 
     public void nextCiga(List<MutableInterval> list, MutableDateTime start, MutableDateTime end) {
@@ -311,7 +323,7 @@ public class ScheduleService extends Service {
         }
     }
 
-    public void putScheduleInMap(long start,long end, long CPD){
+    public void putScheduleInMap(long start, long end, long CPD) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/schedule");
         putDataMapReq.getDataMap().putLong("start", start);
         putDataMapReq.getDataMap().putLong("end", end);
@@ -331,9 +343,9 @@ public class ScheduleService extends Service {
         mLeaderboard = controller.addTestContacts(mLeaderboard);
 
         int i = 0;
-        for(User contact: mLeaderboard) {
+        for (User contact : mLeaderboard) {
 
-            Asset asset=createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000,TimeUnit.MILLISECONDS));
+            Asset asset = createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000, TimeUnit.MILLISECONDS));
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard/" + i);
             putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
@@ -344,7 +356,7 @@ public class ScheduleService extends Service {
                     Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
             i++;
 
-            Log.v("LEADERBOARD","DONE: "+contact.getName());
+            Log.v("LEADERBOARD", "DONE: " + contact.getName());
         }
 
     }
@@ -354,13 +366,13 @@ public class ScheduleService extends Service {
         ArrayList<Achievement> mAchievements = (ArrayList<Achievement>) db.getAllAchievements();
 
         int i = 0;
-        for(Achievement achievement: mAchievements) {
+        for (Achievement achievement : mAchievements) {
 
             Bitmap img = BitmapFactory.decodeResource(getResources(), achievement.getImage());
-            Asset asset=createAssetFromBitmap(img);
+            Asset asset = createAssetFromBitmap(img);
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements/" + i);
-            putDataMapReq.getDataMap().putLong("timestamp",new MutableDateTime().getMillis());
+            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
             putDataMapReq.getDataMap().putAsset("achievementImage", asset);
             achievement.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
@@ -376,7 +388,7 @@ public class ScheduleService extends Service {
         ArrayList<Challenge> mChallenges = (ArrayList<Challenge>) db.getActiveChallenges();
 
         int i = 0;
-        for(Challenge challenge: mChallenges) {
+        for (Challenge challenge : mChallenges) {
 
             //Bitmap img=controller.(contact.getProfilePic());
             //Asset asset=createAssetFromBitmap(img);
@@ -447,7 +459,7 @@ public class ScheduleService extends Service {
         long millis = start.getMillis();
         long endMillis = end.getMillis();
 
-        if(chunkAmount==0) chunkAmount=1;
+        if (chunkAmount == 0) chunkAmount = 1;
         long chunkSize = (endMillis - millis) / chunkAmount;
 
         List<MutableInterval> list = new ArrayList<>();
@@ -460,14 +472,28 @@ public class ScheduleService extends Service {
     }
 
     static List<MutableInterval> shiftIntervals(MutableDateTime time, List<MutableInterval> list) {
+        MutableDateTime endtime=new MutableDateTime();
+        endtime.setHourOfDay(23);
+        endtime.setMinuteOfHour(0);
+        endtime.setSecondOfMinute(0);
         long shift = 0;
+
         for (MutableInterval i : list) {
             if (i.contains(time)) {
                 shift = time.getMillis() - i.getStartMillis();
                 i.setInterval(time.getMillis(), i.getEndMillis() + shift);
                 continue;
             }
+
             i.setInterval(i.getStartMillis() + shift, i.getEndMillis() + shift);
+        }
+
+        List<MutableInterval> lista=list;
+
+        for (MutableInterval i : list) {
+            if (i.getStart().isAfter(endtime)) {
+                lista.remove(i);
+            }
         }
 
         return list;
@@ -593,7 +619,7 @@ public class ScheduleService extends Service {
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            img=result;
+            img = result;
         }
     }
 

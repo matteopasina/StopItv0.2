@@ -13,9 +13,18 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 import com.hookedonplay.decoviewlib.DecoView;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
+
+import org.joda.time.MutableDateTime;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.services.WearListenerService;
@@ -23,6 +32,7 @@ import it.polimi.stopit.services.ScheduleServiceWear;
 
 public class ClockActivity extends Activity {
 
+    private GoogleApiClient mGoogleApiClient;
     private BroadcastReceiver uiUpdated;
 
     @Override
@@ -124,6 +134,8 @@ public class ClockActivity extends Activity {
             }
         });
 
+        askLeaderboard();
+
         stub.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -180,6 +192,38 @@ public class ClockActivity extends Activity {
                 }
             }
         }
+    }
+
+
+    public void askLeaderboard() {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        // Now you can use the Data Layer API
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                    }
+                })
+                        // Request access only to the Wearable API
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/askLeaderboard");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
     }
 
 }
