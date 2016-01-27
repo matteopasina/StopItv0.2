@@ -1,6 +1,5 @@
 package it.polimi.stopit.fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,17 +22,15 @@ import it.polimi.stopit.model.User;
 
 public class AllTimeLeaderboardFragment extends Fragment{
 
-    private ArrayList<User> mLeaderboard;
-    private DatabaseHandler db;
+    User me;
 
     public AllTimeLeaderboardFragment() {
 
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new AllTimeLeaderboardFragment();
 
-        return fragment;
+        return new AllTimeLeaderboardFragment();
     }
 
     @Override
@@ -47,33 +44,30 @@ public class AllTimeLeaderboardFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_leaderboard_list, container, false);
 
-        mLeaderboard=new ArrayList<>();
-        db=new DatabaseHandler(getActivity());
-
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        mLeaderboard=db.getAllContacts();
-        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0),"","");
+        ArrayList<User> mLeaderboard = new DatabaseHandler(getActivity()).getAllContacts();
+        me = new User(settings.getString("ID", null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0),"","");
         mLeaderboard.add(me);
 
-        Controller controller=new Controller(getActivity());
-
-        mLeaderboard=controller.addTestContacts(mLeaderboard);
+        mLeaderboard =new Controller(getActivity()).addTestContacts(mLeaderboard);
 
         // reorder the leaderboard
-        Collections.sort(mLeaderboard,new LeaderComparator());
+        Collections.sort(mLeaderboard, new LeaderComparator());
 
-        for(int i=0;i<mLeaderboard.size();i++){
+        for(User user: mLeaderboard){
 
-            if(mLeaderboard.get(i).getID().equals(me.getID()) && i<10){
+            if(user.getID().equals(me.getID()) && mLeaderboard.indexOf(user)<10){
+
+                Controller controller=new Controller(getActivity());
 
                 controller.updateLeaderboardAchievement("top10");
 
-                if(i<3){
+                if(mLeaderboard.indexOf(user)<3){
 
                     controller.updateLeaderboardAchievement("top3");
 
-                    if(i==0){
+                    if(mLeaderboard.indexOf(user)==0){
 
                         controller.updateLeaderboardAchievement("first");
                     }
@@ -83,10 +77,12 @@ public class AllTimeLeaderboardFragment extends Fragment{
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
+
             RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setHasFixedSize(true);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
             recyclerView.setAdapter(new LeaderboardRecyclerViewAdapter(mLeaderboard));
         }

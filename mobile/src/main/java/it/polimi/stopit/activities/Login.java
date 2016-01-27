@@ -1,10 +1,5 @@
 package it.polimi.stopit.activities;
 
-/**
- * Created by matteo on 05/12/15.
- */
-
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 

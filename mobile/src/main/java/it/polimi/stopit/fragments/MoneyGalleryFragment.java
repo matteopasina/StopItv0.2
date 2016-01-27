@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.OnPassingData;
@@ -20,17 +19,14 @@ import it.polimi.stopit.model.MoneyTarget;
 
 public class MoneyGalleryFragment extends Fragment {
 
-    private List<MoneyTarget> mTargets;
     private OnPassingData myListener;
-    private DatabaseHandler db;
 
     public MoneyGalleryFragment() {
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new MoneyGalleryFragment();
 
-        return fragment;
+        return new MoneyGalleryFragment();
     }
 
     public void registerActivity(OnPassingData activity) {
@@ -48,9 +44,7 @@ public class MoneyGalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_moneygallery_list, container, false);
 
-        mTargets = new ArrayList<>();
-        db = new DatabaseHandler(getActivity());
-        mTargets = db.getAllCategories();
+        List<MoneyTarget> mTargets = new DatabaseHandler(getActivity()).getAllCategories();
 
         if (view instanceof RecyclerView) {
 
@@ -61,6 +55,8 @@ public class MoneyGalleryFragment extends Fragment {
             recyclerView.setLayoutManager(layoutManager);
 
             recyclerView.setAdapter(new MoneyRecyclerViewAdapter(mTargets, myListener));
+
+            recyclerView.setHasFixedSize(true);
         }
         return view;
     }

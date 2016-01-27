@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.stopit.R;
@@ -22,17 +21,12 @@ import it.polimi.stopit.model.Challenge;
 
 public class ChallengeFragment extends Fragment {
 
-    private List<Challenge> mChallenges;
-    private DatabaseHandler db;
-    private FloatingActionButton fab;
-
     public ChallengeFragment() {
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new ChallengeFragment();
 
-        return fragment;
+        return new ChallengeFragment();
     }
 
     @Override
@@ -46,11 +40,9 @@ public class ChallengeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_challenge_list, container, false);
 
-        mChallenges = new ArrayList<>();
-        db = new DatabaseHandler(getActivity());
-        mChallenges = db.getActiveChallenges();
+        List<Challenge> mChallenges = new DatabaseHandler(getActivity()).getActiveChallenges();
 
-        fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_challenge);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +54,13 @@ public class ChallengeFragment extends Fragment {
             }
         });
 
-        Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listChallenge);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         recyclerView.setAdapter(new ChallengeRecyclerViewAdapter(mChallenges, getActivity()));
+
+        recyclerView.setHasFixedSize(true);
 
         return view;
     }

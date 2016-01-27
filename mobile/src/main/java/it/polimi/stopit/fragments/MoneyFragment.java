@@ -1,7 +1,6 @@
 package it.polimi.stopit.fragments;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,18 +21,13 @@ import it.polimi.stopit.model.MoneyTarget;
 
 public class MoneyFragment extends Fragment {
 
-    private ArrayList<MoneyTarget> mTargets;
-    private DatabaseHandler db;
-    private FloatingActionButton fab;
-
     public MoneyFragment() {
 
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new MoneyFragment();
 
-        return fragment;
+        return new MoneyFragment();
     }
 
     @Override
@@ -47,17 +41,18 @@ public class MoneyFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_moneytarget_list, container, false);
 
-        fab = (FloatingActionButton) view.findViewById(R.id.add_fab);
+        final DatabaseHandler db=new DatabaseHandler(getActivity());
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                DatabaseHandler db=new DatabaseHandler(getActivity());
-                if(!db.targetAlreadyInProgress()){
+                if (!db.targetAlreadyInProgress()) {
 
-                    Intent intent = new Intent(getActivity(),AddMoneyTargetActivity.class);
+                    Intent intent = new Intent(getActivity(), AddMoneyTargetActivity.class);
                     getActivity().startActivity(intent);
 
-                }else{
+                } else {
 
                     Toast.makeText(getActivity(), "Complete your current targets before adding a new one", Toast.LENGTH_SHORT).show();
 
@@ -66,18 +61,14 @@ public class MoneyFragment extends Fragment {
             }
         });
 
-        mTargets=new ArrayList<>();
-        db=new DatabaseHandler(getActivity().getApplicationContext());
-        mTargets=db.getAllTargets();
+        ArrayList<MoneyTarget> mTargets = db.getAllTargets();
 
         // Set the adapter
 
-        Context context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.setAdapter(new MoneyTargetsAdapter(mTargets,getActivity()));
-
 
         return view;
     }

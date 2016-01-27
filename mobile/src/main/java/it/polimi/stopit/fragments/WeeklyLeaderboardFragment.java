@@ -1,6 +1,5 @@
 package it.polimi.stopit.fragments;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,22 +20,15 @@ import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.User;
 
-/**
- * Created by alessiorossotti on 30/12/15.
- */
 public class WeeklyLeaderboardFragment extends Fragment{
-
-    private ArrayList<User> mLeaderboard;
-    private DatabaseHandler db;
 
     public WeeklyLeaderboardFragment() {
 
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new WeeklyLeaderboardFragment();
 
-        return fragment;
+        return new WeeklyLeaderboardFragment();
     }
 
     @Override
@@ -50,28 +42,24 @@ public class WeeklyLeaderboardFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_leaderboard_list, container, false);
 
-        mLeaderboard=new ArrayList<>();
-        db=new DatabaseHandler(getActivity());
-
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        mLeaderboard=db.getAllContacts();
-        User me = new User(settings.getString("ID",null),settings.getString("name", null),settings.getString("surname", null),settings.getString("image", null),settings.getLong("points", 0),settings.getLong("dayPoints", 0),settings.getLong("weekPoints", 0),"","");
-        mLeaderboard.add(me);
+        ArrayList<User> mLeaderboard = new DatabaseHandler(getActivity()).getAllContacts();
+        mLeaderboard.add(new User(settings.getString("ID", null), settings.getString("name", null), settings.getString("surname", null), settings.getString("image", null), settings.getLong("points", 0), settings.getLong("dayPoints", 0), settings.getLong("weekPoints", 0), "", ""));
 
-        Controller controller=new Controller(getActivity());
-
-        mLeaderboard=controller.addTestContacts(mLeaderboard);
+        mLeaderboard =new Controller(getActivity()).addTestContacts(mLeaderboard);
 
         // reorder the leaderboard
         Collections.sort(mLeaderboard, new LeaderComparator());
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
+
             RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setHasFixedSize(true);
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
             recyclerView.setAdapter(new WeeklyLeaderboardAdapter(mLeaderboard));
         }

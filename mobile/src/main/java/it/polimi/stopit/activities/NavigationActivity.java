@@ -148,6 +148,7 @@ public class NavigationActivity extends AppCompatActivity
 
         Firebase.setAndroidContext(this);
         final Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
+
         if (isOnline()) {
 
             myFirebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {

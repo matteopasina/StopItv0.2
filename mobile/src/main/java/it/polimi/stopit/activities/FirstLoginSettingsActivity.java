@@ -79,7 +79,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
 
                             editor.putInt("cigcost", Integer.parseInt(cigCostVal.getText().toString()));
 
-                            editor.putInt("daysToRed",365);
+                            editor.putInt("daysToRed", 365);
 
                             editor.commit();
 
@@ -89,7 +89,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             dbSeed.seedAlternatives();
                             dbSeed.seedAchievements();
 
-                            new Controller(getBaseContext()).buildStopProgram(cigaPerDay.getProgress() / 2,365);
+                            new Controller(getBaseContext()).buildStopProgram(cigaPerDay.getProgress() / 2, 365);
 
                             startActivity(intent);
                             finish();

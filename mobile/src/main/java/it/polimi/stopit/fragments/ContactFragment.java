@@ -19,16 +19,12 @@ import it.polimi.stopit.model.User;
 
 public class ContactFragment extends Fragment {
 
-    private DatabaseHandler db;
-    private ArrayList<User> mContacts;
-
     public ContactFragment() {
     }
 
     public static Fragment newInstance() {
-        Fragment fragment = new ContactFragment();
 
-        return fragment;
+        return new ContactFragment();
     }
 
     @Override
@@ -42,19 +38,16 @@ public class ContactFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
 
-        db = new DatabaseHandler(getActivity());
-        mContacts = db.getAllContacts();
+        ArrayList<User> mContacts = new DatabaseHandler(getActivity()).getAllContacts();
 
-        Controller controller = new Controller(getActivity());
-
-        mContacts = controller.addTestContacts(mContacts);
+        mContacts = new Controller(getActivity()).addTestContacts(mContacts);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
+
             RecyclerView recyclerView = (RecyclerView) view;
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
             recyclerView.setAdapter(new ContactRecyclerViewAdapter(mContacts));
         }

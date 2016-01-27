@@ -42,7 +42,6 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
         if(!achievement.isObtained()) {
 
             holder.achievPic.setImageAlpha(40);
-            //holder.achievPic.setImageResource(R.drawable.locked);
             holder.achievDesc.setTextColor(Color.parseColor("#AAAAAA"));
             holder.achievTitle.setTextColor(Color.parseColor("#999999"));
             holder.achievPoints.setTextColor(Color.parseColor("#999999"));
