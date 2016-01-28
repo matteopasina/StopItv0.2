@@ -22,9 +22,6 @@ import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.MoneyTarget;
 
-/**
- * Created by alessiorossotti on 20/12/15.
- */
 public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapter.ViewHolder>{
 
     private final List<MoneyTarget> mTargets;
@@ -86,7 +83,7 @@ public class MoneyTargetsAdapter extends RecyclerView.Adapter<MoneyTargetsAdapte
 
                                     int newCPD=settings.getInt("CPD", 0)+target.getCigReduced();
                                     SharedPreferences.Editor editor = settings.edit();
-                                    editor.putInt("CPD",newCPD).commit();
+                                    editor.putInt("CPD",newCPD).apply();
                                     new Controller(context).buildStopProgram(newCPD,0);
 
                                 }

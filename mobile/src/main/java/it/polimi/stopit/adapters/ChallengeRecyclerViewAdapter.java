@@ -130,7 +130,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             if (!challenge.isAccepted()) {
                 if (challenge.isChallenger()) {
                     Toast.makeText(context, "Wait for your opponent to respond", Toast.LENGTH_SHORT).show();
-                } else if (!challenge.isChallenger()) {
+                } else {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -189,7 +189,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                             .show();
 
                 }
-            } else if (challenge.isAccepted()) {
+            } else {
 
                 Intent startDetail = new Intent(context, ChallengeDetail.class);
                 startDetail.putExtra("opponentID", mChallenges.get(getLayoutPosition()).getOpponentID());

@@ -76,7 +76,7 @@ public class Controller {
         Instant instant = new Instant();
         int year = instant.get(DateTimeFieldType.year());
         int month = instant.get(DateTimeFieldType.monthOfYear());
-        int day = instant.get(DateTimeFieldType.dayOfMonth())-1;
+        int day = instant.get(DateTimeFieldType.dayOfMonth()) - 1;
 
         int cigPD = settings.getInt("CPD", 0);
 
@@ -468,7 +468,7 @@ public class Controller {
                             } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
                                 VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
                             }
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -593,7 +593,7 @@ public class Controller {
 
 
                                     //manda notifica
-                                    sendNotificationChallenge(opponent, snapshot.child("ID").getValue().toString(),snapshot.child("profilePic").getValue().toString());
+                                    sendNotificationChallenge(opponent, snapshot.child("ID").getValue().toString(), snapshot.child("profilePic").getValue().toString());
 
 
                                     //aggiungi challenge al DB dello sfidato
@@ -650,12 +650,12 @@ public class Controller {
 
         Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
         acceptIntent.putExtra("accept", true);
-        acceptIntent.putExtra("opponent",ID);
+        acceptIntent.putExtra("opponent", ID);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
         refuseIntent.putExtra("accept", false);
-        refuseIntent.putExtra("opponent",ID);
+        refuseIntent.putExtra("opponent", ID);
         PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
@@ -1081,8 +1081,9 @@ public class Controller {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+
+            return BitmapFactory.decodeStream(input);
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -1281,7 +1282,7 @@ public class Controller {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
-        int len = 0;
+        int len;
         while ((len = inputStream.read(buffer)) != -1) {
             byteBuffer.write(buffer, 0, len);
         }
@@ -1293,7 +1294,6 @@ public class Controller {
         final NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Handler h = new Handler();
-        long delayInMilliseconds = delay;
         h.postDelayed(new Runnable() {
 
             public void run() {
@@ -1303,7 +1303,7 @@ public class Controller {
 
             }
 
-        }, delayInMilliseconds);
+        }, delay);
     }
 
     public void buildStopProgram(int numCig, int newDays) {
@@ -1323,7 +1323,7 @@ public class Controller {
             int interval = newDays / numCig;
 
             if (interval == 0) interval++;
-            settings.edit().putInt("redInterval", interval).commit();
+            settings.edit().putInt("redInterval", interval).apply();
 
             System.out.println("Stop schedule for " + newDays + " days from now has been setted");
             System.out.println("Reduction every " + interval + " days");
@@ -1341,7 +1341,7 @@ public class Controller {
         if (remainDays > 1) {
 
             remainDays--;
-            settings.edit().putInt("daysToRed", remainDays).commit();
+            settings.edit().putInt("daysToRed", remainDays).apply();
 
             int interval = settings.getInt("redInterval", 0);
 
@@ -1352,26 +1352,26 @@ public class Controller {
                 if (CPD > 1) {
 
                     CPD--;
-                    settings.edit().putInt("CPD", CPD).commit();
+                    settings.edit().putInt("CPD", CPD).apply();
                     buildStopProgram(CPD, 0);
 
                 } else {
 
-                    settings.edit().putInt("daysToRed", 0).commit();
-                    settings.edit().putInt("CPD", 0).commit();
+                    settings.edit().putInt("daysToRed", 0).apply();
+                    settings.edit().putInt("CPD", 0).apply();
                     notifyStopCompleted();
                 }
 
             } else {
 
                 interval--;
-                settings.edit().putInt("redInterval", interval).commit();
+                settings.edit().putInt("redInterval", interval).apply();
             }
 
         } else {
 
-            settings.edit().putInt("daysToRed", 0).commit();
-            settings.edit().putInt("CPD", 0).commit();
+            settings.edit().putInt("daysToRed", 0).apply();
+            settings.edit().putInt("CPD", 0).apply();
             notifyStopCompleted();
         }
 

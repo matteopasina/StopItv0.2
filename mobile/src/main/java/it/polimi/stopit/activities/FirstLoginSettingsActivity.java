@@ -81,7 +81,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
 
                             editor.putInt("daysToRed", 365);
 
-                            editor.commit();
+                            editor.apply();
 
                             DatabaseSeeder dbSeed = new DatabaseSeeder(getApplicationContext());
                             dbSeed.loadContacts();

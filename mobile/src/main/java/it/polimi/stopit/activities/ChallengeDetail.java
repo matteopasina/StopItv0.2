@@ -59,7 +59,7 @@ public class ChallengeDetail extends AppCompatActivity {
         opponentPoints.setText(String.valueOf(challenge.getMyPoints()));
 
         MutableDateTime time = new MutableDateTime();
-        progressBar.setProgress((int) (100 * (Float.valueOf(time.getMillis() - challenge.getStartTime()) /
+        progressBar.setProgress((int) (100 * ((float)(time.getMillis() - challenge.getStartTime()) /
                 (challenge.getEndTime() - challenge.getStartTime()))));
         time.setMillis(challenge.getEndTime() - time.getMillis());
 

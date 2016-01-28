@@ -139,7 +139,7 @@ public class AddMoneyTargetActivity extends AppCompatActivity implements OnPassi
                     case DialogInterface.BUTTON_POSITIVE:
 
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(AddMoneyTargetActivity.this);
-                        settings.edit().putInt("CPD", CPD).commit();
+                        settings.edit().putInt("CPD", CPD).apply();
 
                         insertTarget(name, price, duration, imageResource, cigToReduce);
 

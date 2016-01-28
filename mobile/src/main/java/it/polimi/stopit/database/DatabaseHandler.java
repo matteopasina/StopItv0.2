@@ -666,19 +666,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // GET ROW COUNT
 
-    public int getAchievementsCount() {
-
-        String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-
-        int count = cursor.getCount();
-        cursor.close();
-
-        return count;
-
-    }
-
     public int getAchievementsObtCount() {
 
         String countQuery = "SELECT  * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + ACHIEVEMENT_OBTAINED + " = '1'";
@@ -785,17 +772,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_MONEY_TARGETS, MONEYTARGET_ID + " = ?",
                 new String[]{String.valueOf(target.getId())});
-        db.close();
-    }
-
-    public void deleteAllContacts() {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
-                + CONTACT_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME + " TEXT," + CONTACT_SURNAME + " TEXT,"
-                + CONTACT_IMAGE + " TEXT," + CONTACT_POINTS + " INTEGER," + CONTACT_DAYPOINTS + " INTEGER," + CONTACT_WEEKPOINTS + " INTEGER" + ")";
-        db.execSQL(CREATE_CONTACTS_TABLE);
         db.close();
     }
 

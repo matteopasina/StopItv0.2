@@ -404,7 +404,7 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("points", points + bonus);
                             editor.putInt("numAlternative", settings.getInt("numAlternative", 0) + 1);
                             editor.putInt("num" + category, settings.getInt("num" + category, 0) + 1);
-                            editor.commit();
+                            editor.apply();
 
                             controller.updatePoints(bonus);
 
@@ -415,7 +415,7 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("points", points + gain);
                             editor.putLong("dayPoints", daypoints + gain);
                             editor.putLong("weekPoints", weekpoints + gain);
-                            editor.commit();
+                            editor.apply();
 
                             controller.updatePoints(gain);
 
@@ -453,7 +453,7 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("dayPoints", daypoints + gain);
                             editor.putLong("weekPoints", weekpoints + gain);
                             editor.putLong("points", points + gain);
-                            editor.commit();
+                            editor.apply();
 
                             controller.updatePoints(gain);
 
@@ -466,7 +466,7 @@ public class ProfileFragment extends Fragment {
                             editor.putLong("points", points + gain);
                             editor.putLong("dayPoints", daypoints + gain);
                             editor.putLong("weekPoints", weekpoints + gain);
-                            editor.commit();
+                            editor.apply();
 
                             controller.updatePoints(gain);
 

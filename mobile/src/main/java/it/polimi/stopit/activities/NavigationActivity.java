@@ -86,49 +86,55 @@ public class NavigationActivity extends AppCompatActivity
 
         if (!redirect.equals("")) {
 
-            if (redirect.equals("money")) {
+            switch (redirect) {
+                case "money": {
 
-                Fragment fragment = MoneyFragment.newInstance();
+                    Fragment fragment = MoneyFragment.newInstance();
 
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-                getSupportActionBar().setTitle("Money Target");
+                    getSupportActionBar().setTitle("Money Target");
 
-                dialog.dismiss();
+                    dialog.dismiss();
 
 
-            }else if(redirect.equals("challenges")){
+                    break;
+                }
+                case "challenges": {
 
-                Fragment fragment = ChallengeFragment.newInstance();
+                    Fragment fragment = ChallengeFragment.newInstance();
 
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-                getSupportActionBar().setTitle("Challenges");
+                    getSupportActionBar().setTitle("Challenges");
 
-                dialog.dismiss();
+                    dialog.dismiss();
 
-            }else if(redirect.equals("stopped")){
+                    break;
+                }
+                case "stopped":
 
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
 
-                                Intent intent = new Intent(getBaseContext(), NavigationActivity.class);
-                                startActivity(intent);
+                                    Intent intent = new Intent(getBaseContext(), NavigationActivity.class);
+                                    startActivity(intent);
 
-                                break;
+                                    break;
 
+                            }
                         }
-                    }
-                };
+                    };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
-                builder.setIcon(getResources().getDrawable(R.drawable.legend,null));
-                builder.setMessage("Congratulations, you have succesfully stopped smoking !!").setPositiveButton("Wonderful", dialogClickListener).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(NavigationActivity.this);
+                    builder.setIcon(getResources().getDrawable(R.drawable.legend, null));
+                    builder.setMessage("Congratulations, you have succesfully stopped smoking !!").setPositiveButton("Wonderful", dialogClickListener).show();
 
-                dialog.dismiss();
+                    dialog.dismiss();
+                    break;
             }
 
         }
@@ -189,7 +195,7 @@ public class NavigationActivity extends AppCompatActivity
                     editor.putString("lastDayCheck", snapshot.child(user.getID()).child("lastDayCheck").getValue().toString());
                     editor.putString("lastWeekCheck", snapshot.child(user.getID()).child("lastWeekCheck").getValue().toString());
 
-                    editor.commit();
+                    editor.apply();
 
                     if(redirect.equals("")){
 

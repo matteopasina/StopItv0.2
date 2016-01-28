@@ -14,9 +14,6 @@ import it.polimi.stopit.OnPassingData;
 import it.polimi.stopit.R;
 import it.polimi.stopit.model.MoneyTarget;
 
-/**
- * Created by alessiorossotti on 17/12/15.
- */
 public class MoneyRecyclerViewAdapter extends RecyclerView.Adapter<MoneyRecyclerViewAdapter.ViewHolder> {
 
     private final List<MoneyTarget> mTargets;

@@ -20,7 +20,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.facebook.internal.LockOnGetVariable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -29,7 +28,6 @@ import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
-import com.squareup.picasso.Picasso;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -37,13 +35,9 @@ import org.joda.time.MutableInterval;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -62,10 +56,6 @@ import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.AlternativeActivity;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.User;
-
-/**
- * Created by matteo on 13/12/15.
- */
 
 public class ScheduleService extends Service {
     private NotificationManager mNM;
@@ -115,11 +105,7 @@ public class ScheduleService extends Service {
                 Log.v("LEADERBOARD: ", "Received askleaderboard");
                 putLeaderboardInMap();
 
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -141,17 +127,13 @@ public class ScheduleService extends Service {
                 firstStart();
             }
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         // deleteFile("schedule");
-        start=new MutableDateTime();
-        end=new MutableDateTime();
+        start = new MutableDateTime();
+        end = new MutableDateTime();
         Log.v("SCHEDULE", "start:" + list.get(0).getStartMillis() +
                 " end:" + list.get(list.size() - 1).getEndMillis());
         start.setMillis(list.get(0).getStartMillis());
@@ -190,11 +172,7 @@ public class ScheduleService extends Service {
 
         try {
             putLeaderboardInMap();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -218,11 +196,7 @@ public class ScheduleService extends Service {
                     deleteFile("schedule");
                     try {
                         firstStart();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (TimeoutException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     beginOfDay = false;
@@ -472,7 +446,7 @@ public class ScheduleService extends Service {
     }
 
     static List<MutableInterval> shiftIntervals(MutableDateTime time, List<MutableInterval> list) {
-        MutableDateTime endtime=new MutableDateTime();
+        MutableDateTime endtime = new MutableDateTime();
         endtime.setHourOfDay(23);
         endtime.setMinuteOfHour(0);
         endtime.setSecondOfMinute(0);
@@ -488,7 +462,7 @@ public class ScheduleService extends Service {
             i.setInterval(i.getStartMillis() + shift, i.getEndMillis() + shift);
         }
 
-        List<MutableInterval> lista=list;
+        List<MutableInterval> lista = list;
 
         for (MutableInterval i : list) {
             if (i.getStart().isAfter(endtime)) {
