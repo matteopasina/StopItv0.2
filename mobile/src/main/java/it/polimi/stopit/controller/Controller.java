@@ -76,7 +76,7 @@ public class Controller {
         Instant instant = new Instant();
         int year = instant.get(DateTimeFieldType.year());
         int month = instant.get(DateTimeFieldType.monthOfYear());
-        int day = instant.get(DateTimeFieldType.dayOfMonth());
+        int day = instant.get(DateTimeFieldType.dayOfMonth())-1;
 
         int cigPD = settings.getInt("CPD", 0);
 
