@@ -71,12 +71,7 @@ public class Controller {
 
     }
 
-    public void dailyMoneyControl() {
-
-        Instant instant = new Instant();
-        int year = instant.get(DateTimeFieldType.year());
-        int month = instant.get(DateTimeFieldType.monthOfYear());
-        int day = instant.get(DateTimeFieldType.dayOfMonth()) - 1;
+    public void dailyMoneyControl(int year,int month,int day) {
 
         int cigPD = settings.getInt("CPD", 0);
 
@@ -1127,6 +1122,8 @@ public class Controller {
 
             if (lastDayCheck.getDayOfYear() < now.getDayOfYear()) {
 
+                int dayDifference=now.getDayOfYear()-lastDayCheck.getDayOfYear();
+
                 Firebase.setAndroidContext(context);
                 Firebase myFirebaseRef = new Firebase("https://blazing-heat-3084.firebaseio.com/Users");
 
@@ -1136,9 +1133,13 @@ public class Controller {
                 settings.edit().putLong("dayPoints", 0).apply();
                 settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
-                dailyMoneyControl();
-                stopProgramControl();
+                while(dayDifference>0){
 
+                    dayDifference--;
+                    dailyMoneyControl(lastDayCheck.getYear(), lastDayCheck.getMonthOfYear(), lastDayCheck.getDayOfMonth()+dayDifference);
+                    stopProgramControl();
+
+                }
             }
 
         } else if (lastDayCheck.getYear() < now.getYear()) {
@@ -1152,7 +1153,7 @@ public class Controller {
             settings.edit().putLong("dayPoints", 0).apply();
             settings.edit().putString("lastDayCheck", getStringTime(now)).apply();
 
-            dailyMoneyControl();
+            dailyMoneyControl(lastDayCheck.getYear(),lastDayCheck.getMonthOfYear(),lastDayCheck.getDayOfMonth());
             stopProgramControl();
         }
     }
