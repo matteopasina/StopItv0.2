@@ -55,6 +55,8 @@ public class NavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,8 +73,6 @@ public class NavigationActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        dialog = ProgressDialog.show(NavigationActivity.this, "", "Loading data...", true,false);
 
         try {
 
