@@ -5,12 +5,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,7 +32,9 @@ import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 import org.joda.time.MutableDateTime;
 
+import it.polimi.stopit.OnSwipeTouchListener;
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseSeederWear;
 import it.polimi.stopit.services.WearListenerService;
 import it.polimi.stopit.services.ScheduleServiceWear;
 
@@ -34,11 +42,21 @@ public class ClockActivity extends Activity {
 
     private GoogleApiClient mGoogleApiClient;
     private BroadcastReceiver uiUpdated;
+    private DatabaseSeederWear db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clock);
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstRun = p.getBoolean("firstRun", true);
+        if(firstRun){
+            db=new DatabaseSeederWear(this);
+            db.seedAchievements();
+        }
+        p.edit().putBoolean("firstRun", false).commit();
+
 
         startService(new Intent(this, WearListenerService.class));
 
@@ -46,6 +64,8 @@ public class ClockActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+
+                final Button smoke =(Button) stub.findViewById(R.id.smoke);
 
                 final TextView timerText = (TextView) stub.findViewById(R.id.timer);
                 timerText.setText("00:00:00");
@@ -127,23 +147,37 @@ public class ClockActivity extends Activity {
                 startService(new Intent(ClockActivity.this, ScheduleServiceWear.class));
                 try {
                     registerReceiver(uiUpdated, new IntentFilter("TIMER"));
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+                smoke.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendSmoke();
+                        Intent intent = new Intent(ClockActivity.this, ConfirmationActivity.class);
+                        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+                                ConfirmationActivity.SUCCESS_ANIMATION);
+                        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE,
+                                getString(R.string.msg_sent));
+                        startActivity(intent);
+                    }
+                });
+
             }
         });
 
-        askLeaderboard();
+        askMobile();
 
-        stub.setOnLongClickListener(new View.OnLongClickListener() {
+        stub.setOnTouchListener(new OnSwipeTouchListener(this){
             @Override
-            public boolean onLongClick(View view) {
+            public void onSwipeLeft() {
+                super.onSwipeLeft();
                 Intent launchMenu = new Intent(ClockActivity.this, MenuActivity.class);
                 startActivity(launchMenu);
-                return true;
             }
         });
+
     }
 
     public void setTimer(TextView timerText, long millis) {
@@ -186,16 +220,18 @@ public class ClockActivity extends Activity {
                 if (seconds >= 10) {
 
                     timerText.setText("0" + hours + ":0" + minutes + ":" + seconds);
+
                 } else {
 
                     timerText.setText("0" + hours + ":0" + minutes + ":0" + seconds);
+
                 }
             }
         }
     }
 
 
-    public void askLeaderboard() {
+    public void askMobile() {
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -218,12 +254,19 @@ public class ClockActivity extends Activity {
                 .build();
         mGoogleApiClient.connect();
 
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/askLeaderboard");
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/askMobile");
         putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
 
+    }
+
+    public void sendSmoke(){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/smoke");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
 }

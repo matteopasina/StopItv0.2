@@ -20,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -32,11 +33,14 @@ import com.google.android.gms.wearable.Wearable;
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -88,6 +92,12 @@ public class ScheduleService extends Service {
                 nextCiga(list, start, end);
                 saveSchedule(list);
 
+                try {
+                    putScheduleInMap();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             Count = null;
@@ -96,14 +106,16 @@ public class ScheduleService extends Service {
         }
     };
 
-    private BroadcastReceiver askLeaderboard = new BroadcastReceiver() {
+    private BroadcastReceiver sendWear = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             try {
 
-                Log.v("LEADERBOARD: ", "Received askleaderboard");
+                Log.v("SEND: ", "Received ask");
+                putScheduleInMap();
                 putLeaderboardInMap();
+                putAchievementsInMap();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -169,12 +181,6 @@ public class ScheduleService extends Service {
         controller.checkChallenges();
         controller.checkAccepted();
         controller.checkGiveUp();
-
-        try {
-            putLeaderboardInMap();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -259,13 +265,6 @@ public class ScheduleService extends Service {
         list = splitDuration(start, end, settings.getInt("CPD", 0));
         saveSchedule(list);
 
-        new Thread(new Runnable() {
-            public void run() {
-                putAchievementsInMap();
-                putChallengesInMap();
-                putScheduleInMap(start.getMillis(), end.getMillis(), settings.getInt("CPD", 0));
-            }
-        }).start();
     }
 
     public void nextCiga(List<MutableInterval> list, MutableDateTime start, MutableDateTime end) {
@@ -297,17 +296,29 @@ public class ScheduleService extends Service {
         }
     }
 
-    public void putScheduleInMap(long start, long end, long CPD) {
+    public void putScheduleInMap() throws IOException {
+
+        byte[] schedule;
+        schedule=convertToBytes(list);
+
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/schedule");
-        putDataMapReq.getDataMap().putLong("start", start);
-        putDataMapReq.getDataMap().putLong("end", end);
-        putDataMapReq.getDataMap().putLong("CPD", CPD);
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        putDataMapReq.getDataMap().putByteArray("schedule",schedule);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+
     }
 
-    public void putLeaderboardInMap() throws ExecutionException, InterruptedException, TimeoutException {
+    private byte[] convertToBytes(Object object) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutput out = new ObjectOutputStream(bos)) {
+            out.writeObject(object);
+            return bos.toByteArray();
+        }
+    }
+
+    public void putLeaderboardInMap() throws ExecutionException, InterruptedException, TimeoutException, IOException {
 
         ArrayList<User> mLeaderboard = db.getAllContacts();
 
@@ -316,44 +327,58 @@ public class ScheduleService extends Service {
 
         mLeaderboard = controller.addTestContacts(mLeaderboard);
 
-        int i = 0;
+        byte[] leaderboard=convertToBytes(mLeaderboard);
+
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        putDataMapReq.getDataMap().putByteArray("leaderboard",leaderboard);
+        //putDataMapReq.getDataMap().putAsset("profileImage", asset);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+
+       /* int i = 0;
         for (User contact : mLeaderboard) {
 
-            Asset asset = createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000, TimeUnit.MILLISECONDS));
+           // Asset asset = createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000, TimeUnit.MILLISECONDS));
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard/" + i);
             putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-            putDataMapReq.getDataMap().putAsset("profileImage", asset);
+            //putDataMapReq.getDataMap().putAsset("profileImage", asset);
             contact.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
             i++;
 
             Log.v("LEADERBOARD", "DONE: " + contact.getName());
-        }
+        }*/
 
     }
 
-    public void putAchievementsInMap() {
+    public void putAchievementsInMap() throws IOException {
 
         ArrayList<Achievement> mAchievements = (ArrayList<Achievement>) db.getAllAchievements();
 
+        byte[] achievements=convertToBytes(mAchievements);
+
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        putDataMapReq.getDataMap().putByteArray("achievements",achievements);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+        /*
         int i = 0;
         for (Achievement achievement : mAchievements) {
 
-            Bitmap img = BitmapFactory.decodeResource(getResources(), achievement.getImage());
-            Asset asset = createAssetFromBitmap(img);
-
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements/" + i);
             putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-            putDataMapReq.getDataMap().putAsset("achievementImage", asset);
             achievement.putToDataMap(putDataMapReq.getDataMap());
             PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
             i++;
         }
+        */
 
     }
 
@@ -529,44 +554,12 @@ public class ScheduleService extends Service {
         return notificationID;
     }
 
-    public Bitmap loadBitmapFromAsset(Asset asset) {
-        if (asset == null) {
-            throw new IllegalArgumentException("Asset must be non-null");
-        }
-        ConnectionResult result = mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
-
-        if (!result.isSuccess()) {
-            return null;
-        }
-        // convert asset into a file descriptor and block until it's ready
-        InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
-                mGoogleApiClient, asset).await().getInputStream();
-        mGoogleApiClient.disconnect();
-
-        if (assetInputStream == null) {
-
-            return null;
-        }
-        // decode the stream into a bitmap
-        return BitmapFactory.decodeStream(assetInputStream);
-    }
-
-    public static class LeaderComparator implements Comparator<User> {
-
-        @Override
-        public int compare(User contact1, User contact2) {
-
-            return contact2.getPoints().compareTo(contact1.getPoints());
-
-        }
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
         registerReceiver(uiUpdated, new IntentFilter("SMOKE_OUTOFTIME"));
-        registerReceiver(askLeaderboard, new IntentFilter("ASK_LEADERBOARD"));
+        registerReceiver(sendWear, new IntentFilter("ASK_MOBILE"));
 
         return START_STICKY;
     }

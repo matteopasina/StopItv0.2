@@ -2,7 +2,9 @@ package it.polimi.stopit.services;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -15,10 +17,21 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
+
+import it.polimi.stopit.controller.Controller;
+import it.polimi.stopit.database.DatabaseHandler;
+import it.polimi.stopit.model.Cigarette;
+
 
 public class ListenerService extends WearableListenerService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
+    private SharedPreferences settings;
+    private Controller controller;
 
     @Override
     public void onCreate() {
@@ -34,9 +47,6 @@ public class ListenerService extends WearableListenerService implements GoogleAp
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
 
-        System.out.println("DATA CHANGE");
-        int i = 0;
-
         for (DataEvent event : dataEvents) {
 
             if (event.getType() == DataEvent.TYPE_CHANGED) {
@@ -46,11 +56,34 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                 DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 Log.v("DATA CHANGE", dataMap.toString());
 
-                if (item.getUri().getPath().compareTo("/stopit/askLeaderboard") == 0) {
+                if (item.getUri().getPath().compareTo("/stopit/askMobile") == 0) {
 
-                    Intent intent=new Intent("ASK_LEADERBOARD");
+                    Log.v("ASKMOBILE",""+dataMap.getLong("timestamp"));
+                    Intent intent = new Intent("ASK_MOBILE");
                     sendBroadcast(intent);
 
+                }
+
+                if (item.getUri().getPath().compareTo("/stopit/smoke") == 0) {
+
+                    Log.v("SMOKE",""+dataMap.getLong("timestamp"));
+                    DatabaseHandler dbh = new DatabaseHandler(this);
+                    controller=new Controller(this);
+                    settings= PreferenceManager.getDefaultSharedPreferences(this);
+
+                    controller.updatePoints(-50);
+
+                    settings.edit().putLong("points", settings.getLong("points",0) - 50).apply();
+                    settings.edit().putLong("weekPoints", settings.getLong("weekPoints", 0) - 50).apply();
+                    settings.edit().putLong("dayPoints", settings.getLong("dayPoints", 0) - 50).apply();
+
+                    MutableDateTime dt = new MutableDateTime(DateTimeZone.UTC);
+                    DateTime date = new DateTime(new Instant());
+                    dbh.addCigarette(new Cigarette(1, date, "smoke"));
+
+                    Intent i = new Intent("SMOKE_OUTOFTIME");
+                    i.putExtra("time", dt);
+                    sendBroadcast(i);
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {

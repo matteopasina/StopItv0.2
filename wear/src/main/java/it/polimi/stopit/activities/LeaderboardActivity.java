@@ -15,15 +15,18 @@ import java.util.Comparator;
 
 import it.polimi.stopit.adapters.LeaderboardAdapter;
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandlerWear;
 import it.polimi.stopit.model.User;
 
 public class LeaderboardActivity extends Activity implements WearableListView.ClickListener {
 
+    private DatabaseHandlerWear db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+        db=new DatabaseHandlerWear(this);
 
         final ArrayList<User> mLeaderboard = loadLeaderboard();
 

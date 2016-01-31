@@ -15,8 +15,11 @@ import android.preference.PreferenceManager;
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -46,16 +49,16 @@ public class ScheduleServiceWear extends Service {
             start=new MutableDateTime();
             end=new MutableDateTime();
 
-            SharedPreferences userdata = PreferenceManager.getDefaultSharedPreferences(ScheduleServiceWear.this);
+            try {
+                list=(List<MutableInterval>) convertFromBytes(intent.getByteArrayExtra("schedule"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
-            start.setMillis(intent.getLongExtra("start",0));
-            end.setMillis(intent.getLongExtra("end", 0));
-            userdata.edit().putLong("CPD", intent.getLongExtra("CPD", 0)).apply();
-
-            start.setSecondOfMinute(0);
-            end.setSecondOfMinute(0);
-
-            list = splitDuration(start, end, intent.getLongExtra("CPD", 0));
+            start.setMillis(list.get(0).getStartMillis());
+            end.setMillis(list.get(list.size()-1).getEndMillis());
             saveSchedule(list);
             nextCiga(list, start, end);
 
@@ -210,6 +213,13 @@ public class ScheduleServiceWear extends Service {
         }
 
         return list;
+    }
+
+    private Object convertFromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInput in = new ObjectInputStream(bis)) {
+            return in.readObject();
+        }
     }
 
     @Override

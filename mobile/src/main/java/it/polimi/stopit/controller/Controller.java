@@ -569,7 +569,7 @@ public class Controller {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //scontrolla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
+                //controlla firebase su Notifications e se c'è qualche sfida manda la notifica all'utente e la salva nel db come non accettata
                 if (dataSnapshot.getChildrenCount() != 0) {
 
                     for (final DataSnapshot children : dataSnapshot.getChildren()) {

@@ -12,16 +12,22 @@ import java.util.ArrayList;
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.AchievementsAdapter;
 import it.polimi.stopit.adapters.LeaderboardAdapter;
+import it.polimi.stopit.database.DatabaseHandlerWear;
+import it.polimi.stopit.database.DatabaseSeederWear;
 import it.polimi.stopit.model.Achievement;
 
 public class AchievementsActivity extends Activity implements WearableListView.ClickListener {
+
+    private DatabaseHandlerWear db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
+        db=new DatabaseHandlerWear(this);
 
-        final ArrayList<Achievement> mAchievements = loadAchievements();
+        checkAchievements();
+        final ArrayList<Achievement> mAchievements = db.getAllAchievements();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -65,5 +71,18 @@ public class AchievementsActivity extends Activity implements WearableListView.C
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public void checkAchievements(){
+        ArrayList<Achievement> achievements=loadAchievements();
+        ArrayList<Achievement> dbAch=db.getAllAchievements();
+        for(Achievement ach:achievements){
+            for(Achievement dbA:dbAch){
+                if(ach.getId()==dbA.getId() && ach.isObtained()!=dbA.isObtained()){
+                    dbA.setObtained(ach.isObtained());
+                    db.updateAchievement(dbA);
+                }
+            }
+        }
     }
 }

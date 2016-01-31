@@ -69,10 +69,7 @@ public class AchievementsAdapter extends WearableListView.Adapter {
         TextView points=itemHolder.points;
         ImageView circle=itemHolder.image;
 
-
-
-        Bitmap bmp = BitmapFactory.decodeByteArray(achievement.getImg(), 0, achievement.getImg().length);
-        circle.setImageBitmap(bmp);
+        circle.setImageResource(achievement.getImage());
 
         if(!achievement.isObtained()) {
             circle.setImageAlpha(40);

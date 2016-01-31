@@ -1,7 +1,5 @@
 package it.polimi.stopit.model;
 
-import android.graphics.Bitmap;
-
 import com.google.android.gms.wearable.DataMap;
 
 import java.io.Serializable;
@@ -18,20 +16,7 @@ public class Achievement implements Serializable{
     private int imageResource;
     private boolean obtained;
 
-    private byte[] img;
-
     public Achievement(){
-
-    }
-
-    public Achievement(int id,String title,long points,String description,boolean obtained){
-
-        this.id=id;
-        this.title=title;
-        this.description=description;
-        this.points=points;
-        this.obtained=obtained;
-        this.img=null;
 
     }
 
@@ -44,25 +29,6 @@ public class Achievement implements Serializable{
         this.imageResource=imageResource;
         this.obtained=obtained;
     }
-
-    public Achievement(DataMap map) {
-        this(   map.getInt("ID"),
-                map.getString("title"),
-                map.getLong("points"),
-                map.getString("description"),
-                map.getBoolean("obtained")
-        );
-    }
-
-
-    public byte[] getImg() {
-        return img;
-    }
-
-    public void setImg(byte[] img) {
-        this.img = img;
-    }
-
     public boolean isObtained() {
         return obtained;
     }
@@ -112,10 +78,12 @@ public class Achievement implements Serializable{
     }
 
     public DataMap putToDataMap(DataMap map) {
-        map.putInt("ID", this.getId());
-        map.putString("title", this.getTitle());
+        map.putInt("ID",this.getId());
+        map.putString("title",this.getTitle());
         map.putLong("points", this.getPoints());
-        map.putString("description", this.getDescription());
+        map.putString("description",this.getDescription());
+        map.putLong("points", this.getPoints());
+        map.putBoolean("obtained", this.isObtained());
         return map;
     }
 }

@@ -29,10 +29,13 @@ import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ import java.util.concurrent.TimeoutException;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.activities.ChallengesActivity;
+import it.polimi.stopit.database.DatabaseHandlerWear;
 import it.polimi.stopit.model.Achievement;
 import it.polimi.stopit.model.Challenge;
 import it.polimi.stopit.model.User;
@@ -53,6 +57,7 @@ import it.polimi.stopit.model.User;
 public class WearListenerService extends WearableListenerService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
+    private DatabaseHandlerWear db;
     private ArrayList<User> leaderboard = new ArrayList<>();
     private ArrayList<Achievement> achievements = new ArrayList<>();
     private ArrayList<Challenge> challenges = new ArrayList<>();
@@ -69,35 +74,18 @@ public class WearListenerService extends WearableListenerService implements Goog
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+        db=new DatabaseHandlerWear(this);
 
     }
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
+
         System.out.println("DATA CHANGE");
-        int i = 0;
 
         for (DataEvent event : dataEvents) {
 
-            if (event.getType() == DataEvent.TYPE_CHANGED && event.getDataItem().getUri().getPath().equals("/image")) {
-
-                DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
-
-                Asset profileAsset = dataMapItem.getDataMap().getAsset("contactImage");
-                Bitmap bitmap = loadBitmapFromAsset(profileAsset);
-
-                String imagePath = Environment.getExternalStorageDirectory() + "/contactImage" + i + ".jpg";
-
-                try {
-                    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(imagePath));
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.close();
-                    i++;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            } else if (event.getType() == DataEvent.TYPE_CHANGED) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
 
                 // DataItem changed
                 DataItem item = event.getDataItem();
@@ -106,34 +94,68 @@ public class WearListenerService extends WearableListenerService implements Goog
 
                 if (item.getUri().getPath().compareTo("/stopit/schedule") == 0) {
 
+                    Log.v("SCHEDULE","Ricevuto");
                     Intent schedule = new Intent("SET_SCHEDULE");
-                    schedule.putExtra("start", dataMap.getLong("start"));
-                    schedule.putExtra("end", dataMap.getLong("end"));
-                    schedule.putExtra("CPD", dataMap.getLong("CPD"));
+                    schedule.putExtra("schedule",dataMap.getByteArray("schedule"));
                     sendBroadcast(schedule);
 
                 }
 
-                if (item.getUri().getPath().matches("/stopit/leaderboard/.*")) {
+                if (item.getUri().getPath().compareTo("/stopit/leaderboard") == 0) {
+                    Log.v("LEADERBOARD", "Ricevuto");
+                    try {
+                        leaderboard=(ArrayList<User>)convertFromBytes(dataMap.getByteArray("leaderboard"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    saveLeaderboard(leaderboard);
+                }
 
-                    Log.v("DENTRO;", "Dentro");
-                    Asset profileAsset = dataMap.getAsset("profileImage");
-                    Bitmap bitmap = loadBitmapFromAsset(profileAsset);
+                if (item.getUri().getPath().compareTo("/stopit/achievements") == 0) {
+                    Log.v("ACHIEVEMENTS", "Ricevuto");
+                    try {
+                        achievements=(ArrayList<Achievement>)convertFromBytes(dataMap.getByteArray("achievements"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    saveAchievements(achievements);
+                }
+
+                /*if (item.getUri().getPath().matches("/stopit/leaderboard/.*")) {
+
+                  /*  Bitmap bitmap=BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+                    try {
+                        Asset profileAsset = dataMap.getAsset("profileImage");
+                        bitmap = loadBitmapFromAsset(profileAsset);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+
 
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] byteArray = stream.toByteArray();
 
                     User user = new User(dataMap);
-                    user.setImg(byteArray);
+                    //user.setImg(byteArray);
 
-                    if (!leaderboard.contains(user)) {
-                        leaderboard.add(user);
+                    leaderboard=db.getAllContacts();
+                    if(!leaderboard.contains(user)) {
+                        db.addContact(user);
                     }
+                }*/
 
-                }
+                /*if (item.getUri().getPath().matches("/stopit/achievements/.*")) {
 
-                if (item.getUri().getPath().matches("/stopit/achievements/.*")) {
+                    if(loadAchievements()!=null) {
+                        achievements = loadAchievements();
+                    }
 
                     Asset achievementAsset = dataMap.getAsset("achievementImage");
                     Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
@@ -148,30 +170,28 @@ public class WearListenerService extends WearableListenerService implements Goog
 
                     achievements.add(achievement);
 
-                }
+                    saveAchievements(achievements);
 
-                for (int k = 0; k < 5; k++) {
+                }*/
+
+                /*for (int k = 0; k < 5; k++) {
                     if (item.getUri().getPath().compareTo("/stopit/challenges/" + k) == 0) {
 
                         /*Asset achievementAsset = dataMap.getAsset("achievementImage");
-                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);*/
+                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
 
                         Challenge challenge = new Challenge(dataMap);
 
                         challenges.add(challenge);
 
                     }
-                }
+                }*/
 
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }
         }
-
-        saveLeaderboard(leaderboard);
-        saveAchievements(achievements);
-        saveChallenges(challenges);
     }
 
     private void saveChallenges(ArrayList<Challenge> challenges) {
@@ -213,6 +233,7 @@ public class WearListenerService extends WearableListenerService implements Goog
         }
     }
 
+
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -243,7 +264,7 @@ public class WearListenerService extends WearableListenerService implements Goog
             throw new IllegalArgumentException("Asset must be non-null");
         }
 
-        /*ConnectionResult result = mGoogleApiClient.blockingConnect(1000, TimeUnit.MILLISECONDS);
+        /*ConnectionResult result = mGoogleApiClient.blockingConnect(10000, TimeUnit.MILLISECONDS);
 
         if (!result.isSuccess()) {
             Log.v("ASSETRESULT", "Requested an unknown Asset. Unsuccess " + result);
@@ -259,6 +280,13 @@ public class WearListenerService extends WearableListenerService implements Goog
         }
         // decode the stream into a bitmap
         return BitmapFactory.decodeStream(assetInputStream);
+    }
+
+    private Object convertFromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInput in = new ObjectInputStream(bis)) {
+            return in.readObject();
+        }
     }
 
 }

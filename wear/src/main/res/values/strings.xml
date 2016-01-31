@@ -11,4 +11,7 @@
     <string name="title_activity_achievements">AchievementsActivity</string>
     <string name="title_activity_challenges">ChallengesActivity</string>
     <string name="title_activity_clock">ClockActivity</string>
+    <string name="title_activity_confirm">ConfirmActivity</string>
+    <string name="msg_sent">Smoked! -50 p</string>
+
 </resources>

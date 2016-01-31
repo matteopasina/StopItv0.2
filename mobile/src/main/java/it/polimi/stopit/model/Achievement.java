@@ -2,10 +2,12 @@ package it.polimi.stopit.model;
 
 import com.google.android.gms.wearable.DataMap;
 
+import java.io.Serializable;
+
 /**
  * Created by alessiorossotti on 12/12/15.
  */
-public class Achievement {
+public class Achievement implements Serializable{
 
     private int id;
     private String title;

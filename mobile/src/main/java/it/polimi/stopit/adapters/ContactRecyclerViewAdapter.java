@@ -153,6 +153,7 @@ public class ContactRecyclerViewAdapter extends RecyclerView.Adapter<ContactRecy
 
                                 challenge.child("duration").setValue(duration);
                                 challenge.child("opponent").setValue(settings.getString("ID", null));
+                                challenge.child("profilePic").setValue(settings.getString("image", null));
 
                                 Intent createChallenge = new Intent(view.getContext(), NavigationActivity.class);
                                 createChallenge.putExtra("redirect", "challenges");
