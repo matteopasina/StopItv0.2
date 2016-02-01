@@ -151,43 +151,6 @@ public class WearListenerService extends WearableListenerService implements Goog
                     }
                 }*/
 
-                /*if (item.getUri().getPath().matches("/stopit/achievements/.*")) {
-
-                    if(loadAchievements()!=null) {
-                        achievements = loadAchievements();
-                    }
-
-                    Asset achievementAsset = dataMap.getAsset("achievementImage");
-                    Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
-
-                    Achievement achievement = new Achievement(dataMap);
-
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-                    achievement.setImg(byteArray);
-
-                    achievements.add(achievement);
-
-                    saveAchievements(achievements);
-
-                }*/
-
-                /*for (int k = 0; k < 5; k++) {
-                    if (item.getUri().getPath().compareTo("/stopit/challenges/" + k) == 0) {
-
-                        /*Asset achievementAsset = dataMap.getAsset("achievementImage");
-                        Bitmap bitmap = loadBitmapFromAsset(achievementAsset);
-
-                        Challenge challenge = new Challenge(dataMap);
-
-                        challenges.add(challenge);
-
-                    }
-                }*/
-
-
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }

@@ -314,7 +314,7 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                User contact = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), Long.parseLong(cursor.getString(4)), Long.parseLong(cursor.getString(5)), Long.parseLong(cursor.getString(6)));
+                User contact = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), Long.parseLong(cursor.getString(4)), Long.parseLong(cursor.getString(5)), Long.parseLong(cursor.getString(6)),"","");
                 contactList.add(contact);
 
             } while (cursor.moveToNext());

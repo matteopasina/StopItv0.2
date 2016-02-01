@@ -59,13 +59,17 @@ public class WearableListItemLayout extends RelativeLayout
         mName.setAlpha(1f);
         mPoints.setAlpha(1f);
         mPosition.setAlpha(1f);
-        mCircle.getDrawable().setAlpha(255);
+        if(mCircle.getDrawable()!=null) {
+            mCircle.getDrawable().setAlpha(255);
+        }
 
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        mCircle.getDrawable().setAlpha(40);
+        if(mCircle.getDrawable()!=null) {
+            mCircle.getDrawable().setAlpha(40);
+        }
         mName.setAlpha(mFadedTextAlpha);
         mPosition.setAlpha(mFadedTextAlpha);
         mPoints.setAlpha(mFadedTextAlpha);

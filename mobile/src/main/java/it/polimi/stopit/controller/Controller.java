@@ -652,13 +652,13 @@ public class Controller {
                 int notificationID = NotificationID.getID();
 
                 Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
-                acceptIntent.putExtra("accept", true);
+                acceptIntent.putExtra("accepted", true);
                 acceptIntent.putExtra("opponent", ID);
                 acceptIntent.putExtra("notificationID",notificationID);
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
-                refuseIntent.putExtra("accept", false);
+                refuseIntent.putExtra("accepted", false);
                 refuseIntent.putExtra("opponent", ID);
                 refuseIntent.putExtra("notificationID", notificationID);
                 PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);

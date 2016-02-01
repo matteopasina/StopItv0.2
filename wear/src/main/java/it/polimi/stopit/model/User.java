@@ -17,12 +17,12 @@ public class User implements Serializable{
     private Long points;
     private Long weekPoints;
     private Long dayPoints;
-
-    private byte[] img;
+    private String lastDayCheck;
+    private String lastWeekCheck;
 
     public User(){}
 
-    public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints){
+    public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints,String lastDayCheck,String lastWeekCheck){
 
         this.ID=id;
         this.name=name;
@@ -31,24 +31,10 @@ public class User implements Serializable{
         this.points=points;
         this.dayPoints=dayPoints;
         this.weekPoints = weekPoints;
+        this.lastDayCheck=lastDayCheck;
+        this.lastWeekCheck=lastWeekCheck;
 
     }
-
-    public User(DataMap map) {
-        this(map.getString("ID"),
-                map.getString("name"),map.getString("surname"),map.getString("profilePic"),
-                map.getLong("points"),map.getLong("weekPoints"),map.getLong("dayPoints")
-        );
-    }
-
-    public byte[] getImg() {
-        return img;
-    }
-
-    public void setImg(byte[] img) {
-        this.img = img;
-    }
-
     public String getID() {
         return ID;
     }
@@ -103,16 +89,40 @@ public class User implements Serializable{
         this.dayPoints = dayPoints;
     }
 
+    public String getLastDayCheck() {
+        return lastDayCheck;
+    }
+
+    public void setLastDayCheck(String lastDayCheck) {
+        this.lastDayCheck = lastDayCheck;
+    }
+
+    public String getLastWeekCheck() {
+        return lastWeekCheck;
+    }
+
+    public void setLastWeekCheck(String lastWeekCheck) {
+        this.lastWeekCheck = lastWeekCheck;
+    }
+
+    public User(DataMap map) {
+        this(map.getString("ID"),
+                map.getString("name"),map.getString("surname"),map.getString("profilePic"),
+                map.getLong("points"),map.getLong("weekPoints"),map.getLong("dayPoints"),
+                map.getString("lastDayCheck"),map.getString("lastWeekCheck")
+        );
+    }
+
     public DataMap putToDataMap(DataMap map) {
         map.putString("ID",this.getID());
         map.putString("name",this.getName());
-        map.putString("surname", this.getSurname());
-        map.putString("profilePic", this.getProfilePic());
+        map.putString("surname",this.getSurname());
+        map.putString("profilePic",this.getProfilePic());
         map.putLong("points", this.getPoints());
         map.putLong("dayPoints", this.getDayPoints());
-        map.putLong("weekPoints", this.getWeekPoints());
+        map.putLong("weekPoints",this.getWeekPoints());
+        map.putString("lastDayCheck", this.getLastDayCheck());
+        map.putString("lastWeekCheck", this.getLastWeekCheck());
         return map;
     }
 }
-
-
