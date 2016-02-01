@@ -59,7 +59,7 @@ public class WearableListItemLayout extends RelativeLayout
         mName.setAlpha(1f);
         mPoints.setAlpha(1f);
         mPosition.setAlpha(1f);
-        mCircle.getDrawable().setAlpha(100);
+        mCircle.getDrawable().setAlpha(255);
 
     }
 

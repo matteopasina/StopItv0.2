@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
@@ -577,18 +579,22 @@ public class Controller {
                         if (children.getChildrenCount() == 2) {
                             final Firebase fireInner = new Firebase("https://blazing-heat-3084.firebaseio.com/Users/" + children.child("opponent").getValue().toString());
 
-
+                            //prende dati opponent da Users
                             fireInner.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot snapshot) {
+                                    try {
+                                        new DownloadImgTask().execute(snapshot.child("profilePic").getValue().toString());
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
 
                                     //costruisci testo notifica
                                     String opponent = snapshot.child("name").getValue().toString() + " " +
                                             snapshot.child("surname").getValue().toString();
 
-
                                     //manda notifica
-                                    sendNotificationChallenge(opponent, snapshot.child("ID").getValue().toString(), snapshot.child("profilePic").getValue().toString());
+                                    sendNotificationChallenge(opponent, snapshot.child("id").getValue().toString());
 
 
                                     //aggiungi challenge al DB dello sfidato
@@ -639,57 +645,70 @@ public class Controller {
         });
     }
 
-    public void sendNotificationChallenge(String opponent, String ID, String urlImage) {
+    public void sendNotificationChallenge(final String opponent,final String ID) {
 
-        new DownloadImgTask().execute(urlImage);
+        new Thread(new Runnable() {
+            public void run() {
+                int notificationID = NotificationID.getID();
 
-        Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
-        acceptIntent.putExtra("accept", true);
-        acceptIntent.putExtra("opponent", ID);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
+                acceptIntent.putExtra("accept", true);
+                acceptIntent.putExtra("opponent", ID);
+                acceptIntent.putExtra("notificationID",notificationID);
+                PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
-        refuseIntent.putExtra("accept", false);
-        refuseIntent.putExtra("opponent", ID);
-        PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
+                refuseIntent.putExtra("accept", false);
+                refuseIntent.putExtra("opponent", ID);
+                refuseIntent.putExtra("notificationID", notificationID);
+                PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(context)
-                        .setLargeIcon(largeicon)
-                        .setSmallIcon(R.drawable.stopitsymbollollipop)
-                        .setContentTitle(opponent + " challenged you!")
-                        .setContentText("Begin the challenge!")
-                        .addAction(R.drawable.stopitsymbollollipop, "Refuse", piDS)
-                        .addAction(R.drawable.stopitsymbollollipop, "Accept", pi)
-                        .setAutoCancel(true);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        Intent resultIntent = new Intent(context, NavigationActivity.class);
-        resultIntent.putExtra("redirect", "challenges");
+                Log.v("CHALLENGE","send notification");
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(context)
+                                .setLargeIcon(largeicon)
+                                .setSmallIcon(R.drawable.stopitsymbollollipop)
+                                .setContentTitle(opponent + " challenged you!")
+                                .setContentText("Begin the challenge!")
+                                .addAction(R.drawable.stopitsymbollollipop, "Refuse", piDS)
+                                .addAction(R.drawable.stopitsymbollollipop, "Accept", pi)
+                                .setAutoCancel(true);
 
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                Intent resultIntent = new Intent(context, NavigationActivity.class);
+                resultIntent.putExtra("redirect", "challenges");
 
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(NavigationActivity.class);
+                // The stack builder object will contain an artificial back stack for the
+                // started Activity.
+                // This ensures that navigating backward from the Activity leads out of
+                // your application to the Home screen.
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
+                // Adds the back stack for the Intent (but not the Intent itself)
+                stackBuilder.addParentStack(NavigationActivity.class);
 
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                // Adds the Intent that starts the Activity to the top of the stack
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+                mBuilder.setContentIntent(resultPendingIntent);
 
-        // Builds the notification and issues it.
-        mNM.notify(NotificationID.getID(), mBuilder.build());
+                // Gets an instance of the NotificationManager service
+                NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+                // Builds the notification and issues it.
+                mNM.notify(notificationID, mBuilder.build());
+
+            }
+        }).start();
     }
 
     public void sendCustomNotification(String title, String text) {
@@ -1065,6 +1084,7 @@ public class Controller {
 
         @Override
         protected void onPostExecute(Bitmap result) {
+            Log.v("DOWNLOADIMG","DONE");
             largeicon = result;
         }
     }

@@ -1,5 +1,6 @@
 package it.polimi.stopit.Receivers;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,9 @@ import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.model.Challenge;
 
 public class ChallengeAcceptReceiver extends BroadcastReceiver {
+
+    private NotificationManager mNM;
+
     public ChallengeAcceptReceiver() {
     }
 
@@ -24,7 +28,11 @@ public class ChallengeAcceptReceiver extends BroadcastReceiver {
         DatabaseHandler dbh=new DatabaseHandler(context);
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
 
-        Challenge challenge=dbh.getActiveChallengeByOpponentID(intent.getStringExtra("ID"));
+        if (mNM == null)
+            mNM = (NotificationManager)  context.getSystemService(context.NOTIFICATION_SERVICE);
+        mNM.cancel(intent.getIntExtra("notificationID", 0));
+
+        Challenge challenge=dbh.getActiveChallengeByOpponentID(intent.getStringExtra("opponent"));
 
         if(intent.getBooleanExtra("accepted",false)){
 
@@ -53,7 +61,7 @@ public class ChallengeAcceptReceiver extends BroadcastReceiver {
 
         }else{
 
-            dbh.deleteChallenge(intent.getStringExtra("ID"));
+            dbh.deleteChallenge(intent.getStringExtra("opponent"));
 
             final Firebase decline = new Firebase("https://blazing-heat-3084.firebaseio.com/Accepted/" + challenge.getOpponentID() );
             decline.child("declined").setValue(p.getString("ID",null));

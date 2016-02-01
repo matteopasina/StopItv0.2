@@ -61,6 +61,8 @@ public class AchievementsAdapter extends WearableListView.Adapter {
     public void onBindViewHolder(WearableListView.ViewHolder holder,
                                  int position) {
 
+        holder.setIsRecyclable(false);
+
         Achievement achievement=mAchievements.get(position);
 
         // retrieve the text view
@@ -72,7 +74,7 @@ public class AchievementsAdapter extends WearableListView.Adapter {
         circle.setImageResource(achievement.getImage());
 
         if(!achievement.isObtained()) {
-            circle.setImageAlpha(40);
+            circle.setImageResource(R.drawable.locked);
         }
 
         title.setText(achievement.getTitle());
