@@ -649,25 +649,27 @@ public class Controller {
 
         new Thread(new Runnable() {
             public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 int notificationID = NotificationID.getID();
 
                 Intent acceptIntent = new Intent(context, ChallengeAcceptReceiver.class);
                 acceptIntent.putExtra("accepted", true);
                 acceptIntent.putExtra("opponent", ID);
                 acceptIntent.putExtra("notificationID",notificationID);
+                acceptIntent.setAction("accept");
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 Intent refuseIntent = new Intent(context, ChallengeAcceptReceiver.class);
-                refuseIntent.putExtra("accepted", false);
                 refuseIntent.putExtra("opponent", ID);
                 refuseIntent.putExtra("notificationID", notificationID);
+                refuseIntent.putExtra("accepted", false);
+                refuseIntent.setAction("refuse");
                 PendingIntent piDS = PendingIntent.getBroadcast(context, 0, refuseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
                 Log.v("CHALLENGE","send notification");
                 NotificationCompat.Builder mBuilder =
@@ -758,6 +760,7 @@ public class Controller {
         smokeIntent.putExtra("points", points);
         smokeIntent.putExtra("notificationID", notificationID);
         smokeIntent.putExtra("smoke", true);
+        smokeIntent.setAction("smoked");
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, smokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent alternativeIntent = new Intent(context, SmokeReceiver.class);
@@ -765,6 +768,7 @@ public class Controller {
         alternativeIntent.putExtra("notificationID", notificationID);
         alternativeIntent.putExtra("alternative", alternativeActivity.getTitle());
         alternativeIntent.putExtra("alternativeCategory", alternativeActivity.getCategory());
+        alternativeIntent.setAction("alternative");
         PendingIntent piDS = PendingIntent.getBroadcast(context, 0, alternativeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =

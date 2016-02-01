@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
+import com.facebook.internal.LockOnGetVariable;
 import com.firebase.client.Firebase;
 
 import org.joda.time.MutableDateTime;
@@ -34,6 +36,7 @@ public class ChallengeAcceptReceiver extends BroadcastReceiver {
 
         Challenge challenge=dbh.getActiveChallengeByOpponentID(intent.getStringExtra("opponent"));
 
+        Log.v("CHALLENGEACCEPTED",""+intent.getBooleanExtra("accepted",false));
         if(intent.getBooleanExtra("accepted",false)){
 
             Firebase.setAndroidContext(context);

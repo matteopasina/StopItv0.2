@@ -508,11 +508,13 @@ public class ScheduleService extends Service {
         smokeIntent.putExtra("points", points);
         smokeIntent.putExtra("notificationID", notificationID);
         smokeIntent.putExtra("smoke", true);
+        smokeIntent.setAction("smoked");
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, smokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent dontSmokeIntent = new Intent(this, SmokeReceiver.class);
         dontSmokeIntent.putExtra("points", points * 2);
         dontSmokeIntent.putExtra("notificationID", notificationID);
+        dontSmokeIntent.setAction("dontSmoke");
         PendingIntent piDS = PendingIntent.getBroadcast(this, 0, dontSmokeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
