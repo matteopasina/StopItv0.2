@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import it.polimi.stopit.NotificationID;
 import it.polimi.stopit.R;
@@ -1263,7 +1262,14 @@ public class Controller {
 
             return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
 
-        } else {
+        } else if(date.getDayOfMonth() - date.getDayOfWeek() == 0){
+
+            date.set(DateTimeFieldType.monthOfYear(), date.getMonthOfYear() - 1);
+            date.set(DateTimeFieldType.dayOfMonth(), date.dayOfMonth().getMaximumValue());
+
+            return date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
+
+        }else {
 
             date.set(DateTimeFieldType.monthOfYear(), date.getMonthOfYear() - 1);
             date.set(DateTimeFieldType.dayOfMonth(), date.dayOfMonth().getMaximumValue() + date.getDayOfMonth() - date.getDayOfWeek());

@@ -22,8 +22,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -324,10 +323,13 @@ public class NavigationActivity extends AppCompatActivity
 
 
         } else if (id == R.id.logout) {
-            Intent intent = new Intent(this, Login.class);
-            AccessToken.setCurrentAccessToken(null);
-            Profile.setCurrentProfile(null);
-            startActivity(intent);
+
+            //FacebookSdk.sdkInitialize(getApplicationContext());
+            LoginManager.getInstance().logOut();
+            //AccessToken.setCurrentAccessToken(null);
+            //Profile.setCurrentProfile(null);
+
+            startActivity(new Intent(getBaseContext(), Login.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
