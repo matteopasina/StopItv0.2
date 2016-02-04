@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.controller.Controller;
+import it.polimi.stopit.database.DatabaseHandler;
 import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
@@ -22,6 +23,13 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login_settings);
+
+        if (new DatabaseHandler(this).getAllAchievements().size() != 0 ) {
+
+            Intent intent = new Intent(FirstLoginSettingsActivity.this, NavigationActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
 
         final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 

@@ -45,20 +45,22 @@ public class FacebookLogin extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fb, container, false);
 
-        DatabaseHandler db = new DatabaseHandler(getActivity());
+        if(Profile.getCurrentProfile() != null){
 
-        if (db.getAllAchievements().size() != 0) {
+            if (new DatabaseHandler(getActivity()).getAllAchievements().size() != 0 ) {
 
-            Intent intent = new Intent(getContext(), NavigationActivity.class);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+                Intent intent = new Intent(getContext(), NavigationActivity.class);
+                getActivity().startActivity(intent);
+                getActivity().finish();
 
-        } else if (Profile.getCurrentProfile() != null) {
+            } else {
 
-            Intent intent = new Intent(getContext(), FirstLoginSettingsActivity.class);
-            getActivity().startActivity(intent);
-            getActivity().finish();
+                Intent intent = new Intent(getContext(), FirstLoginSettingsActivity.class);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
         }
+
 
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) view.findViewById(R.id.login_button);

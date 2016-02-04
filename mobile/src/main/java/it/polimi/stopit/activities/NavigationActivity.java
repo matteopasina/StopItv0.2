@@ -324,12 +324,9 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.logout) {
 
-            //FacebookSdk.sdkInitialize(getApplicationContext());
             LoginManager.getInstance().logOut();
-            //AccessToken.setCurrentAccessToken(null);
-            //Profile.setCurrentProfile(null);
-
             startActivity(new Intent(getBaseContext(), Login.class));
+            this.finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
