@@ -6,60 +6,90 @@
     tools:context=".activities.MenuActivity"
     tools:deviceIds="wear_round">
 
-    <ImageView
-        android:id="@+id/leaderboard_img"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_above="@id/challenge_img"
-        android:background="@drawable/leaderaboard_img"/>
-    <TextView
-        android:id="@+id/leaderboard_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColorSecondary"
-        android:layout_toEndOf="@id/leaderboard_img"
-        android:layout_above="@id/challenge_text"
-        android:layout_marginBottom="30dp"
-        android:text="Leaderboard" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="35dp"
+        android:background="#D3071C"/>
 
-    <ImageView
-        android:id="@+id/challenge_img"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:background="@drawable/challenges_img"/>
-    <TextView
-        android:id="@+id/challenge_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColorSecondary"
-        android:layout_toEndOf="@id/challenge_img"
-        android:layout_centerVertical="true"
-        android:text="Challenges" />
+        android:layout_marginLeft="50dp">
 
-    <ImageView
-        android:id="@+id/achievements_img"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_below="@id/challenge_img"
-        android:background="@drawable/achievements_img"/>
-    <TextView
-        android:id="@+id/achivements_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/textColorSecondary"
-        android:layout_toEndOf="@id/achievements_img"
-        android:layout_below="@id/challenge_text"
-        android:text="Achievements" />
+        <RelativeLayout
+            android:id="@+id/rellay1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/leaderboard_img"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/leaderaboard_img" />
+
+            <TextView
+                android:id="@+id/leaderboard_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/leaderboard_img"
+                android:text="Leaderboard"
+                android:textColor="@color/textColorSecondary" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rellay2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rellay1"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:id="@+id/challenge_img"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/challenges_img" />
+
+            <TextView
+                android:id="@+id/challenge_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/challenge_img"
+                android:text="Challenges"
+                android:textColor="@color/textColorSecondary" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rellay3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rellay2"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:id="@+id/achievements_img"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/achievements_img" />
+
+            <TextView
+                android:id="@+id/achivements_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/achievements_img"
+                android:text="Achievements"
+                android:textColor="@color/textColorSecondary" />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

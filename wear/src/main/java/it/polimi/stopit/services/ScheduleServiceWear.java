@@ -1,16 +1,12 @@
 package it.polimi.stopit.services;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 
 import org.joda.time.MutableDateTime;
 import org.joda.time.MutableInterval;
@@ -24,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ScheduleServiceWear extends Service {
     public ScheduleServiceWear() {
@@ -219,6 +214,10 @@ public class ScheduleServiceWear extends Service {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
              ObjectInput in = new ObjectInputStream(bis)) {
             return in.readObject();
+        }catch (Exception e){
+
+            e.printStackTrace();
+            return null;
         }
     }
 

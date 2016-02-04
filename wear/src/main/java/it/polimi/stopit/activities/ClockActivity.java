@@ -9,11 +9,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.wearable.activity.ConfirmationActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -35,8 +33,8 @@ import org.joda.time.MutableDateTime;
 import it.polimi.stopit.OnSwipeTouchListener;
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseSeederWear;
-import it.polimi.stopit.services.WearListenerService;
 import it.polimi.stopit.services.ScheduleServiceWear;
+import it.polimi.stopit.services.WearListenerService;
 
 public class ClockActivity extends Activity {
 
@@ -75,7 +73,7 @@ public class ClockActivity extends Activity {
                 final DecoView arcSeconds = (DecoView) stub.findViewById(R.id.circle_seconds);
 
                 DisplayMetrics dm = getResources().getDisplayMetrics();
-                float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 9, dm);
+                float dpInPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, dm);
 
                 // Create background track
                 arcHours.addSeries(new SeriesItem.Builder(Color.argb(255, 240, 240, 240))
