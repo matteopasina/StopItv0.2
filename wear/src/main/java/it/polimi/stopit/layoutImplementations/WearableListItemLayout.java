@@ -1,12 +1,9 @@
 package it.polimi.stopit.layoutImplementations;
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -50,7 +47,15 @@ public class WearableListItemLayout extends RelativeLayout
         mCircle = (ImageView) findViewById(R.id.circle);
         mName = (TextView) findViewById(R.id.name);
         mPoints = (TextView) findViewById(R.id.points);
-        mPosition = (TextView) findViewById(R.id.position);
+
+        try{
+
+            mPosition = (TextView) findViewById(R.id.position);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -58,7 +63,10 @@ public class WearableListItemLayout extends RelativeLayout
 
         mName.setAlpha(1f);
         mPoints.setAlpha(1f);
-        mPosition.setAlpha(1f);
+        if(mPosition!=null){
+            mPosition.setAlpha(1f);
+        }
+
         if(mCircle.getDrawable()!=null) {
             mCircle.getDrawable().setAlpha(255);
         }
@@ -71,7 +79,10 @@ public class WearableListItemLayout extends RelativeLayout
             mCircle.getDrawable().setAlpha(40);
         }
         mName.setAlpha(mFadedTextAlpha);
-        mPosition.setAlpha(mFadedTextAlpha);
+
+        if(mPosition!=null){
+            mPosition.setAlpha(mFadedTextAlpha);
+        }
         mPoints.setAlpha(mFadedTextAlpha);
     }
 }

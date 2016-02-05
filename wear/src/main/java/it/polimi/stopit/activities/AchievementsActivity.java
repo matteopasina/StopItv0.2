@@ -11,9 +11,7 @@ import java.util.ArrayList;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.AchievementsAdapter;
-import it.polimi.stopit.adapters.LeaderboardAdapter;
 import it.polimi.stopit.database.DatabaseHandlerWear;
-import it.polimi.stopit.database.DatabaseSeederWear;
 import it.polimi.stopit.model.Achievement;
 
 public class AchievementsActivity extends Activity implements WearableListView.ClickListener {
@@ -24,7 +22,7 @@ public class AchievementsActivity extends Activity implements WearableListView.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
-        db=new DatabaseHandlerWear(this);
+        db = new DatabaseHandlerWear(this);
 
         checkAchievements();
         final ArrayList<Achievement> mAchievements = db.getAllAchievements();
@@ -73,12 +71,12 @@ public class AchievementsActivity extends Activity implements WearableListView.C
         return null;
     }
 
-    public void checkAchievements(){
-        ArrayList<Achievement> achievements=loadAchievements();
-        ArrayList<Achievement> dbAch=db.getAllAchievements();
-        for(Achievement ach:achievements){
-            for(Achievement dbA:dbAch){
-                if(ach.getId()==dbA.getId() && ach.isObtained()!=dbA.isObtained()){
+    public void checkAchievements() {
+        ArrayList<Achievement> achievements = loadAchievements();
+        ArrayList<Achievement> dbAch = db.getAllAchievements();
+        for (Achievement ach : achievements) {
+            for (Achievement dbA : dbAch) {
+                if (ach.getId() == dbA.getId() && ach.isObtained() != dbA.isObtained()) {
                     dbA.setObtained(ach.isObtained());
                     db.updateAchievement(dbA);
                 }

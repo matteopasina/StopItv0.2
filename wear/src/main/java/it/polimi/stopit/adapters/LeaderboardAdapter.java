@@ -1,8 +1,6 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +85,12 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
     // (invoked by the WearableListView's layout manager)
     @Override
     public int getItemCount() {
-        return mLeaderboard.size();
+
+        try{
+            return mLeaderboard.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

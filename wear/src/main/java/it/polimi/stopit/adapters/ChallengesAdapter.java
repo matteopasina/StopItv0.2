@@ -2,7 +2,6 @@ package it.polimi.stopit.adapters;
 
 import android.content.Context;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +24,14 @@ public class ChallengesAdapter extends WearableListView.Adapter {
 
     public ChallengesAdapter(Context context, ArrayList<Challenge> challenges) {
         mChallenges = challenges;
-        this.context=context;
+        this.context = context;
         mInflater = LayoutInflater.from(context);
     }
 
     // Provide a reference to the type of views you're using
     public static class ItemViewHolder extends WearableListView.ViewHolder {
-        private TextView me,mypoints,opponent,opponentPoints;
-        private ImageView image,opponentPic,vs;
+        private TextView me, mypoints, opponent, opponentPoints;
+        private ImageView image, opponentPic, vs;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -40,10 +39,10 @@ public class ChallengesAdapter extends WearableListView.Adapter {
             me = (TextView) itemView.findViewById(R.id.me);
             //image=(ImageView) itemView.findViewById(R.id.mypic);
             //opponentPic=(ImageView) itemView.findViewById(R.id.opponentPic);
-            mypoints=(TextView) itemView.findViewById(R.id.mypoints);
-            opponent=(TextView) itemView.findViewById(R.id.opponent);
-            opponentPoints=(TextView) itemView.findViewById(R.id.opponentPoints);
-            vs=(ImageView) itemView.findViewById(R.id.VS);
+            mypoints = (TextView) itemView.findViewById(R.id.mypoints);
+            opponent = (TextView) itemView.findViewById(R.id.opponent);
+            opponentPoints = (TextView) itemView.findViewById(R.id.opponentPoints);
+            vs = (ImageView) itemView.findViewById(R.id.VS);
         }
     }
 
@@ -66,12 +65,12 @@ public class ChallengesAdapter extends WearableListView.Adapter {
         // retrieve the text view
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
 
-        if(mChallenges.isEmpty()){
+        if (mChallenges.isEmpty()) {
 
             itemHolder.vs.setVisibility(View.INVISIBLE);
             itemHolder.me.setText("No active challenges, challenge someone!");
 
-        }else {
+        } else {
             Challenge challenge = mChallenges.get(position);
 
             // replace text contents
@@ -89,6 +88,12 @@ public class ChallengesAdapter extends WearableListView.Adapter {
     // (invoked by the WearableListView's layout manager)
     @Override
     public int getItemCount() {
-        return mChallenges.size();
+        try {
+            return mChallenges.size();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
