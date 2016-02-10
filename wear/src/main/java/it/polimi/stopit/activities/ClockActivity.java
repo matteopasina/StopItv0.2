@@ -52,6 +52,7 @@ public class ClockActivity extends Activity {
         if(firstRun){
             db=new DatabaseSeederWear(this);
             db.seedAchievements();
+            db.seedContacts();
         }
         p.edit().putBoolean("firstRun", false).commit();
 
@@ -138,16 +139,12 @@ public class ClockActivity extends Activity {
                         arcHours.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 24) * hours)).setIndex(series1Index).setDelay(0).build());
                         arcMinutes.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * minutes)).setIndex(series2Index).setDelay(0).build());
                         arcSeconds.addEvent(new DecoEvent.Builder(100 - (((float) 100 / 60) * seconds)).setIndex(series3Index).setDelay(0).build());
-
                     }
                 };
 
                 startService(new Intent(ClockActivity.this, ScheduleServiceWear.class));
-                try {
-                    registerReceiver(uiUpdated, new IntentFilter("TIMER"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                registerReceiver(uiUpdated, new IntentFilter("TIMER"));
+
 
                 smoke.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -228,6 +225,17 @@ public class ClockActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(uiUpdated);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(uiUpdated, new IntentFilter("TIMER"));
+    }
 
     public void askMobile() {
 
@@ -255,8 +263,7 @@ public class ClockActivity extends Activity {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/askMobile");
         putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
 
     }
 

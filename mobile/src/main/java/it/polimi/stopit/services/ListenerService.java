@@ -3,17 +3,22 @@ package it.polimi.stopit.services;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -21,6 +26,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.MutableDateTime;
+
+import java.io.ByteArrayOutputStream;
 
 import it.polimi.stopit.controller.Controller;
 import it.polimi.stopit.database.DatabaseHandler;
@@ -42,6 +49,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+        controller=new Controller(this);
     }
 
     @Override
@@ -86,6 +94,13 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                     sendBroadcast(i);
                 }
 
+                if (item.getUri().getPath().compareTo("/stopit/askImage") == 0) {
+
+                    Log.v("ASKIMAGE",""+dataMap.getLong("timestamp"));
+                    new DownloadImgTask().execute(dataMap.getString("urlImage"),dataMap.getString("id"));
+
+                }
+
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }
@@ -105,5 +120,36 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
+
+    private class DownloadImgTask extends AsyncTask<String, Void, Bitmap> {
+        private String id;
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+
+            id=urls[1];
+            Log.v("ASKIMAGE","ID: "+urls[1]);
+            return controller.getCircleBitmap(controller.getBitmapFromURL(urls[0]));
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+
+            Asset img=createAssetFromBitmap(result);
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/image");
+            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+            putDataMapReq.getDataMap().putString("id", id);
+            putDataMapReq.getDataMap().putAsset("image",img);
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+
+        }
+    }
+
+    private static Asset createAssetFromBitmap(Bitmap bitmap) {
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+        return Asset.createFromBytes(byteStream.toByteArray());
     }
 }

@@ -19,8 +19,20 @@ public class User implements Serializable{
     private Long dayPoints;
     private String lastDayCheck;
     private String lastWeekCheck;
+    private Bitmap img;
 
     public User(){}
+
+    public User(String id,String name,String surname,String profilePic,Long points,Bitmap img){
+
+        this.ID=id;
+        this.name=name;
+        this.surname=surname;
+        this.profilePic=profilePic;
+        this.points=points;
+        this.img=img;
+
+    }
 
     public User(String id,String name,String surname,String profilePic,Long points,Long dayPoints,Long weekPoints,String lastDayCheck,String lastWeekCheck){
 
@@ -35,6 +47,15 @@ public class User implements Serializable{
         this.lastWeekCheck=lastWeekCheck;
 
     }
+
+    public Bitmap getImg() {
+        return img;
+    }
+
+    public void setImg(Bitmap img) {
+        this.img = img;
+    }
+
     public String getID() {
         return ID;
     }
@@ -122,7 +143,8 @@ public class User implements Serializable{
         map.putLong("dayPoints", this.getDayPoints());
         map.putLong("weekPoints",this.getWeekPoints());
         map.putString("lastDayCheck", this.getLastDayCheck());
-        map.putString("lastWeekCheck", this.getLastWeekCheck());
+        map.putString("lastWeekCheck",this.getLastWeekCheck());
         return map;
     }
 }
+

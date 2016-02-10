@@ -19,7 +19,6 @@ public class Challenge implements Serializable{
     private Boolean challenger;
     private Boolean over;
     private Boolean won;
-    private long duration;
 
     public Challenge(String ID, String opponentID, long points, long opponentpoints, long starttime, long endtime, String accepted,
                      String challenger,String over,String won) {
@@ -33,23 +32,6 @@ public class Challenge implements Serializable{
         this.challenger=Boolean.valueOf(challenger);
         this.over=Boolean.valueOf(over);
         this.won=Boolean.valueOf(won);
-    }
-
-    public Challenge(String ID, String opponentID, long points, long opponentpoints, long starttime){
-        this.ID=ID;
-        this.opponentID=opponentID;
-        this.myPoints=points;
-        this.opponentPoints=opponentpoints;
-        this.duration=starttime;
-    }
-
-    public Challenge(DataMap map) {
-        this(   map.getString("ID"),
-                map.getString("opponentID"),
-                map.getLong("myPoints"),
-                map.getLong("opponentPoints"),
-                map.getLong("timeLeft")
-        );
     }
 
     public long getStartTime() {
@@ -130,14 +112,6 @@ public class Challenge implements Serializable{
 
     public void setWon(boolean won) {
         this.won = won;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
     }
 
     public DataMap putToDataMap(DataMap map) {

@@ -1,11 +1,24 @@
 package it.polimi.stopit.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+import com.hookedonplay.decoviewlib.events.DecoEvent;
+
+import org.joda.time.MutableDateTime;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -17,9 +30,11 @@ import it.polimi.stopit.adapters.LeaderboardAdapter;
 import it.polimi.stopit.R;
 import it.polimi.stopit.database.DatabaseHandlerWear;
 import it.polimi.stopit.model.User;
+import it.polimi.stopit.services.ScheduleServiceWear;
 
 public class LeaderboardActivity extends Activity implements WearableListView.ClickListener {
 
+    private WearableListView listView;
     private DatabaseHandlerWear db;
 
     @Override
@@ -28,7 +43,8 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
         setContentView(R.layout.activity_leaderboard);
         db=new DatabaseHandlerWear(this);
 
-        final ArrayList<User> mLeaderboard = loadLeaderboard();
+        checkDBContacts();
+        final ArrayList<User> mLeaderboard=db.getAllContacts();
 
         Collections.sort(mLeaderboard, new LeaderComparator());
 
@@ -37,8 +53,7 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 // Get the list component from the layout of the activity
-                WearableListView listView =
-                        (WearableListView) findViewById(R.id.leaderboard_list);
+                listView = (WearableListView) findViewById(R.id.leaderboard_list);
 
                 // Assign an adapter to the list
                 listView.setAdapter(new LeaderboardAdapter(LeaderboardActivity.this, mLeaderboard));
@@ -84,5 +99,21 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public void checkDBContacts() {
+        ArrayList<User> users = loadLeaderboard();
+        ArrayList<User> dbUsers = db.getAllContacts();
+        for (User u : users) {
+            for (User dbU : dbUsers) {
+                if (u.getID() == dbU.getID()) {
+                    dbU.setPoints(u.getPoints());
+                    db.updateContact(dbU);
+                }
+            }
+            if(!dbUsers.contains(u)){
+                db.addContact(u);
+            }
+        }
     }
 }

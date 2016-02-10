@@ -453,6 +453,25 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
                 new String[]{String.valueOf(achievement.getId())});
     }
 
+    public int updateContact(User contact) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACT_ID, contact.getID());
+        values.put(CONTACT_NAME, contact.getName());
+        values.put(CONTACT_SURNAME, contact.getSurname());
+        values.put(CONTACT_IMAGE, contact.getProfilePic());
+        values.put(CONTACT_POINTS, contact.getPoints());
+        values.put(CONTACT_DAYPOINTS, contact.getDayPoints());
+        values.put(CONTACT_WEEKPOINTS, contact.getWeekPoints());
+
+        // updating row
+        return db.update(TABLE_CONTACTS, values, CONTACT_ID + " = ?",
+                new String[]{String.valueOf(contact.getID())});
+    }
+
+
 
     //DELETE ROW
 

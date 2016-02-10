@@ -4,10 +4,12 @@ import android.util.Log;
 
 import com.google.android.gms.wearable.DataMap;
 
+import java.io.Serializable;
+
 /**
  * Created by alessiorossotti on 14/12/15.
  */
-public class Challenge {
+public class Challenge implements Serializable{
 
     private String ID;
     private String opponentID;

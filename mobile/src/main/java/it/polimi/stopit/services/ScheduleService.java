@@ -116,6 +116,7 @@ public class ScheduleService extends Service {
                 putScheduleInMap();
                 putLeaderboardInMap();
                 putAchievementsInMap();
+                putChallengesInMap();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -367,41 +368,20 @@ public class ScheduleService extends Service {
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
 
-        /*
-        int i = 0;
-        for (Achievement achievement : mAchievements) {
-
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/achievements/" + i);
-            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-            achievement.putToDataMap(putDataMapReq.getDataMap());
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-            i++;
-        }
-        */
-
     }
 
-    public void putChallengesInMap() {
+    public void putChallengesInMap() throws IOException {
 
         ArrayList<Challenge> mChallenges = (ArrayList<Challenge>) db.getActiveChallenges();
 
-        int i = 0;
-        for (Challenge challenge : mChallenges) {
+        byte[] challenges=convertToBytes(mChallenges);
 
-            //Bitmap img=controller.(contact.getProfilePic());
-            //Asset asset=createAssetFromBitmap(img);
-
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/challenges/" + i);
-            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-            // putDataMapReq.getDataMap().putAsset("profileImage", asset);
-            challenge.putToDataMap(putDataMapReq.getDataMap());
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-            i++;
-        }
-
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/challenges");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        putDataMapReq.getDataMap().putByteArray("challenges",challenges);
+        //putDataMapReq.getDataMap().putAsset("profileImage", asset);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
     private static Asset createAssetFromBitmap(Bitmap bitmap) {
