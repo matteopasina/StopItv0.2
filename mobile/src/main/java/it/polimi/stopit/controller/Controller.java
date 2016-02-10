@@ -63,6 +63,7 @@ public class Controller {
     Context context;
     SharedPreferences settings;
     Bitmap largeicon;
+    long opponentpoints;
 
     public Controller(Context context) {
 
@@ -448,10 +449,6 @@ public class Controller {
         for (Challenge challenge : challengeList) {
             if (challenge.isAccepted()) {
 
-                challenge.setMyPoints(challenge.getMyPoints() + points);
-                challenge.setOpponentPoints(challenge.getOpponentPoints() + points);
-                db.updateChallenge(challenge);
-
                 final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
                 VS.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -460,9 +457,11 @@ public class Controller {
                             //se sei tu lo sfidante
                             if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
                                 VS.child("myPoints").setValue((long) dataSnapshot.child("myPoints").getValue() + points);
+                                opponentpoints=(long)dataSnapshot.child("opponentPoints").getValue();
 
                             } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
                                 VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
+                                opponentpoints=(long)dataSnapshot.child("myPoints").getValue();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -474,6 +473,10 @@ public class Controller {
 
                     }
                 });
+
+                challenge.setMyPoints(challenge.getMyPoints() + points);
+                challenge.setOpponentPoints(opponentpoints);
+                db.updateChallenge(challenge);
             }
         }
     }

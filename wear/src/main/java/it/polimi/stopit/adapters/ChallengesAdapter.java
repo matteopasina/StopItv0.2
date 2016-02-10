@@ -65,23 +65,16 @@ public class ChallengesAdapter extends WearableListView.Adapter {
         // retrieve the text view
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
 
-        if (mChallenges.isEmpty()) {
+        Challenge challenge = mChallenges.get(position);
 
-            itemHolder.vs.setVisibility(View.INVISIBLE);
-            itemHolder.me.setText("No active challenges, challenge someone!");
+        // replace text contents
+        itemHolder.opponent.setText("ME COIONI");
 
-        } else {
-            Challenge challenge = mChallenges.get(position);
+        itemHolder.mypoints.setText("" + challenge.getMyPoints());
+        itemHolder.opponentPoints.setText("" + challenge.getOpponentPoints());
 
-            // replace text contents
-            itemHolder.opponent.setText("ME COIONI");
-
-            itemHolder.mypoints.setText("" + challenge.getMyPoints());
-            itemHolder.opponentPoints.setText("" + challenge.getOpponentPoints());
-
-            // replace list item's metadata
-            holder.itemView.setTag(position);
-        }
+        // replace list item's metadata
+        holder.itemView.setTag(position);
     }
 
     // Return the size of your dataset

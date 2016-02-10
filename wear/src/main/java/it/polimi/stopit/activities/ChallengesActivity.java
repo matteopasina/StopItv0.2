@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
+import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -26,15 +27,22 @@ public class ChallengesActivity extends Activity implements WearableListView.Cli
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                // Get the list component from the layout of the activity
-                WearableListView listView =
-                        (WearableListView) findViewById(R.id.challenge_list);
 
-                // Assign an adapter to the list
-                listView.setAdapter(new ChallengesAdapter(ChallengesActivity.this, mChallenges));
+                TextView challengesomeone=(TextView)findViewById(R.id.challenge_someone);
+                if(mChallenges==null){
+                    challengesomeone.setText("No active challenges\n Challenge someone!");
+                }else {
+                    challengesomeone.setVisibility(TextView.INVISIBLE);
+                    // Get the list component from the layout of the activity
+                    WearableListView listView =
+                            (WearableListView) findViewById(R.id.challenge_list);
 
-                // Set a click listener
-                listView.setClickListener(ChallengesActivity.this);
+                    // Assign an adapter to the list
+                    listView.setAdapter(new ChallengesAdapter(ChallengesActivity.this, mChallenges));
+
+                    // Set a click listener
+                    listView.setClickListener(ChallengesActivity.this);
+                }
             }
         });
     }

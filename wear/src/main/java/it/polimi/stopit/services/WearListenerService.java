@@ -107,31 +107,18 @@ public class WearListenerService extends WearableListenerService implements Goog
                     saveAchievements(achievements);
                 }
 
-                /*if (item.getUri().getPath().matches("/stopit/leaderboard/.*")) {
-
-                  /*  Bitmap bitmap=BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
+                if (item.getUri().getPath().compareTo("/stopit/challenges") == 0) {
+                    Log.v("CHALLENGES", "Ricevuto");
                     try {
-                        Asset profileAsset = dataMap.getAsset("profileImage");
-                        bitmap = loadBitmapFromAsset(profileAsset);
-                    }catch(Exception e){
+                        challenges=(ArrayList<Challenge>)convertFromBytes(dataMap.getByteArray("challenges"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
 
-
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-                    User user = new User(dataMap);
-                    //user.setImg(byteArray);
-
-                    leaderboard=db.getAllContacts();
-                    if(!leaderboard.contains(user)) {
-                        db.addContact(user);
-                    }
-                }*/
-
+                    saveChallenges(challenges);
+                }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }

@@ -379,7 +379,6 @@ public class ScheduleService extends Service {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/challenges");
         putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
         putDataMapReq.getDataMap().putByteArray("challenges",challenges);
-        //putDataMapReq.getDataMap().putAsset("profileImage", asset);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }

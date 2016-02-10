@@ -11,6 +11,16 @@
         android:layout_height="match_parent"
         app:layout_box="left|bottom|right">
 
+        <TextView
+            android:id="@+id/challenge_someone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textColor="@color/textColorSecondary"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:textStyle="bold" />
+
+
         <android.support.wearable.view.WearableListView
             android:id="@+id/challenge_list"
             android:layout_width="match_parent"
