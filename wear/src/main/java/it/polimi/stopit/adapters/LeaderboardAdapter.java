@@ -1,22 +1,10 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.support.wearable.view.CircledImageView;
 import android.support.wearable.view.WearableListView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -64,7 +52,7 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
                                                           int viewType) {
 
         // Inflate our custom layout for list items
-        return new ItemViewHolder(mInflater.inflate(R.layout.list_item, null));
+        return new ItemViewHolder(mInflater.inflate(R.layout.leaderboardlist_item, null));
 
     }
 
