@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import it.polimi.stopit.R;
 
 /**
@@ -16,8 +18,8 @@ import it.polimi.stopit.R;
 public class WearableChallengeItemLayout extends RelativeLayout
         implements WearableListView.OnCenterProximityListener {
 
-    private ImageView mypic,opponentpic;
-    private TextView me,opponent,mypoints,opponentpoints;
+    private CircularImageView mypic,opponentpic;
+    private TextView me,opponent,points;
 
     private final float mFadedTextAlpha;
     private final int mFadedCircleColor;
@@ -46,30 +48,29 @@ public class WearableChallengeItemLayout extends RelativeLayout
         super.onFinishInflate();
         // These are defined in the layout file for list items
         // (see next section)
-        //mypic = (ImageView) findViewById(R.id.mypic);
-        //opponentpic = (ImageView) findViewById(R.id.opponentPic);
+        mypic = (CircularImageView) findViewById(R.id.mypic);
+        opponentpic = (CircularImageView) findViewById(R.id.opponentPic);
         me = (TextView) findViewById(R.id.me);
-        mypoints = (TextView) findViewById(R.id.mypoints);
+        points = (TextView) findViewById(R.id.points);
         opponent = (TextView) findViewById(R.id.opponent);
-        opponentpoints = (TextView) findViewById(R.id.opponentPoints);
     }
 
     @Override
     public void onCenterPosition(boolean animate) {
         me.setAlpha(1f);
-        mypoints.setAlpha(1f);
+        points.setAlpha(1f);
         opponent.setAlpha(1f);
-        opponentpoints.setAlpha(1f);
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
+        mypic.getDrawable().setAlpha(255);
+        opponentpic.getDrawable().setAlpha(255);
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        //((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
+        mypic.getDrawable().setAlpha(40);
+        opponentpic.getDrawable().setAlpha(40);
         me.setAlpha(1f);
-        mypoints.setAlpha(1f);
+        points.setAlpha(1f);
         opponent.setAlpha(1f);
-        opponentpoints.setAlpha(1f);
     }
 }
 

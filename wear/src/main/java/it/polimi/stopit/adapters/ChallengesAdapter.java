@@ -46,7 +46,7 @@ public class ChallengesAdapter extends WearableListView.Adapter {
             me = (TextView) itemView.findViewById(R.id.me);
             mypic=(CircularImageView) itemView.findViewById(R.id.mypic);
             opponentPic=(CircularImageView) itemView.findViewById(R.id.opponentPic);
-            points = (TextView) itemView.findViewById(R.id.mypoints);
+            points = (TextView) itemView.findViewById(R.id.points);
             opponent = (TextView) itemView.findViewById(R.id.opponent);
             vs = (ImageView) itemView.findViewById(R.id.VS);
         }
