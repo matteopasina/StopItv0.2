@@ -6,19 +6,27 @@
     android:gravity="center_vertical">
 
     <RelativeLayout
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true">
 
-        <TextView
-            android:id="@+id/position"
+        <RelativeLayout
+            android:id="@+id/relposition"
             android:layout_width="25dp"
-            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:fontFamily="sans-serif-condensed-light"
-            android:textColor="@color/textColorSecondary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/circle"
@@ -31,7 +39,7 @@
             app:shadow_color="@color/shadows"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
-            android:layout_toRightOf="@+id/position"/>
+            android:layout_toRightOf="@+id/relposition"/>
 
         <RelativeLayout
             android:layout_width="wrap_content"
