@@ -23,6 +23,7 @@ public class AchievementsActivity extends Activity implements WearableListView.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_achievements);
         db = new DatabaseHandlerWear(this);
+        db.askMobile(this);
 
         checkAchievements();
         final ArrayList<Achievement> mAchievements = db.getAllAchievements();

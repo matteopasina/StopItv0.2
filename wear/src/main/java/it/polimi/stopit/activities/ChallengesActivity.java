@@ -2,8 +2,10 @@ package it.polimi.stopit.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
@@ -12,38 +14,37 @@ import java.util.ArrayList;
 
 import it.polimi.stopit.R;
 import it.polimi.stopit.adapters.ChallengesAdapter;
+import it.polimi.stopit.database.DatabaseHandlerWear;
 import it.polimi.stopit.model.Challenge;
 
-public class ChallengesActivity extends Activity implements WearableListView.ClickListener{
+public class ChallengesActivity extends Activity implements WearableListView.ClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenges);
+        DatabaseHandlerWear db=new DatabaseHandlerWear(this);
+        db.askMobile(this);
 
-        final ArrayList<Challenge> mChallenges=loadChallenges();
+        final ArrayList<Challenge> mChallenges = loadChallenges();
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
 
-                TextView challengesomeone=(TextView)findViewById(R.id.challenge_someone);
-                if(mChallenges==null){
-                    challengesomeone.setText("No active challenges\n Challenge someone!");
-                }else {
-                    challengesomeone.setVisibility(TextView.INVISIBLE);
-                    // Get the list component from the layout of the activity
-                    WearableListView listView =
-                            (WearableListView) findViewById(R.id.challenge_list);
+                // Get the list component from the layout of the activity
+                WearableListView listView =
+                        (WearableListView) findViewById(R.id.challenge_list);
 
-                    // Assign an adapter to the list
-                    listView.setAdapter(new ChallengesAdapter(ChallengesActivity.this, mChallenges));
+                Log.v("CHALLENGES",mChallenges.toString());
+                // Assign an adapter to the list
+                listView.setAdapter(new ChallengesAdapter(ChallengesActivity.this, mChallenges));
 
-                    // Set a click listener
-                    listView.setClickListener(ChallengesActivity.this);
-                }
+                // Set a click listener
+                listView.setClickListener(ChallengesActivity.this);
             }
+
         });
     }
 

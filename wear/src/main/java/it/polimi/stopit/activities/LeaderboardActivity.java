@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,12 +37,14 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
 
     private WearableListView listView;
     private DatabaseHandlerWear db;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
         db=new DatabaseHandlerWear(this);
+        db.askMobile(this);
 
         checkDBContacts();
         final ArrayList<User> mLeaderboard=db.getAllContacts();
@@ -106,7 +109,7 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
         ArrayList<User> dbUsers = db.getAllContacts();
         for (User u : users) {
             for (User dbU : dbUsers) {
-                if (u.getID() == dbU.getID()) {
+                if (u.getID().equals(dbU.getID())) {
                     dbU.setPoints(u.getPoints());
                     db.updateContact(dbU);
                 }

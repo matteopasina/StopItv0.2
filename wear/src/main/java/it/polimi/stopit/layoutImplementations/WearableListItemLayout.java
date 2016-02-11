@@ -3,6 +3,7 @@ package it.polimi.stopit.layoutImplementations;
 import android.content.Context;
 import android.support.wearable.view.WearableListView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;

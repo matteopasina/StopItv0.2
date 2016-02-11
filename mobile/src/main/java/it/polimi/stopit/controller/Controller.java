@@ -22,6 +22,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.facebook.internal.LockOnGetVariable;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -63,7 +64,6 @@ public class Controller {
     Context context;
     SharedPreferences settings;
     Bitmap largeicon;
-    long opponentpoints;
 
     public Controller(Context context) {
 
@@ -413,6 +413,42 @@ public class Controller {
         }
     }
 
+    public void updateChallenges(){
+        List<Challenge> challengeList = db.getActiveChallenges();
+
+        for (final Challenge challenge : challengeList) {
+            if (challenge.isAccepted()) {
+
+                final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
+                VS.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        try {
+                            //se sei tu lo sfidante
+                            if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
+                                challenge.setOpponentPoints((long) dataSnapshot.child("opponentPoints").getValue());
+                                db.updateChallenge(challenge);
+
+                            } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
+                                challenge.setOpponentPoints((long) dataSnapshot.child("myPoints").getValue());
+                                db.updateChallenge(challenge);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+
+
+            }
+        }
+    }
+
     public void setChallengeAlarm(long endTime, String challengeKey) {
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -446,7 +482,7 @@ public class Controller {
         //per ogni challenge aggiorna i punti su firebase e in locale
         List<Challenge> challengeList = db.getActiveChallenges();
 
-        for (Challenge challenge : challengeList) {
+        for (final Challenge challenge : challengeList) {
             if (challenge.isAccepted()) {
 
                 final Firebase VS = new Firebase("https://blazing-heat-3084.firebaseio.com/Challenges/" + challenge.getID());
@@ -457,11 +493,16 @@ public class Controller {
                             //se sei tu lo sfidante
                             if (dataSnapshot.child("id").getValue().toString().equals(settings.getString("ID", null))) {
                                 VS.child("myPoints").setValue((long) dataSnapshot.child("myPoints").getValue() + points);
-                                opponentpoints=(long)dataSnapshot.child("opponentPoints").getValue();
+                                challenge.setMyPoints(challenge.getMyPoints() + points);
+                                challenge.setOpponentPoints((long) dataSnapshot.child("opponentPoints").getValue());
+                                db.updateChallenge(challenge);
 
                             } else if (dataSnapshot.child("opponentID").getValue().toString().equals(settings.getString("ID", null))) {
                                 VS.child("opponentPoints").setValue((long) dataSnapshot.child("opponentPoints").getValue() + points);
-                                opponentpoints=(long)dataSnapshot.child("myPoints").getValue();
+                                challenge.setMyPoints(challenge.getMyPoints() + points);
+                                challenge.setOpponentPoints((long) dataSnapshot.child("myPoints").getValue());
+                                db.updateChallenge(challenge);
+
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -474,9 +515,7 @@ public class Controller {
                     }
                 });
 
-                challenge.setMyPoints(challenge.getMyPoints() + points);
-                challenge.setOpponentPoints(opponentpoints);
-                db.updateChallenge(challenge);
+
             }
         }
     }

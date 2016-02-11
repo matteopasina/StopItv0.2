@@ -5,8 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,8 +213,8 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[]{CHALLENGE_ID,
-                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS, CONTACT_DAYPOINTS,
-                        CONTACT_WEEKPOINTS}, CONTACT_ID + "=?",
+                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS, CHALLENGE_OPPONENT_POINTS, CHALLENGE_START_TIME, CHALLENGE_END_TIME,
+                        CHALLENGE_ACCEPTED, CHALLENGE_CHALLENGER, CHALLENGE_OVER, CHALLENGE_WON}, CHALLENGE_ID + "=?",
                 new String[]{id}, null, null, null, null);
 
         Challenge challenge = null;
@@ -234,9 +242,9 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CONTACTS, new String[]{CONTACT_ID,
-                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS, CHALLENGE_OPPONENT_POINTS, CHALLENGE_START_TIME, CHALLENGE_END_TIME,
-                        CHALLENGE_ACCEPTED, CHALLENGE_CHALLENGER, CHALLENGE_OVER, CHALLENGE_WON}, CHALLENGE_ID + "=?",
-                new String[]{id}, null, null, null, null);
+                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS, CONTACT_DAYPOINTS,
+                        CONTACT_WEEKPOINTS}, CONTACT_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
 
         User user = null;
 
@@ -520,5 +528,34 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void askMobile(Context context) {
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        // Now you can use the Data Layer API
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                    }
+                })
+                        // Request access only to the Wearable API
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
+
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/askMobile");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+    }
 
 }

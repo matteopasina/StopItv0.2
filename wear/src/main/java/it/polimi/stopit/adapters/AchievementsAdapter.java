@@ -2,6 +2,7 @@ package it.polimi.stopit.adapters;
 
 import android.content.Context;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

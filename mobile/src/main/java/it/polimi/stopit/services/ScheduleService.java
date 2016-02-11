@@ -333,26 +333,8 @@ public class ScheduleService extends Service {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard");
         putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
         putDataMapReq.getDataMap().putByteArray("leaderboard",leaderboard);
-        //putDataMapReq.getDataMap().putAsset("profileImage", asset);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-
-
-       /* int i = 0;
-        for (User contact : mLeaderboard) {
-
-           // Asset asset = createAssetFromBitmap(new DownloadImgTask().execute(contact.getProfilePic()).get(10000, TimeUnit.MILLISECONDS));
-
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/leaderboard/" + i);
-            putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
-            //putDataMapReq.getDataMap().putAsset("profileImage", asset);
-            contact.putToDataMap(putDataMapReq.getDataMap());
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-            i++;
-
-            Log.v("LEADERBOARD", "DONE: " + contact.getName());
-        }*/
 
     }
 
@@ -372,7 +354,13 @@ public class ScheduleService extends Service {
 
     public void putChallengesInMap() throws IOException {
 
+        controller.updateChallenges();
+
         ArrayList<Challenge> mChallenges = (ArrayList<Challenge>) db.getActiveChallenges();
+
+        for(Challenge c: mChallenges){
+            Log.v("CHALLENGES","Mypoints "+c.getMyPoints()+" Opponentpoints "+c.getOpponentPoints());
+        }
 
         byte[] challenges=convertToBytes(mChallenges);
 
@@ -381,12 +369,6 @@ public class ScheduleService extends Service {
         putDataMapReq.getDataMap().putByteArray("challenges",challenges);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-    }
-
-    private static Asset createAssetFromBitmap(Bitmap bitmap) {
-        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-        return Asset.createFromBytes(byteStream.toByteArray());
     }
 
     public void saveSchedule(List<MutableInterval> list) {

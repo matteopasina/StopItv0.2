@@ -3,6 +3,7 @@ package it.polimi.stopit.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,19 +37,15 @@ public class ChallengesAdapter extends WearableListView.Adapter {
 
     // Provide a reference to the type of views you're using
     public static class ItemViewHolder extends WearableListView.ViewHolder {
-        private TextView me, points, opponent;
-        private CircularImageView mypic, opponentPic;
-        private ImageView vs;
+        private TextView points, opponent;
+        private CircularImageView opponentPic;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             // find the text view within the custom item's layout
-            me = (TextView) itemView.findViewById(R.id.me);
-            mypic=(CircularImageView) itemView.findViewById(R.id.mypic);
             opponentPic=(CircularImageView) itemView.findViewById(R.id.opponentPic);
             points = (TextView) itemView.findViewById(R.id.points);
             opponent = (TextView) itemView.findViewById(R.id.opponent);
-            vs = (ImageView) itemView.findViewById(R.id.VS);
         }
     }
 
@@ -74,23 +71,29 @@ public class ChallengesAdapter extends WearableListView.Adapter {
         Challenge challenge = mChallenges.get(position);
 
         db=new DatabaseHandlerWear(context);
-        User opponent=db.getContact(challenge.getOpponentID());
+        User opponent=null;
 
-        int myImageResource = context.getResources().getIdentifier("io", "drawable", context.getPackageName());
-        itemHolder.mypic.setImageResource(myImageResource);
+        for(User u: db.getAllContacts()) {
+            if(u.getID().equals(challenge.getOpponentID())){
+                opponent=u;
+            }
+        }
 
         int opponentImageResource = context.getResources().getIdentifier(opponent.getProfilePic(), "drawable", context.getPackageName());
         itemHolder.opponentPic.setImageResource(opponentImageResource);
 
         // replace text contents
         itemHolder.opponent.setText(opponent.getName());
+        itemHolder.points.setText("Pending");
 
         long difference=challenge.getMyPoints()-challenge.getOpponentPoints();
-        itemHolder.points.setText("" + difference);
 
-        if(difference > 0){
+
+        if(difference >= 0){
+            itemHolder.points.setText("+" + difference);
             itemHolder.points.setTextColor(Color.GREEN);
-        }else{
+        }else if(difference < 0){
+            itemHolder.points.setText("" + difference);
             itemHolder.points.setTextColor(Color.RED);
         }
 

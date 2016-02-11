@@ -150,6 +150,7 @@ public class ClockActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         sendSmoke();
+                        askMobile();
                         Intent intent = new Intent(ClockActivity.this, ConfirmationActivity.class);
                         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE,
                                 ConfirmationActivity.SUCCESS_ANIMATION);
