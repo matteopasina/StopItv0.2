@@ -1,60 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<it.polimi.stopit.layoutImplementations.WearableChallengeItemLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center_vertical"
+<it.polimi.stopit.layoutImplementations.WearableChallengeItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+
+    <RelativeLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/me"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:fontFamily="sans-serif-condensed-light"
+            android:lineSpacingExtra="-4sp"
+            android:text="You"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="16sp" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/mypic"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/me"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            app:border_color="#EEEEEE"
+            app:border_width="0dp"
+            app:shadow="true"
+            app:shadow_color="@color/shadows"
+            app:shadow_radius="2" />
+
+        <ImageView
+            android:id="@+id/VS"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/versus" />
+
+        <TextView
+            android:id="@+id/opponent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:fontFamily="sans-serif-condensed-light"
+            android:lineSpacingExtra="-4sp"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="16sp" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/opponentPic"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/opponent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            app:border_color="#EEEEEE"
+            app:border_width="0dp"
+            app:shadow="true"
+            app:shadow_color="@color/shadows"
+            app:shadow_radius="2" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/me"
-        android:text="You"
+        android:id="@+id/points"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="sans-serif-condensed-light"
-        android:lineSpacingExtra="-4sp"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:layout_alignParentStart="true"   />
-
-    <TextView
-        android:id="@+id/mypoints"
-        android:layout_marginTop="30dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="sans-serif-condensed-light"
-        android:lineSpacingExtra="-4sp"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:layout_alignParentStart="true"   />
-
-    <ImageView
-        android:id="@+id/VS"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="@drawable/versus"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        />
-
-    <TextView
-        android:id="@+id/opponent"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-condensed-light"
         android:lineSpacingExtra="-4sp"
         android:textColor="@color/textColorSecondary"
         android:textSize="16sp"
-        android:layout_alignParentEnd="true"/>
-
-    <TextView
-        android:id="@+id/opponentPoints"
-        android:layout_marginTop="30dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:fontFamily="sans-serif-condensed-light"
-        android:lineSpacingExtra="-4sp"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/main"/>
 
 </it.polimi.stopit.layoutImplementations.WearableChallengeItemLayout>

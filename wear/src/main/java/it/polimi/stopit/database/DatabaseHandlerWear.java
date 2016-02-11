@@ -205,8 +205,8 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CHALLENGES, new String[]{CHALLENGE_ID,
-                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS, CHALLENGE_OPPONENT_POINTS, CHALLENGE_START_TIME, CHALLENGE_END_TIME,
-                        CHALLENGE_ACCEPTED, CHALLENGE_CHALLENGER, CHALLENGE_OVER, CHALLENGE_WON}, CHALLENGE_ID + "=?",
+                        CONTACT_NAME, CONTACT_SURNAME, CONTACT_IMAGE, CONTACT_POINTS, CONTACT_DAYPOINTS,
+                        CONTACT_WEEKPOINTS}, CONTACT_ID + "=?",
                 new String[]{id}, null, null, null, null);
 
         Challenge challenge = null;
@@ -225,6 +225,35 @@ public class DatabaseHandlerWear extends SQLiteOpenHelper {
         }
 
         return challenge;
+
+    }
+
+    public User getContact(String id) {
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CONTACTS, new String[]{CONTACT_ID,
+                        CHALLENGE_OPPONENTID, CHALLENGE_POINTS, CHALLENGE_OPPONENT_POINTS, CHALLENGE_START_TIME, CHALLENGE_END_TIME,
+                        CHALLENGE_ACCEPTED, CHALLENGE_CHALLENGER, CHALLENGE_OVER, CHALLENGE_WON}, CHALLENGE_ID + "=?",
+                new String[]{id}, null, null, null, null);
+
+        User user = null;
+
+        try {
+            cursor.moveToFirst();
+            user = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getLong(4),
+                    cursor.getLong(5), cursor.getLong(6),cursor.getString(7),cursor.getString(8));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+            cursor.close();
+        }
+
+        return user;
 
     }
 

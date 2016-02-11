@@ -1,6 +1,7 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.wearable.view.WearableListView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import java.util.ArrayList;
 
 import it.polimi.stopit.R;
+import it.polimi.stopit.database.DatabaseHandlerWear;
 import it.polimi.stopit.model.Challenge;
+import it.polimi.stopit.model.User;
 
 /**
  * Created by matteo on 24/01/16.
@@ -21,6 +26,7 @@ public class ChallengesAdapter extends WearableListView.Adapter {
     private final ArrayList<Challenge> mChallenges;
     private final Context context;
     private final LayoutInflater mInflater;
+    private DatabaseHandlerWear db;
 
     public ChallengesAdapter(Context context, ArrayList<Challenge> challenges) {
         mChallenges = challenges;
@@ -30,18 +36,18 @@ public class ChallengesAdapter extends WearableListView.Adapter {
 
     // Provide a reference to the type of views you're using
     public static class ItemViewHolder extends WearableListView.ViewHolder {
-        private TextView me, mypoints, opponent, opponentPoints;
-        private ImageView image, opponentPic, vs;
+        private TextView me, points, opponent;
+        private CircularImageView mypic, opponentPic;
+        private ImageView vs;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             // find the text view within the custom item's layout
             me = (TextView) itemView.findViewById(R.id.me);
-            //image=(ImageView) itemView.findViewById(R.id.mypic);
-            //opponentPic=(ImageView) itemView.findViewById(R.id.opponentPic);
-            mypoints = (TextView) itemView.findViewById(R.id.mypoints);
+            mypic=(CircularImageView) itemView.findViewById(R.id.mypic);
+            opponentPic=(CircularImageView) itemView.findViewById(R.id.opponentPic);
+            points = (TextView) itemView.findViewById(R.id.mypoints);
             opponent = (TextView) itemView.findViewById(R.id.opponent);
-            opponentPoints = (TextView) itemView.findViewById(R.id.opponentPoints);
             vs = (ImageView) itemView.findViewById(R.id.VS);
         }
     }
@@ -67,11 +73,27 @@ public class ChallengesAdapter extends WearableListView.Adapter {
 
         Challenge challenge = mChallenges.get(position);
 
-        // replace text contents
-        itemHolder.opponent.setText("ME COIONI");
+        db=new DatabaseHandlerWear(context);
+        User opponent=db.getContact(challenge.getOpponentID());
 
-        itemHolder.mypoints.setText("" + challenge.getMyPoints());
-        itemHolder.opponentPoints.setText("" + challenge.getOpponentPoints());
+        int myImageResource = context.getResources().getIdentifier("io", "drawable", context.getPackageName());
+        itemHolder.mypic.setImageResource(myImageResource);
+
+        int opponentImageResource = context.getResources().getIdentifier(opponent.getProfilePic(), "drawable", context.getPackageName());
+        itemHolder.opponentPic.setImageResource(opponentImageResource);
+
+        // replace text contents
+        itemHolder.opponent.setText(opponent.getName());
+
+        long difference=challenge.getMyPoints()-challenge.getOpponentPoints();
+        itemHolder.points.setText("" + difference);
+
+        if(difference > 0){
+            itemHolder.points.setTextColor(Color.GREEN);
+        }else{
+            itemHolder.points.setTextColor(Color.RED);
+        }
+
 
         // replace list item's metadata
         holder.itemView.setTag(position);

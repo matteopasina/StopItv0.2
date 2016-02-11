@@ -70,6 +70,8 @@ public class DatabaseSeederWear {
         db.addContact(new User("8", "Gianluigi", "Buffon", "gigione", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"),"",""));
         db.addContact(new User("9", "Stephen", "Curry", "steph128", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"),"",""));
         db.addContact(new User("10", "Joe", "Bastianich", "joe128", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));
+        db.addContact(new User("10208377558466542", "Matteo", "Pasina", "io", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));
+        db.addContact(new User("10206687712304849", "Alessio", "Rossotti", "ale", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));
 
     }
 
