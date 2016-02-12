@@ -204,7 +204,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
             final DatabaseHandler dbh = new DatabaseHandler(view.getContext());
             final Challenge challenge = dbh.getChallengeByOpponentID(mChallenges.get(getLayoutPosition()).getOpponentID());
 
-            if(challenge.isChallenger()) {
+            if(challenge.isChallenger() && !challenge.isAccepted()) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
