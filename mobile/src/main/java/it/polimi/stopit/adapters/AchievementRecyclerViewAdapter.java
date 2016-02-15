@@ -37,15 +37,18 @@ public class AchievementRecyclerViewAdapter extends RecyclerView.Adapter<Achieve
         Achievement achievement=mAchievements.get(position);
 
         holder.setIsRecyclable(false);
-        holder.achievPic.setImageResource(achievement.getImage());
 
         if(!achievement.isObtained()) {
 
-            holder.achievPic.setImageAlpha(40);
+            holder.achievPic.setImageResource(R.drawable.locked);
+            holder.achievPic.setImageAlpha(80);
             holder.achievDesc.setTextColor(Color.parseColor("#AAAAAA"));
             holder.achievTitle.setTextColor(Color.parseColor("#999999"));
             holder.achievPoints.setTextColor(Color.parseColor("#999999"));
 
+        }else{
+
+            holder.achievPic.setImageResource(achievement.getImage());
         }
 
         holder.achievTitle.setText(achievement.getTitle());
