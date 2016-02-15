@@ -6,6 +6,7 @@ import android.provider.ContactsContract;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
@@ -37,12 +38,35 @@ public class ChallengesActivity extends Activity implements WearableListView.Cli
                 WearableListView listView =
                         (WearableListView) findViewById(R.id.challenge_list);
 
-                Log.v("CHALLENGES",mChallenges.toString());
+                final View header=findViewById(R.id.header);
+                final TextView title=(TextView) findViewById(R.id.titleC);
+
+
                 // Assign an adapter to the list
                 listView.setAdapter(new ChallengesAdapter(ChallengesActivity.this, mChallenges));
 
                 // Set a click listener
                 listView.setClickListener(ChallengesActivity.this);
+
+                listView.addOnScrollListener(new WearableListView.OnScrollListener() {
+                    @Override
+                    public void onScroll(int i) {
+                        header.setY(header.getY() - i);
+                        title.setY(title.getY() - i);
+                    }
+
+                    @Override
+                    public void onAbsoluteScrollChange(int i) {
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(int i) {
+                    }
+
+                    @Override
+                    public void onCentralPositionChanged(int i) {
+                    }
+                });
             }
 
         });

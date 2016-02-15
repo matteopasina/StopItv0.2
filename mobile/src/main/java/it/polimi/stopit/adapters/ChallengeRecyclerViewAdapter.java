@@ -151,7 +151,7 @@ public class ChallengeRecyclerViewAdapter extends RecyclerView.Adapter<Challenge
                                     challenge.setEndTime(now.getMillis() + challenge.getEndTime());
 
                                     newChallenge.setValue(challenge);
-                                    newChallenge.child("id").setValue(p.getString("ID", null));
+                                    newChallenge.child("ID").setValue(p.getString("ID", null));
 
                                     dbh.updateChallenge(challenge);
                                     mChallenges.set(getLayoutPosition(), challenge);

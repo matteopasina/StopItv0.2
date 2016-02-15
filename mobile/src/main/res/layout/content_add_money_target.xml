@@ -75,7 +75,7 @@
 
             <NumberPicker
                 android:id="@+id/time_picker"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="165dp"
                 android:layout_toEndOf="@id/time_label"
                 android:scaleX="1.2"

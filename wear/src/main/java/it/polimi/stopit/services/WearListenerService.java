@@ -2,9 +2,11 @@ package it.polimi.stopit.services;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -72,6 +74,14 @@ public class WearListenerService extends WearableListenerService implements Goog
                 DataItem item = event.getDataItem();
                 dataMap = DataMapItem.fromDataItem(item).getDataMap();
                 Log.v("PATHONWEAR", item.getUri().getPath());
+
+                if (item.getUri().getPath().compareTo("/stopit/ID") == 0) {
+
+                    Log.v("ID", "Ricevuto");
+                    SharedPreferences s= PreferenceManager.getDefaultSharedPreferences(this);
+                    s.edit().putString("ID", dataMap.getString("ID")).apply();
+
+                }
 
                 if (item.getUri().getPath().compareTo("/stopit/schedule") == 0) {
 
@@ -187,30 +197,6 @@ public class WearListenerService extends WearableListenerService implements Goog
         super.onStartCommand(intent, flags, startId);
 
         return START_STICKY;
-    }
-
-    public Bitmap loadBitmapFromAsset(Asset asset) {
-
-        if (asset == null) {
-            throw new IllegalArgumentException("Asset must be non-null");
-        }
-
-        /*ConnectionResult result = mGoogleApiClient.blockingConnect(10000, TimeUnit.MILLISECONDS);
-
-        if (!result.isSuccess()) {
-            Log.v("ASSETRESULT", "Requested an unknown Asset. Unsuccess " + result);
-            return null;
-        }*/
-        // convert asset into a file descriptor and block until it's ready
-        InputStream assetInputStream = Wearable.DataApi.getFdForAsset(
-                mGoogleApiClient, asset).await().getInputStream();
-
-        if (assetInputStream == null) {
-            Log.v("ASSETINPUTSTREAM", "Requested an unknown Asset.");
-            return null;
-        }
-        // decode the stream into a bitmap
-        return BitmapFactory.decodeStream(assetInputStream);
     }
 
     private Object convertFromBytes(byte[] bytes) throws IOException, ClassNotFoundException {

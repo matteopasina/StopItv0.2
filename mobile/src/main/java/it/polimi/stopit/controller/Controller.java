@@ -791,7 +791,7 @@ public class Controller {
         mNM.notify(notificationID, mBuilder.build());
     }
 
-    public int sendAlternativeNotification(AlternativeActivity alternativeActivity, int points) {
+    public void sendAlternativeNotification(AlternativeActivity alternativeActivity, int points) {
 
         int notificationID = NotificationID.getID();
 
@@ -846,7 +846,7 @@ public class Controller {
         NotificationManager mNM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
         mNM.notify(notificationID, mBuilder.build());
-        return notificationID;
+        settings.edit().putInt("NotificationID",notificationID).apply();
     }
 
     public AlternativeActivity chooseAlternative(int points) {

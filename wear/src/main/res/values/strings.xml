@@ -7,9 +7,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
-    <string name="title_activity_leaderboard">LeaderboardActivity</string>
-    <string name="title_activity_achievements">AchievementsActivity</string>
-    <string name="title_activity_challenges">ChallengesActivity</string>
+    <string name="title_activity_leaderboard">Leaderboard</string>
+    <string name="title_activity_achievements">Achievements</string>
+    <string name="title_activity_challenges">Challenges</string>
     <string name="title_activity_clock">ClockActivity</string>
     <string name="title_activity_confirm">ConfirmActivity</string>
     <string name="msg_sent">Smoked! -50P</string>

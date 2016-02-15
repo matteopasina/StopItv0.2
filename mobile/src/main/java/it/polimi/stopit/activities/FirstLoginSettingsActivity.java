@@ -19,10 +19,13 @@ import it.polimi.stopit.database.DatabaseSeeder;
 
 public class FirstLoginSettingsActivity extends AppCompatActivity {
 
+    private Controller controller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_login_settings);
+        controller=new Controller(this);
 
         if (new DatabaseHandler(this).getAllAchievements().size() != 0 ) {
 
@@ -97,7 +100,7 @@ public class FirstLoginSettingsActivity extends AppCompatActivity {
                             dbSeed.seedAlternatives();
                             dbSeed.seedAchievements();
 
-                            new Controller(getBaseContext()).buildStopProgram(cigaPerDay.getProgress() / 2, 365);
+                            controller.buildStopProgram(cigaPerDay.getProgress() / 2, 365);
 
                             startActivity(intent);
                             finish();

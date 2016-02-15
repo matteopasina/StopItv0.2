@@ -1,10 +1,15 @@
 package it.polimi.stopit.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.wearable.view.WearableListView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -22,22 +27,25 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
     private final ArrayList<User> mLeaderboard;
     private final Context context;
     private final LayoutInflater mInflater;
-    int i = 0;
+    private SharedPreferences s;
 
     public LeaderboardAdapter(Context context, ArrayList<User> leaderboard) {
         mLeaderboard = leaderboard;
         this.context = context;
         mInflater = LayoutInflater.from(context);
+        s= PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     // Provide a reference to the type of views you're using
     public static class ItemViewHolder extends WearableListView.ViewHolder {
         private TextView name, points, position;
         private CircularImageView image;
+        private RelativeLayout topclass;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             // find the text view within the custom item's layout
+            topclass=(RelativeLayout) itemView.findViewById(R.id.topclass);
             name = (TextView) itemView.findViewById(R.id.name);
             image = (CircularImageView) itemView.findViewById(R.id.circle);
             points = (TextView) itemView.findViewById(R.id.points);
@@ -71,6 +79,7 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
         TextView points = itemHolder.points;
         TextView myposition = itemHolder.position;
         CircularImageView circle = itemHolder.image;
+        RelativeLayout topclass=itemHolder.topclass;
 
         // replace text contents
         name.setText(user.getName());
@@ -79,6 +88,9 @@ public class LeaderboardAdapter extends WearableListView.Adapter {
 
         int imageResource = context.getResources().getIdentifier(user.getProfilePic(), "drawable", context.getPackageName());
         circle.setImageResource(imageResource);
+        if(user.getID().equals(s.getString("ID",null))){
+            topclass.setBackground(context.getDrawable(R.drawable.listgrad));
+        }
 
 
         // replace list item's metadata

@@ -66,7 +66,7 @@ public class DatabaseSeederWear {
         db.addContact(new User("4", "Scarlett", "Johansson", "scarlett", Long.parseLong("24560"), Long.parseLong("1277"), Long.parseLong("6800"),"",""));
         db.addContact(new User("5", "Guido", "Meda", "guidone", Long.parseLong("79800"), Long.parseLong("560"), Long.parseLong("18340"),"",""));
         db.addContact(new User("6", "Federica", "Nargi", "nargi", Long.parseLong("48267"), Long.parseLong("650"), Long.parseLong("12700"),"",""));
-        db.addContact(new User("7", "Alessandro", "Del Piero", "alexxxx", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"),"",""));
+        db.addContact(new User("7", "Alex", "Del Piero", "alexxxx", Long.parseLong("68880"), Long.parseLong("721"), Long.parseLong("8180"),"",""));
         db.addContact(new User("8", "Gianluigi", "Buffon", "gigione", Long.parseLong("11450"), Long.parseLong("1000"), Long.parseLong("3200"),"",""));
         db.addContact(new User("9", "Stephen", "Curry", "steph128", Long.parseLong("43200"), Long.parseLong("100"), Long.parseLong("2950"),"",""));
         db.addContact(new User("10", "Joe", "Bastianich", "joe128", Long.parseLong("54277"), Long.parseLong("-250"), Long.parseLong("1200"),"",""));

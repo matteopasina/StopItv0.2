@@ -71,7 +71,6 @@ public class ScheduleService extends Service {
     private GoogleApiClient mGoogleApiClient;
     CountDownTimer Count;
     int notificationID;
-    int nID;
     Controller controller;
     private DatabaseHandler db;
     private SharedPreferences settings;
@@ -113,6 +112,7 @@ public class ScheduleService extends Service {
             try {
 
                 Log.v("SEND: ", "Received ask");
+                putIDinMap();
                 putScheduleInMap();
                 putLeaderboardInMap();
                 putAchievementsInMap();
@@ -217,13 +217,13 @@ public class ScheduleService extends Service {
 
                     if (a == null) {
 
-                        nID = sendNotification(p);
-                        controller.cancelNotification(nID, 300000, p);
+                        sendNotification(p);
+                        controller.cancelNotification(settings.getInt("NotificationID",0), 300000, p);
 
                     } else {
 
-                        nID = controller.sendAlternativeNotification(a, p);
-                        controller.cancelNotification(nID, 300000, p);
+                        controller.sendAlternativeNotification(a, p);
+                        controller.cancelNotification(settings.getInt("NotificationID",0), 300000, p);
 
                     }
 
@@ -231,14 +231,14 @@ public class ScheduleService extends Service {
 
                     try {
 
-                        mNM.cancel(nID);
+                        mNM.cancel(settings.getInt("NotificationID",0));
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    nID = sendNotification(calcPoints());
-                    controller.cancelNotification(nID, 300000, calcPoints());
+                    sendNotification(calcPoints());
+                    controller.cancelNotification(settings.getInt("NotificationID",0), 300000, calcPoints());
 
                 }
 
@@ -295,6 +295,17 @@ public class ScheduleService extends Service {
                 }
             }
         }
+    }
+
+    public void putIDinMap() throws IOException {
+
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/stopit/ID");
+        putDataMapReq.getDataMap().putLong("timestamp", new MutableDateTime().getMillis());
+        putDataMapReq.getDataMap().putString("ID", settings.getString("ID", null));
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+
+
     }
 
     public void putScheduleInMap() throws IOException {
@@ -459,7 +470,7 @@ public class ScheduleService extends Service {
         return list;
     }
 
-    public int sendNotification(int points) {
+    public void sendNotification(int points) {
 
         notificationID = NotificationID.getID();
 
@@ -514,7 +525,7 @@ public class ScheduleService extends Service {
         mNM = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
         mNM.notify(notificationID, mBuilder.build());
-        return notificationID;
+        settings.edit().putInt("NotificationID",notificationID).apply();
     }
 
     @Override

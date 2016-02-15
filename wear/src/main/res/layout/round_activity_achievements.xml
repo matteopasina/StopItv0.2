@@ -11,6 +11,26 @@
         android:layout_height="match_parent"
         app:layout_box="left|bottom|right">
 
+        <View
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:background="#D3071C">
+        </View>
+
+        <TextView
+            android:id="@+id/titleA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:shadowColor="@color/shadows"
+            android:shadowRadius="2"
+            android:text="@string/title_activity_achievements"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="20dp" />
+
         <android.support.wearable.view.WearableListView
             android:id="@+id/achievements_list"
             android:layout_width="match_parent"

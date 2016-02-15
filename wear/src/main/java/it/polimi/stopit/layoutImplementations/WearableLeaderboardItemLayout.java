@@ -67,12 +67,12 @@ public class WearableLeaderboardItemLayout extends RelativeLayout
         if(mPosition!=null){
             mPosition.setAlpha(1f);
         }
-        mCircle.setImageAlpha(255);
+
     }
 
     @Override
     public void onNonCenterPosition(boolean animate) {
-        mCircle.setImageAlpha(40);
+        mCircle.setMaxWidth(50);
         mName.setAlpha(mFadedTextAlpha);
 
         if(mPosition!=null){

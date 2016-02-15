@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
+import android.view.View;
+import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -36,11 +38,35 @@ public class AchievementsActivity extends Activity implements WearableListView.C
                 WearableListView listView =
                         (WearableListView) findViewById(R.id.achievements_list);
 
+                final View header=findViewById(R.id.header);
+                final TextView title=(TextView) findViewById(R.id.titleA);
+
+
                 // Assign an adapter to the list
                 listView.setAdapter(new AchievementsAdapter(AchievementsActivity.this, mAchievements));
 
                 // Set a click listener
                 listView.setClickListener(AchievementsActivity.this);
+
+                listView.addOnScrollListener(new WearableListView.OnScrollListener() {
+                    @Override
+                    public void onScroll(int i) {
+                        header.setY(header.getY() - i);
+                        title.setY(title.getY() - i);
+                    }
+
+                    @Override
+                    public void onAbsoluteScrollChange(int i) {
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(int i) {
+                    }
+
+                    @Override
+                    public void onCentralPositionChanged(int i) {
+                    }
+                });
             }
         });
     }

@@ -11,6 +11,11 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,6 +48,7 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+
         db=new DatabaseHandlerWear(this);
         db.askMobile(this);
 
@@ -55,6 +61,11 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+
+                final View header=findViewById(R.id.header);
+                final TextView title=(TextView) findViewById(R.id.titleL);
+
+
                 // Get the list component from the layout of the activity
                 listView = (WearableListView) findViewById(R.id.leaderboard_list);
 
@@ -63,6 +74,26 @@ public class LeaderboardActivity extends Activity implements WearableListView.Cl
 
                 // Set a click listener
                 listView.setClickListener(LeaderboardActivity.this);
+
+                listView.addOnScrollListener(new WearableListView.OnScrollListener() {
+                    @Override
+                    public void onScroll(int i) {
+                            header.setY(header.getY() - i);
+                            title.setY(title.getY() - i);
+                    }
+
+                    @Override
+                    public void onAbsoluteScrollChange(int i) {
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(int i) {
+                    }
+
+                    @Override
+                    public void onCentralPositionChanged(int i) {}
+                });
+
             }
         });
     }
